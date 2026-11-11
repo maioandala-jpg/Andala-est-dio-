@@ -1,0 +1,14 @@
+ESTÚDIO ANDALA · PWA
+
+Envie TODOS estes ficheiros para a mesma pasta, na raiz do site (HTTPS):
+  index.html · manifest.webmanifest · sw.js · icons/ (5 imagens)
+
+Instalar:
+  Android/Chrome/Edge: abra o endereço e toque em "📲 Instalar app" (ou menu ⋮ > Instalar app).
+  iPhone/iPad (Safari): Partilhar > Adicionar ao ecrã principal.
+  Computador (Chrome/Edge): ícone de instalar na barra de endereço.
+
+Hospedagem grátis: Vercel, Netlify, GitHub Pages ou Cloudflare Pages (todos dão HTTPS).
+Sem HTTPS (ou abrindo o ficheiro direto do disco) o navegador não permite instalar.
+
+Atualizar: troque os ficheiros e mude VERSION em sw.js (ex.: andala-v2).
