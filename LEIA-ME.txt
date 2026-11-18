@@ -1,14 +1,24 @@
-ESTÚDIO ANDALA · PWA
+ESTÚDIO ANDALA · PWA + IA (Vercel)
 
-Envie TODOS estes ficheiros para a mesma pasta, na raiz do site (HTTPS):
-  index.html · manifest.webmanifest · sw.js · icons/ (5 imagens)
+ESTRUTURA (envie tudo, mantendo as pastas):
+  index.html · manifest.webmanifest · sw.js · vercel.json
+  icons/  (5 imagens, já incluídas)
+  api/    (_lib.js · tts.js · roteiro.js)   <- tem de se chamar "api", na raiz
 
-Instalar:
-  Android/Chrome/Edge: abra o endereço e toque em "📲 Instalar app" (ou menu ⋮ > Instalar app).
-  iPhone/iPad (Safari): Partilhar > Adicionar ao ecrã principal.
-  Computador (Chrome/Edge): ícone de instalar na barra de endereço.
+VERCEL · variáveis (Project > Settings > Environment Variables):
+  GEMINI_API_KEYS    suas chaves separadas por vírgula        [obrigatória]
+  ALLOWED_ORIGINS    https://seu-site.vercel.app              [recomendada: impede que outros gastem as suas chaves]
+  GEMINI_TTS_MODEL   opcional (padrão gemini-2.5-flash-preview-tts)
+  GEMINI_TEXT_MODEL  opcional (padrão gemini-2.5-flash)
+Depois de criar/alterar variáveis: Deployments > Redeploy.
 
-Hospedagem grátis: Vercel, Netlify, GitHub Pages ou Cloudflare Pages (todos dão HTTPS).
-Sem HTTPS (ou abrindo o ficheiro direto do disco) o navegador não permite instalar.
+COMO FUNCIONA
+  Offline (igual a antes): roteiro, avatar, voz do navegador/áudio próprio, legendas e exportação.
+  Online: aba Prompt > escreva só o tema e toque em "✨ Roteiro com IA" (/api/roteiro);
+  a voz IA (/api/tts) é gerada e entra no vídeo. Sem internet, essas ações avisam e o resto segue a funcionar.
 
-Atualizar: troque os ficheiros e mude VERSION em sw.js (ex.: andala-v2).
+INSTALAR
+  Android/Chrome/Edge: "📲 Instalar app". iPhone/iPad (Safari): Partilhar > Adicionar ao ecrã principal.
+  Sem HTTPS (ou abrindo o ficheiro do disco) o navegador não permite instalar nem usar /api.
+
+ATUALIZAR: troque os ficheiros e mude VERSION em sw.js (agora andala-v2).

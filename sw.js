@@ -3,14 +3,15 @@
    - Páginas: rede primeiro (recebe atualizações), cache como reserva.
    - Fontes do Google: guardadas na primeira visita e reutilizadas offline.
    Para publicar uma versão nova, mude VERSION. */
-const VERSION = 'andala-v1';
+const VERSION = 'andala-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 const FONTS = 'andala-fonts-v1';
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // Cada ficheiro é guardado em separado: se um ícone faltar, o app continua a instalar e a abrir offline.
+  e.waitUntil(caches.open(VERSION).then(c => Promise.allSettled(SHELL.map(u => c.add(u)))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -38,6 +39,7 @@ self.addEventListener('fetch', e => {
   }
 
   if (url.origin !== location.origin) return;
+  if (url.pathname.startsWith('/api/')) return; // voz e roteiro IA vão sempre à rede
 
   // Navegação: rede primeiro, cache como reserva
   if (req.mode === 'navigate') {

@@ -302,10 +302,11 @@ details[open]::details-content{block-size:auto}
   <div id="pbox" class="pn" style="padding:0">
    <small>Escreva o que você quer, como num prompt de IA. Exemplo: “Vídeo de 45 segundos sobre a palavra serendipity, com a Jacinta.” Depois toque em Aplicar.</small>
    <textarea id="pt" aria-label="Prompt do vídeo" spellcheck="false" placeholder="Ex.: Vídeo de 60 segundos sobre persuasão ética, com o Rafael, tom inspirador."></textarea>
-   <div class="row" style="justify-content:flex-start;padding:0"><button id="pap">Aplicar</button><button id="pcl" class="alt">Limpar</button><button id="ppa" class="alt">Colar</button><label class="b alt">Abrir .txt<input id="pfile" type="file" accept=".txt,text/plain"></label><button id="psv" class="alt">Salvar .txt</button><button id="pex" class="alt">Exportar estado atual</button><button id="pxm" class="alt">Exemplo</button></div>
+   <div class="row" style="justify-content:flex-start;padding:0"><button id="pap">Aplicar</button><button id="pai" class="alt" type="button">✨ Roteiro com IA</button><button id="pcl" class="alt">Limpar</button><button id="ppa" class="alt">Colar</button><label class="b alt">Abrir .txt<input id="pfile" type="file" accept=".txt,text/plain"></label><button id="psv" class="alt">Salvar .txt</button><button id="pex" class="alt">Exportar estado atual</button><button id="pxm" class="alt">Exemplo</button></div>
    <div class="sec">Voz do vídeo</div>
-   <div class="chips" role="radiogroup" aria-label="Voz do vídeo"><button class="chip on" role="radio" aria-checked="true" id="vzb">🔊 Voz do navegador</button><button class="chip" role="radio" aria-checked="false" id="vza">🎙 Meu áudio</button><button class="chip" role="radio" aria-checked="false" id="vzl">💬 Só legendas</button></div>
+   <div class="chips" role="radiogroup" aria-label="Voz do vídeo"><button class="chip on" role="radio" aria-checked="true" id="vzg">✨ Voz IA</button><button class="chip" role="radio" aria-checked="false" id="vzb">🔊 Voz do navegador</button><button class="chip" role="radio" aria-checked="false" id="vza">🎙 Meu áudio</button><button class="chip" role="radio" aria-checked="false" id="vzl">💬 Só legendas</button></div>
    <div class="f"><button id="vzf" class="alt" type="button">⬆ Carregar áudio do celular</button><small id="vzm" role="status"></small></div>
+   <div class="f" id="gbox"><select id="gvoz" aria-label="Voz da IA"><option value="auto">Voz IA: automática (pelo avatar)</option><option>Kore</option><option>Puck</option><option>Charon</option><option>Zephyr</option><option>Fenrir</option><option>Aoede</option><option>Leda</option><option>Orus</option><option>Callirrhoe</option><option>Algieba</option></select><small id="gms" role="status">Escreva o prompt com o roteiro e toque em Aplicar: a voz é criada sozinha e entra no vídeo.</small></div>
    <small>A voz do navegador você ouve ao tocar, mas ela não entra no arquivo do vídeo. Para ter voz no vídeo baixado, use o seu áudio.</small>
    <details class="adv"><summary class="sec">Modelos e modo técnico (opcional)</summary><small>Modelos prontos por canal (funcionam sem edição):</small><div class="chips" id="pmod"></div>
    <div class="row" style="justify-content:flex-start;padding:0"><button id="pbl" class="alt">Baixar modelo em branco</button><button id="pcp" class="alt">Copiar instruções para IA</button><button id="pgd" class="alt">Guia</button></div>
@@ -1713,7 +1714,7 @@ function setMV(say){lv();const e=fonteEf();MODOVOZ=e.m==='legendas'?'legendas':'
 function vinfoUpdate(){const el=$('vinfo');if(!el)return;const e=fonteEf(),vv=(window.speechSynthesis&&VO.length)?voice(1).v:null,L={arquivo:'seu áudio próprio',navegador:'voz do navegador',legendas:'só legendas (sem voz)'};
  el.textContent='Em uso: '+L[e.m]+(e.m==='navegador'?(vv?' · voz escolhida: '+vv.name+' ('+vv.lang+')':' · voz padrão do aparelho'):'')+(e.w?' · '+e.w:'')}
 // ---------- ligações da interface ----------
-$('pap').onclick=()=>applyPrompt($('pt').value);
+$('pap').onclick=async()=>{applyPrompt($('pt').value);window.gemAfterApply&&await gemAfterApply()};
 $('pcl').onclick=()=>{$('pt').value='';showReport([],null);$('st').textContent='Caixa do prompt limpa. O que já está na tela não mudou.';$('pt').focus()};
 $('ppa').onclick=async()=>{try{const t=await navigator.clipboard.readText();if(!t.trim()){$('st').textContent='A área de transferência está vazia.';return}$('pt').value=t;$('st').textContent='Prompt colado. Toque em Aplicar.'}catch(x){$('st').textContent='Seu navegador não deixou ler a área de transferência. Toque e segure na caixa e escolha Colar.';$('pt').focus()}};
 $('pfile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('pt').value=String(r.result||'');$('st').textContent='Arquivo aberto. Toque em Aplicar.'};r.onerror=()=>{$('st').textContent='Não consegui ler esse arquivo. Tente um arquivo .txt.'};r.readAsText(f);e.target.value=''};
@@ -1722,7 +1723,7 @@ $('pex').onclick=()=>{$('pt').value=statePrompt();$('st').textContent='Estado at
 $('pxm').onclick=()=>{$('pt').value=EXEMPLO;$('st').textContent='Exemplo colocado. Toque em Aplicar.'};
 function setMode(m){const p=m==='prompt';$('mdp').classList.toggle('on',p);$('mdm').classList.toggle('on',!p);$('mdp').setAttribute('aria-checked',p);$('mdm').setAttribute('aria-checked',!p);$('pbox').hidden=!p;$('pextra').hidden=!p;$('mbox').hidden=p}
 $('mdp').onclick=()=>setMode('prompt');$('mdm').onclick=()=>setMode('manual');$('mgo').onclick=()=>showTab(TABS.indexOf($('t0')));
-document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!$('pbox').hidden&&$('pt').value.trim()){e.preventDefault();applyPrompt($('pt').value)}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'&&!$('pbox').hidden&&$('pt').value.trim()){e.preventDefault();applyPrompt($('pt').value);window.gemAfterApply&&gemAfterApply()}});
 $('fonte').onchange=()=>{vinfoUpdate();setScript(ta.value)};['vl','vg','vg2'].forEach(i=>$(i).addEventListener('change',vinfoUpdate));
 $('vt').onclick=()=>{if(!window.speechSynthesis){$('st').textContent='Este navegador não tem voz sintetizada. Use áudio próprio ou o modo legendas.';return}lv();LGO='';speechSynthesis.cancel();speechSynthesis.speak(utter(TEST[VL().slice(0,2)]||TEST.pt));vinfoUpdate();const v=voice().v;$('st').textContent='Voz: '+(v?v.name:'padrão do navegador')};
 $('file').addEventListener('change',()=>{vinfoUpdate()});
@@ -1761,6 +1762,97 @@ $('vza').onclick=()=>{if(au.src)setFonte('arquivo');else $('file').click()};
 $('vzf').onclick=()=>$('file').click();
 $('file').addEventListener('change',()=>{if(au.src)setFonte('arquivo');vozSync()});
 $('fonte').addEventListener('change',vozSync);vozSync();
+// ===== VOZ IA · Gemini TTS via /api/tts (as chaves ficam na Vercel, nunca no navegador) =====
+// Fluxo: roteiro do prompt → /api/tts (por blocos) → WAV → entra como "áudio carregado" → o vídeo já sai com a voz.
+var GEM={on:true,key:'',url:'',p:null};
+function gemUI(){const on=!!GEM.on,g=$('vzg');if(g){g.classList.toggle('on',on);g.setAttribute('aria-checked',on)}
+ if(on)['vzb','vza','vzl'].forEach(i=>{const e=$(i);if(e){e.classList.remove('on');e.setAttribute('aria-checked','false')}});
+ const b=$('gbox');if(b)b.hidden=!on}
+{const _v=vozSync;vozSync=function(){_v.apply(this,arguments);gemUI()}}
+$('vzg').onclick=()=>{GEM.on=true;gemUI();gemAfterApply()};
+['vzb','vza','vzl','vzf'].forEach(i=>$(i).addEventListener('click',()=>{GEM.on=false;gemUI()}));
+$('file').addEventListener('change',()=>{GEM.on=false;gemUI()});
+function gemMsg(t){const m=$('gms');if(m)m.textContent=t;$('st').textContent=t}
+function gemVoiceFor(spk){const v=$('gvoz').value,g=(spk===2?$('vg2'):$('vg'));const f=(g&&g.value)==='f';
+ if(v==='auto')return f?'Kore':'Fenrir';if(spk===2)return v==='Puck'?'Kore':'Puck';return v}
+function gemLines(txt){const out=[];let csp=1;
+ String(txt||'').split('\n').forEach(raw=>{let q=raw.trim();if(!q||/^@fim\s*$/i.test(q))return;let m,spk=0,cd=null;
+  while(m=q.match(/^(!|#(\d)|>([12])|\[(\w+)(?::(\d+))?\]|\((\w\w(?:-\w\w)?)\))\s*/)){if(m[3])spk=+m[3];else if(m[4])cd=m[4];q=q.slice(m[0].length)}
+  const p=q.indexOf('||');if(p>=0)q=q.slice(0,p);q=q.replace(/\*/g,'').trim();if(!q)return;
+  if(spk)csp=spk;if(cd&&/^(quiz|resposta|selo)$/.test(cd))csp=1;out.push({t:q,spk:csp})});
+ return out}
+function gemChunks(lines){const ch=[];lines.forEach(l=>{const c=ch[ch.length-1];
+  if(c&&c.spk===l.spk&&(c.t.length+l.t.length+1)<=800)c.t+='\n'+l.t;else ch.push({t:l.t,spk:l.spk})});return ch}
+function gemScriptNow(){const a=ta.value,b=ta2.value;return(typeof DUAL==='function'&&DUAL()&&b.trim())?mergeDual(a,b):a}
+function gemKeyOf(lines){return JSON.stringify([lines.map(l=>l.spk+':'+l.t),$('gvoz').value,$('vg').value,$('vg2')?$('vg2').value:'',$('vl').value])}
+function gemB64(b64){const bin=atob(b64),o=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)o[i]=bin.charCodeAt(i);return o}
+function gemWav(pcm,rate){const b=new ArrayBuffer(44+pcm.length),v=new DataView(b),w=(o,t)=>{for(let i=0;i<t.length;i++)v.setUint8(o+i,t.charCodeAt(i))};
+ w(0,'RIFF');v.setUint32(4,36+pcm.length,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+ v.setUint32(24,rate,true);v.setUint32(28,rate*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,pcm.length,true);
+ new Uint8Array(b,44).set(pcm);return new Blob([b],{type:'audio/wav'})}
+async function gemCall(text,voice){
+ const lang=($('vl').value||'pt-BR').slice(0,2).toLowerCase();
+ const style=({pt:'Diga de forma natural e envolvente',en:'Say it naturally and engagingly',fr:'Dis-le naturellement',es:'Dilo de forma natural'})[lang]||'Say it naturally';
+ let last=null;
+ for(let t=0;t<2;t++){
+  try{
+   const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text,voice,style})});
+   let j=null;try{j=await r.json()}catch(e){}
+   if(r.status===404||(!j&&!r.ok))throw new Error('a rota /api/tts não existe aqui. A voz IA só funciona no site publicado na Vercel');
+   if(!r.ok||!j||!j.audio)throw new Error((j&&j.error)||('HTTP '+r.status));
+   return{pcm:gemB64(j.audio),rate:j.sampleRate||24000}
+  }catch(e){last=e;if(/não existe aqui/.test(e.message))break;await new Promise(r=>setTimeout(r,800))}
+ }
+ throw last}
+async function gemSynth(lines,progress){
+ const ch=gemChunks(lines),parts=[];let rate=24000;
+ for(let i=0;i<ch.length;i++){
+  progress&&progress('Gerando a voz IA… parte '+(i+1)+' de '+ch.length);
+  const o=await gemCall(ch[i].t,gemVoiceFor(ch[i].spk));rate=o.rate;parts.push(o.pcm);
+  if(i<ch.length-1)parts.push(new Uint8Array(Math.round(rate*0.18)*2)) // pausa curta entre blocos
+ }
+ const n=parts.reduce((a,b)=>a+b.length,0),all=new Uint8Array(n);let o=0;parts.forEach(b=>{all.set(b,o);o+=b.length});
+ return URL.createObjectURL(gemWav(all,rate))}
+function gemUse(url){stopTTS();au.src=url;demo=false;au.currentTime=0;setFonte('arquivo');setScript(ta.value);last=-2}
+function gemEnsure(){if(GEM.p)return GEM.p;GEM.p=(async()=>{try{
+  const lines=gemLines(gemScriptNow());if(!lines.length){gemMsg('Não há roteiro para falar. Escreva o prompt com o roteiro e toque em Aplicar.');return false}
+  const key=gemKeyOf(lines);
+  if(GEM.key===key&&GEM.url){if(au.src!==GEM.url)gemUse(GEM.url);return true}
+  const url=await gemSynth(lines,gemMsg);GEM.url=url;GEM.key=key;gemUse(url);
+  gemMsg('Voz IA pronta e anexada ao vídeo. Toque em Tocar ou Gerar vídeo.');return true
+ }catch(e){gemMsg('Não consegui gerar a voz IA: '+(e&&e.message||e)+'. Confira as chaves na Vercel ou escolha outra voz acima.');return false}
+ finally{GEM.p=null}})();return GEM.p}
+async function gemAfterApply(){if(GEM.on)await gemEnsure()}
+// ===== ROTEIRO IA · /api/roteiro (Gemini escreve o roteiro a partir do tema; precisa de internet) =====
+// Fluxo: tema no prompt → /api/roteiro → texto vai para a aba Roteiro → aplica → voz IA (se ligada) entra no vídeo.
+$('pai').onclick=async function(){
+ const tema=$('pt').value.trim(),b=this;
+ if(!tema){gemMsg('Escreva o tema no prompt. Ex.: Maquiavel explica os fins.');return}
+ if(navigator.onLine===false){gemMsg('Sem internet: o roteiro com IA precisa de ligação. O modo offline continua igual.');return}
+ b.disabled=true;
+ try{
+  gemMsg('A IA está a escrever o roteiro…');
+  const r=await fetch('/api/roteiro',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tema,canal:(typeof CHID!=='undefined'&&CHID)||''})});
+  let j=null;try{j=await r.json()}catch(e){}
+  if(r.status===404||(!j&&!r.ok))throw new Error('a rota /api/roteiro não existe aqui. Só funciona no site publicado na Vercel');
+  if(!r.ok||!j||!j.script)throw new Error((j&&j.error)||('HTTP '+r.status));
+  ta.value=j.script;setScript(ta.value);
+  gemMsg('Roteiro pronto na aba Roteiro. Pode editar e tocar em Aplicar.');
+  if(GEM.on)await gemEnsure();
+ }catch(e){gemMsg('Não consegui escrever o roteiro: '+(e&&e.message||e))}
+ finally{b.disabled=false}};
+// Áudio para um prompt da fila em lote (sem mexer na tela). Devolve '' se o prompt não trouxer roteiro.
+async function gemBatchAudio(it,progress){
+ const t=it.text,P=parsePrompt(/^\s*#\s*andala/i.test(t)||/^\s*[a-z_]+\s*:\s*\S/im.test(t)&&/^\s*\[/m.test(t)?t:naturalToV1(t));
+ if(!P.rot||!String(P.rot).trim())return'';
+ const lines=gemLines(P.rot2&&String(P.rot2).trim()?mergeDual(P.rot,P.rot2):P.rot);if(!lines.length)return'';
+ return await gemSynth(lines,progress)}
+// "Tocar" também garante que a voz IA já esteja pronta
+{const _p=$('play').onclick;$('play').onclick=async function(e){
+  if(GEM.on&&au.paused&&!tts&&!hold&&!pre){const ls=gemLines(gemScriptNow());if(ls.length&&GEM.key!==gemKeyOf(ls)){if(!(await gemEnsure()))return}}
+  return _p.call(this,e)}}
+gemUI();
+
 // ---------- Avançado fica recolhido ----------
 (function(){const x=$('pextra');if(!x)return;const d=document.createElement('details');d.className='adv';d.innerHTML='<summary class="sec">Avançado: biblioteca, lote e projeto</summary>';while(x.firstChild)d.appendChild(x.firstChild);x.appendChild(d)})();
 // ---------- Etapa C: modelos, instruções para IA e guia ----------
@@ -2565,7 +2657,7 @@ async function enqueue(o){
   if(window.__legacyGen)return window.__legacyGen();
   return null;
  }
- const snap=snapshot(),fe=fonteEf();
+ const snap=snapshot(),fe=fonteEf();if(o.audio){snap.au=o.audio;snap.vals.fonte='arquivo'}
  const title=o.title||(snap.vals.tm||'').trim()||CH.name;
  const base=fileName('').replace(/-$/,''),id=++RQ.seq;
  const j={id,title,icon:CH.icon||'🎬',spec:{snap,prompt:o.prompt||'',vcodec:codec},name:base+'-'+id+'.mp4',st:'queue',stage:'',detail:'',p:0,x:null,t0:0,auto:!!o.auto,onEnd:o.onEnd||null,batch:o.batch||0,cancel:false,
@@ -2730,7 +2822,7 @@ q('rqpill').onclick=()=>q('rq').scrollIntoView({behavior:reduce?'auto':'smooth',
 /* ---------- ligação com os botões do estúdio ---------- */
 const legacyGen=$('gen').onclick,legacyDl=$('dl').onclick;
 window.__legacyGen=()=>{RQ.legacy=true;return legacyGen()};
-$('gen').onclick=()=>enqueue({});
+$('gen').onclick=async()=>{if(window.GEM&&GEM.on&&window.gemEnsure){if(!(await gemEnsure()))return}enqueue({})};
 $('dl').onclick=()=>{if(RQ.legacy&&typeof vblob!=='undefined'&&vblob)return legacyDl();if(RQ.last)save(RQ.last)};
 
 // fila em lote: cada prompt vira um vídeo na fila, sem mexer na tela
@@ -2741,11 +2833,17 @@ function batch(){
  const bid=++BG;
  probe.then(codec=>{
   if(!codec){if(typeof runQueue==='function')runQueue();return}
-  let n=0;
+  let n=0,chain=Promise.resolve();
   QUEUE.forEach(it=>{
    if(it.st==='pronto')return;
-   it.st='gerando';it.msg='na fila de vídeos';n++;
-   enqueue({prompt:it.text,title:it.titulo,auto:true,batch:bid,silent:true,onEnd:j=>{it.st=j.st==='done'?'pronto':(j.st==='cancel'?'parado':'erro');it.msg=j.st==='done'?j.name:(j.msg||'').slice(0,90);renderQueue()}});
+   const useG=!!(window.GEM&&GEM.on&&window.gemBatchAudio);
+   it.st='gerando';it.msg=useG?'gerando a voz IA':'na fila de vídeos';n++;
+   const go=async()=>{
+    let audio='';
+    if(useG){try{audio=await gemBatchAudio(it,m=>{it.msg=m;renderQueue()})}catch(e){it.st='erro';it.msg=('Voz IA: '+(e&&e.message||e)).slice(0,90);renderQueue();return}it.msg='na fila de vídeos';renderQueue()}
+    enqueue({prompt:it.text,title:it.titulo,auto:true,batch:bid,silent:true,audio:audio,onEnd:j=>{it.st=j.st==='done'?'pronto':(j.st==='cancel'?'parado':'erro');it.msg=j.st==='done'?j.name:(j.msg||'').slice(0,90);renderQueue()}});
+   };
+   chain=chain.then(go);
   });
   renderQueue();toast(n+(n>1?' vídeos adicionados':' vídeo adicionado')+' à fila');
   $('st').textContent='Fila em lote enviada. Os vídeos aparecem em "Seus vídeos" e baixam sozinhos.';
