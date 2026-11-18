@@ -10,8 +10,7 @@ const SHELL = ['./', './index.html', './manifest.webmanifest',
 const FONTS = 'andala-fonts-v1';
 
 self.addEventListener('install', e => {
-  // Cada ficheiro é guardado em separado: se um ícone faltar, o app continua a instalar e a abrir offline.
-  e.waitUntil(caches.open(VERSION).then(c => Promise.allSettled(SHELL.map(u => c.add(u)))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', e => {
@@ -39,7 +38,6 @@ self.addEventListener('fetch', e => {
   }
 
   if (url.origin !== location.origin) return;
-  if (url.pathname.startsWith('/api/')) return; // voz e roteiro IA vão sempre à rede
 
   // Navegação: rede primeiro, cache como reserva
   if (req.mode === 'navigate') {
