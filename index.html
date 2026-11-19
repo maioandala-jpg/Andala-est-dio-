@@ -307,6 +307,10 @@ details[open]::details-content{block-size:auto}
    <div class="chips" role="radiogroup" aria-label="Voz do vídeo"><button class="chip on" role="radio" aria-checked="true" id="vzb">🔊 Voz do navegador</button><button class="chip" role="radio" aria-checked="false" id="vza">🎙 Meu áudio</button><button class="chip" role="radio" aria-checked="false" id="vzl">💬 Só legendas</button></div>
    <div class="f"><button id="vzf" class="alt" type="button">⬆ Carregar áudio do celular</button><small id="vzm" role="status"></small></div>
    <small>A voz do navegador você ouve ao tocar, mas ela não entra no arquivo do vídeo. Para ter voz no vídeo baixado, use o seu áudio.</small>
+   <div class="sec">✨ Criar vídeo com IA (precisa de internet)</div>
+   <small>Escreva o pedido na caixa acima (ex.: “Vídeo de 45s sobre Maquiavel e os fins que justificam os meios”) e toque no botão. A IA escreve o roteiro, escolhe cenário e figurino e aplica tudo.</small>
+   <div class="f"><button id="iaDir" type="button">✨ Criar roteiro e cenas com IA</button><label><input id="iaAuto" type="checkbox" checked> gerar a voz depois</label></div>
+   <small id="iaDSt" role="status"></small>
    <div class="sec">✨ Voz com IA (precisa de internet)</div>
    <div class="f"><button id="iaGen" type="button">🎙 Gerar voz com IA</button><small id="iaSt" role="status"></small></div>
    <details class="adv"><summary class="sec">Voz de cada avatar e código de acesso</summary>
@@ -2199,6 +2203,26 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   }finally{clearTimeout(to);bt.disabled=false}
  }
  bt.onclick=gerar;
+ var bd=$('iaDir'),ds=$('iaDSt'),au2=$('iaAuto');
+ async function dirige(){
+  var pd=($('pt').value||'').trim();
+  if(pd.length<3){ds.textContent='Escreva o pedido na caixa do prompt, acima.';return}
+  if(!navigator.onLine){ds.textContent='Sem internet. Use o prompt manual, que funciona offline.';return}
+  if(!E.code){ds.textContent='Abra "Voz de cada avatar e código de acesso" e coloque o código.';return}
+  bd.disabled=true;ds.textContent='A IA está criando o roteiro e as cenas… pode levar até 1 minuto.';
+  var ac=new AbortController(),to=setTimeout(function(){ac.abort()},58000),ok=false;
+  try{
+   var r=await fetch('/api/direct',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:E.code,pedido:pd}),signal:ac.signal});
+   if(!r.ok){var j0=null;try{j0=await r.json()}catch(e){}throw new Error((j0&&j0.erro)||('Erro '+r.status))}
+   var j=await r.json();if(!j||!j.prompt)throw new Error('A IA não devolveu o roteiro. Tente de novo.');
+   $('pt').value=j.prompt;applyPrompt(j.prompt);ok=true;
+   ds.textContent=au2.checked?'Roteiro e cenas aplicados. Gerando a voz…':'Roteiro e cenas aplicados. Toque em Gerar voz com IA ou em Tocar.';
+  }catch(e){
+   ds.textContent=(e&&e.name==='AbortError')?'A IA demorou demais. Tente de novo.':(e instanceof TypeError?'Não consegui falar com a IA agora. Verifique a internet; o prompt manual segue funcionando.':String(e.message||'Não deu certo. Tente de novo.'));
+  }finally{clearTimeout(to);bd.disabled=false}
+  if(ok&&au2.checked){await gerar();if(/pronta/.test(st.textContent))ds.textContent='Pronto: roteiro, cenas e voz aplicados. Toque em Tocar ou em Gerar vídeo.'}
+ }
+ if(bd)bd.onclick=dirige;
 })();
 </script>
 <script type="text/plain" id="__warp">
