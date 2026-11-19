@@ -1,0 +1,41 @@
+ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
+=================================================================
+
+1) ESTRUTURA (raiz do projeto na Vercel)
+  index.html · manifest.webmanifest · sw.js · reset.html · vercel.json
+  icons/            <- a SUA pasta de ícones (icon-192, icon-512, icon-maskable-512,
+                       apple-touch-icon, favicon-32). Se não tiver, copie os arquivos de
+                       icones-reserva/ para uma pasta chamada icons/.
+  api/              <- tts.js · direct.js · _gemini.js · _manual.js  (IA, só funciona online)
+  extras/           <- lista e prévias dos 100 cenários (pode ficar de fora do deploy)
+
+2) VARIÁVEIS NA VERCEL (Settings > Environment Variables) e depois novo deploy
+  GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3   suas chaves (a 2ª e a 3ª entram sozinhas se a 1ª falhar)
+  ACCESS_CODE                                           código só seu (o mesmo digitado no app)
+  GEMINI_TEXT_MODEL / GEMINI_TTS_MODEL                  opcionais (padrões: gemini-3.8-flash / gemini-3.8-flash-tts)
+  Nunca coloque chaves no index.html nem no chat. Defina um limite de gasto no Google AI Studio.
+
+3) INSTALAR NO CELULAR
+  Android (Chrome): abra o endereço do site > menu ⋮ > "Instalar app" (ou "Adicionar à tela inicial").
+  iPhone (Safari): Compartilhar > "Adicionar à Tela de Início".
+  Abra o app UMA vez com internet depois de instalar: assim o cache offline é preenchido.
+  Teste: ative o modo avião e abra o app. Se abrir, está offline.
+
+4) O QUE FUNCIONA OFFLINE x ONLINE
+  Offline: o estúdio inteiro (avatares, cenários do canal + 100 especiais, legendas, voz do navegador,
+           seu próprio áudio, exportar vídeo, biblioteca e projetos guardados no aparelho).
+  Online : "Voz com IA" e "Criar roteiro e cenas com IA" (usam o Gemini pela pasta api/);
+           as fontes do Google são guardadas na 1ª visita com internet.
+  Sem internet o app avisa e continua funcionando como antes; nada quebra.
+
+5) COMO USAR A IA
+  Aba Prompt > escreva o pedido > "Criar roteiro e cenas com IA" (marque "gerar a voz depois").
+  Cada avatar tem uma voz fixa (em "Voz de cada avatar e código de acesso"; o código fica só neste aparelho).
+  Cenário especial: lista na aba Prompt, ou no roteiro com ~nome (ex.: ~china-rua-dia). ~0 volta ao normal.
+  O manual da IA está em api/_manual.js (é onde se melhora a "inteligência").
+
+6) ATUALIZAR / VERSÃO ANTIGA APARECENDO
+  A versão aparece no fim da aba Prompt. Ao publicar, mude VERSION no sw.js (hoje andala-v3).
+  Quando sair versão nova, o app mostra "Nova versão pronta. Toque para atualizar."
+  Se aparecer versão antiga: abra seu-site/reset.html > "Atualizar agora" (não apaga projetos).
+  Último recurso: "Baixar cópia" e depois "Limpar tudo" (apaga os dados deste aparelho).
