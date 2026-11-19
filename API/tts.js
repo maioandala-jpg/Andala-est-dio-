@@ -3,6 +3,7 @@
    Variáveis: GEMINI_API_KEY (obrigatória), ACCESS_CODE (obrigatória),
               GEMINI_TTS_MODEL (opcional: gemini-3.8-flash-tts ou gemini-3.8-flash-lite-tts) */
 const crypto = require('crypto');
+const { chamar, chaves, textoErro } = require('./_gemini.js');
 
 const VOZES = new Set(['Zephyr','Puck','Charon','Kore','Fenrir','Leda','Orus','Aoede','Callirrhoe','Autonoe',
   'Enceladus','Iapetus','Umbriel','Algieba','Despina','Erinome','Algenib','Rasalgethi','Laomedeia','Achernar',
@@ -31,8 +32,8 @@ const txt = v => String(v == null ? '' : v).replace(/\s+/g, ' ').trim();
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return erro(res, 405, 'Método não permitido.');
-  const KEY = process.env.GEMINI_API_KEY, CODE = process.env.ACCESS_CODE;
-  if (!KEY || !CODE) return erro(res, 500, 'O servidor ainda não está configurado: faltam as variáveis GEMINI_API_KEY e ACCESS_CODE na Vercel.');
+  const CODE = process.env.ACCESS_CODE;
+  if (!chaves().length || !CODE) return erro(res, 500, 'O servidor ainda não está configurado: faltam a chave do Gemini (GEMINI_API_KEY) e o ACCESS_CODE na Vercel.');
 
   let b = req.body;
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = null; } }
@@ -74,27 +75,13 @@ module.exports = async (req, res) => {
   const modelo = /^gemini-3\.8-[a-z-]*tts$/.test(pedido) ? pedido : 'gemini-3.8-flash-tts';
   const payload = { contents: [{ role: 'user', parts }], generationConfig: { responseModalities: ['AUDIO'], speechConfig } };
 
-  let r, j;
-  try {
-    r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': KEY },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(55000)
-    });
-    j = await r.json().catch(() => null);
-  } catch (e) {
-    return erro(res, 504, 'A IA demorou demais para responder. Tente de novo.');
-  }
-  if (!r.ok) {
-    const m = txt(j && j.error && j.error.message).slice(0, 180);
-    if (r.status === 429) return erro(res, 429, 'A cota da IA acabou por agora. Tente de novo daqui a pouco.');
-    return erro(res, 502, 'A IA recusou o pedido (' + r.status + ').' + (m ? ' ' + m : ''));
-  }
-  const ps = (((j || {}).candidates || [])[0] || {}).content;
+  const temAudio = x => { const c = (((x || {}).candidates || [])[0] || {}).content; const p = c && (c.parts || []).find(q => q.inlineData || q.inline_data); const dd = p && (p.inlineData || p.inline_data); return !!(dd && dd.data); };
+  const out = await chamar(modelo, payload, temAudio);
+  if (!out.ok) return erro(res, out.tipo === 'cota' ? 429 : out.tipo === 'pedido' ? 502 : out.tipo === 'tempo' ? 504 : 502, textoErro(out));
+  res.setHeader('X-Andala-Chave', out.chave + '/' + out.total);
+  const ps = (((out.json || {}).candidates || [])[0] || {}).content;
   const pa = ps && (ps.parts || []).find(p => p.inlineData || p.inline_data);
   const d = pa && (pa.inlineData || pa.inline_data);
-  if (!d || !d.data) return erro(res, 502, 'A IA não devolveu áudio. Tente de novo.');
 
   let audio = Buffer.from(d.data, 'base64');
   if (audio.slice(0, 4).toString('latin1') !== 'RIFF') {
