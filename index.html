@@ -277,10 +277,112 @@ details[open]::details-content{block-size:auto}
 .st-empty{color:var(--muted);font:italic 12px var(--f-body)}
 
 
+
+/* ===== 12 · ACABAMENTO DE PRODUTO: visual limpo, uma ação principal por tela ===== */
+:root{--r-sm:10px;--r-md:14px;--r-lg:20px;--hair:color-mix(in srgb,var(--ink) 11%,transparent);--card:color-mix(in srgb,var(--ink) 4%,transparent);--nav-h:64px}
+a{color:var(--accent)}
+#bgfx::after{background:color-mix(in srgb,var(--bg) 94%,transparent)}
+/* cabeçalho */
+.hd{align-items:stretch;gap:10px;position:relative}
+.brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding:2px 2px 0}
+.mk{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--gold);color:#1a1205;font:800 15px var(--f-title)}
+h1{font:700 13.5px var(--f-title);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
+#inst{position:absolute;right:2px;top:0;min-height:34px;padding:6px 12px;font-size:12px}
+#chsel{gap:4px;padding:4px;border-radius:14px;background:var(--card);border:1px solid var(--hair);box-shadow:none;scrollbar-width:none}
+#chsel::-webkit-scrollbar{display:none}
+.chn{min-height:36px;padding:7px 12px;border-radius:10px;font:600 12.5px var(--f-body);color:var(--muted)}
+.chn.on{background:var(--accent);color:var(--accent-ink)}
+/* prévia */
+.pv{gap:10px}
+#c{width:min(68vw,calc(54vh*9/16));border-radius:16px;border:1px solid var(--hair);box-shadow:0 18px 40px rgba(0,0,0,.45)}
+@media(min-width:980px){#c{width:min(96vw,calc(74vh*9/16))}}
+#st{font-size:12.5px;max-width:340px}
+.pv .row{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(92vw,340px);padding:0}
+#dl{grid-column:1/-1}
+/* botões */
+button,label.b,a.b{font:600 14px var(--f-body);border-radius:12px;padding:11px 18px;letter-spacing:0}
+button:hover,label.b:hover{filter:none;box-shadow:none}
+.alt{background:var(--card)!important;border:1px solid var(--hair)!important;color:var(--ink)!important}
+.alt:hover{border-color:color-mix(in srgb,var(--accent) 55%,var(--hair))!important}
+#gen.alt{animation:none!important;background:linear-gradient(135deg,#5b54f0,#7a73ff)!important;border:0!important;color:#fff!important;box-shadow:0 8px 22px rgba(99,91,255,.32)}
+#gen.alt:hover{box-shadow:0 10px 26px rgba(99,91,255,.45)}
+.pri{min-height:48px;font-size:15px}
+/* painel */
+.panel{border-radius:20px;background:color-mix(in srgb,var(--surface) 92%,transparent);border:1px solid var(--hair);box-shadow:0 20px 50px rgba(0,0,0,.35);backdrop-filter:none;-webkit-backdrop-filter:none}
+.panel::before{display:none}
+.pn{padding:16px;gap:14px;font-size:13.5px}
+.pn:not([hidden])>*{animation:none}
+.card{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--hair)}
+.ttl{display:flex;align-items:center;gap:8px;font:600 13.5px var(--f-body);color:var(--ink)}
+.sec{font:600 12px var(--f-body);letter-spacing:.02em;text-transform:none;color:var(--muted)}
+.cta{display:grid;grid-template-columns:1fr auto;gap:10px}
+.chk{display:flex;align-items:center;gap:8px;min-height:32px;color:var(--muted);font-size:13px}
+.hint{font-size:12px;opacity:.85}
+textarea{border-radius:12px;border:1px solid var(--hair);background:var(--bg);font:14px/1.5 var(--f-body)}
+#pt{height:112px;min-height:96px;resize:vertical;font:14px/1.5 var(--f-body)}
+/* seletores segmentados */
+.chips.seg,.mswitch{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;background:var(--bg);border:1px solid var(--hair);border-radius:12px}
+.chips.seg .chip,.mswitch .chip{min-height:38px;padding:8px 6px;border:0;border-radius:9px;background:transparent;color:var(--muted);font:600 12.5px var(--f-body)}
+.chips.seg .chip.on,.mswitch .chip.on{background:var(--surface2);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.4),inset 0 0 0 1px var(--hair)}
+.chip,.pill{min-height:36px;padding:8px 12px;border:1px solid var(--hair);border-radius:10px;background:var(--card);font:600 12.5px var(--f-body)}
+.chip.on,.pill.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.chip.on,.pill.on,.chn.on{animation:none}
+/* campos */
+input[type=text],input[type=password],select{min-height:44px;padding:10px 12px;border:1px solid var(--hair);border-radius:12px;background:var(--bg);font:500 14px var(--f-body)}
+select{appearance:none;-webkit-appearance:none;padding-right:34px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23aab4c4' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:14px}
+.f{gap:8px}
+/* seções recolhíveis */
+.panel summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;font:600 13.5px var(--f-body);text-transform:none;letter-spacing:0;color:var(--ink)}
+.panel summary::-webkit-details-marker{display:none}
+.panel summary::after{content:"";flex:none;width:7px;height:7px;margin-right:4px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform .2s}
+.panel details[open]>summary::after{transform:rotate(-135deg)}
+.panel details{background:transparent;border:0;border-radius:0;padding:0}
+.panel details.adv,.panel details#lib,.panel details#lote,.panel details#qd,.panel details#rp{border:1px solid var(--hair);border-radius:14px;padding:0 14px;background:var(--card)}
+.panel details.adv>summary,.panel details#lib>summary,.panel details#lote>summary,.panel details#qd>summary,.panel details#rp>summary{min-height:48px}
+.panel details.adv[open],.panel details#lib[open],.panel details#lote[open],.panel details#qd[open],.panel details#rp[open]{padding-bottom:14px}
+.panel details.adv[open]>summary,.panel details#lib[open]>summary,.panel details#lote[open]>summary,.panel details#qd[open]>summary,.panel details#rp[open]>summary{margin-bottom:6px}
+.panel details.adv>*:not(summary),.panel details#lib>*:not(summary),.panel details#lote>*:not(summary),.panel details#qd>*:not(summary){margin-top:10px}
+.panel details.more>summary{min-height:32px;color:var(--muted);font-size:12.5px}
+.panel details.more>*:not(summary){margin-top:8px}
+.more .row{justify-content:flex-start;padding:0}
+.more .row button,.more .row label.b{min-height:38px;padding:8px 12px;font-size:12.5px}
+#iaVoz{display:flex;flex-direction:column;gap:8px}
+#iaVoz .f small{min-width:64px;color:var(--ink);font-weight:600}
+/* barra de abas: navegação inferior no celular, linha de ícones no computador */
+#tabs{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;overflow:visible;border:0;background:transparent}
+#tabs [role=tab]{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;padding:7px 0 6px;border:0;border-radius:12px;background:transparent;color:var(--muted);font:600 10.5px var(--f-body);letter-spacing:0}
+#tabs [role=tab] svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#tabs [aria-selected=true]{color:var(--accent);background:var(--accent-soft);border:0}
+@media(max-width:979px){
+ body{padding-bottom:calc(var(--nav-h) + 28px + env(safe-area-inset-bottom,0px))}
+ #tabs{position:fixed;left:0;right:0;bottom:0;z-index:55;padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));background:color-mix(in srgb,var(--surface) 95%,transparent);border-top:1px solid var(--hair);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+ #toast{bottom:calc(var(--nav-h) + 24px + env(safe-area-inset-bottom,0px))}
+ #rqpill{bottom:calc(var(--nav-h) + 12px + env(safe-area-inset-bottom,0px))}
+}
+@media(min-width:980px){#tabs{padding:8px;border-bottom:1px solid var(--hair);background:var(--card)}#tabs [role=tab]{flex-direction:row;gap:6px;min-height:40px;font-size:12px}#tabs [role=tab] svg{width:17px;height:17px}}
+.ft{opacity:.5;letter-spacing:.03em;text-transform:none;font-size:11.5px}.ft a{color:inherit}
+/* avisos flutuantes só aparecem quando ativos */
+#toast:not(.on),#rqpill:not(.on){opacity:0;visibility:hidden;pointer-events:none}
+#toast,#rqpill{transition:translate .35s var(--ease),opacity .2s,visibility 0s .35s}#toast.on,#rqpill.on{transition:translate .35s var(--ease),opacity .2s,visibility 0s}
+/* modo Idiomas (um só canal): sem moldura */
+body.lock #chsel{background:transparent;border:0;padding:0}
+body.lock .chn{border:1px solid var(--hair)}
+/* campos de cor e rótulos */
+input[type=color]{width:46px;height:36px;padding:2px;border:1px solid var(--hair);border-radius:10px;background:var(--bg)}
+.fl{gap:6px}.fl>small{font-weight:600;color:var(--muted)}
+.steps small{line-height:1.7;color:var(--muted)}.steps b{color:var(--ink)}
+.card .f label,.card>label.f{min-height:36px}
+#p5 .card>.f:has(#intro){display:flex;flex-wrap:wrap;gap:6px 18px}
+/* estatísticas e fila: mesmo vocabulário visual */
+.rq-h h2{font:600 14px var(--f-body);letter-spacing:0;text-transform:none;color:var(--ink)}
+#stats{border:1px solid var(--hair);border-radius:16px;background:var(--card)}
+#stats h3{font:600 12px var(--f-body);letter-spacing:.02em;text-transform:none}
+.st-kpi>div{background:var(--card);border:1px solid var(--hair)}
+.st-kpi b{color:var(--ink)}
 </style></head><body class="lock">
 <!-- ===== 2 · INTERFACE ===== -->
 <header class="hd">
- <div class="brand"><h1>ESTÚDIO ANDALA</h1><i>Vídeo vertical profissional</i></div>
+ <div class="brand"><span class="mk" aria-hidden="true">A</span><h1>Estúdio Andala</h1></div>
  <button id="inst" class="alt" hidden>📲 Instalar app</button>
  <div id="chsel" role="radiogroup" aria-label="Canal">
   <button class="chn" role="radio" data-id="idiomas">🌍 Idiomas</button><button class="chn" role="radio" data-id="mentalidade">♟ Mentalidade e Vendas</button><button class="chn" role="radio" data-id="romance">🌹 Romance</button><button class="chn" role="radio" data-id="biblico">📜 Ensino Bíblico</button><button class="chn" role="radio" data-id="noticias">📰 Notícias</button>
@@ -295,35 +397,28 @@ details[open]::details-content{block-size:auto}
 </section>
 <section class="panel" aria-label="Painel do estúdio">
  <div id="tabs" role="tablist" aria-label="Painel">
-  <button role="tab" id="t6" aria-controls="p6">Prompt</button><button role="tab" id="t0" aria-controls="p0">Roteiro</button><button role="tab" id="t1" aria-controls="p1">Canal e Conteúdo</button><button role="tab" id="t2" aria-controls="p2">Cenário e Figurino</button><button role="tab" id="t3" aria-controls="p3">Voz</button><button role="tab" id="t4" aria-controls="p4">Venda</button><button role="tab" id="t5" aria-controls="p5">Exportar</button>
- </div>
+  <button role="tab" id="t6" aria-controls="p6" aria-label="Prompt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2 2.2.8-2.2.8L19 21l-.8-2.2-2.2-.8 2.2-.8z"/></svg><span>Prompt</span></button><button role="tab" id="t0" aria-controls="p0" aria-label="Roteiro"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M9 12h6M9 16h6M9 8h2"/></svg><span>Roteiro</span></button><button role="tab" id="t1" aria-controls="p1" aria-label="Canal"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg><span>Canal</span></button><button role="tab" id="t2" aria-controls="p2" aria-label="Cena"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M4 18l5-5 4 4 3-3 4 4"/></svg><span>Cena</span></button><button role="tab" id="t3" aria-controls="p3" aria-label="Voz"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/></svg><span>Voz</span></button><button role="tab" id="t4" aria-controls="p4" aria-label="Venda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12.5V4.5h8l9 9-8 8z"/><circle cx="8" cy="9" r="1.3"/></svg><span>Venda</span></button><button role="tab" id="t5" aria-controls="p5" aria-label="Exportar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14"/></svg><span>Exportar</span></button>
+</div>
  <div class="pn" id="p6" role="tabpanel" aria-labelledby="t6">
   <div class="mswitch" role="radiogroup" aria-label="Como você quer trabalhar"><button class="chip on" role="radio" aria-checked="true" id="mdp">Prompt</button><button class="chip" role="radio" aria-checked="false" id="mdm">Manual</button></div>
   <div id="pbox" class="pn" style="padding:0">
-   <small>Escreva o que você quer, como num prompt de IA. Exemplo: “Vídeo de 45 segundos sobre a palavra serendipity, com a Jacinta.” Depois toque em Aplicar.</small>
-   <textarea id="pt" aria-label="Prompt do vídeo" spellcheck="false" placeholder="Ex.: Vídeo de 60 segundos sobre persuasão ética, com o Rafael, tom inspirador."></textarea>
-   <div class="row" style="justify-content:flex-start;padding:0"><button id="pap">Aplicar</button><button id="pcl" class="alt">Limpar</button><button id="ppa" class="alt">Colar</button><label class="b alt">Abrir .txt<input id="pfile" type="file" accept=".txt,text/plain"></label><button id="psv" class="alt">Salvar .txt</button><button id="pex" class="alt">Exportar estado atual</button><button id="pxm" class="alt">Exemplo</button></div>
-   <div class="sec">Voz do vídeo</div>
-   <div class="chips" role="radiogroup" aria-label="Voz do vídeo"><button class="chip on" role="radio" aria-checked="true" id="vzb">🔊 Voz do navegador</button><button class="chip" role="radio" aria-checked="false" id="vza">🎙 Meu áudio</button><button class="chip" role="radio" aria-checked="false" id="vzl">💬 Só legendas</button></div>
-   <div class="f"><button id="vzf" class="alt" type="button">⬆ Carregar áudio do celular</button><small id="vzm" role="status"></small></div>
-   <small>A voz do navegador você ouve ao tocar, mas ela não entra no arquivo do vídeo. Para ter voz no vídeo baixado, use o seu áudio.</small>
-   <div class="sec">🎬 Cenário especial (100 opções, funciona offline)</div>
-   <div class="f"><select id="cxSel" aria-label="Cenário especial"></select><button id="cxUse" type="button">Usar no vídeo</button></div>
-   <small>Para trocar no meio do roteiro, comece a linha com ~nome-do-cenário (ex.: ~quarto-dia). Use ~0 para voltar ao cenário normal do canal.</small>
-   <div class="sec">✨ Criar vídeo com IA (precisa de internet)</div>
-   <small>Escreva o pedido na caixa acima (ex.: “Vídeo de 45s sobre Maquiavel e os fins que justificam os meios”) e toque no botão. A IA escreve o roteiro, escolhe cenário e figurino e aplica tudo.</small>
-   <div class="f"><button id="iaDir" type="button">✨ Criar roteiro e cenas com IA</button><label><input id="iaAuto" type="checkbox" checked> gerar a voz depois</label></div>
-   <small id="iaDSt" role="status"></small>
-   <div class="sec">✨ Voz com IA (precisa de internet)</div>
-   <div class="f"><button id="iaGen" type="button">🎙 Gerar voz com IA</button><small id="iaSt" role="status"></small></div>
-   <details class="adv"><summary class="sec">Voz de cada avatar e código de acesso</summary>
-    <small>Cada avatar tem sempre a mesma voz. A escolha fica guardada neste aparelho.</small>
-    <div id="iaVoz"></div>
-    <input id="iaCode" type="password" autocomplete="off" placeholder="Código de acesso" aria-label="Código de acesso da IA">
-   </details>
-   <small>A IA lê o roteiro, gera a voz do avatar e coloca no vídeo, com legendas como hoje. Sem internet, o estúdio funciona como antes.</small>
-   <small>Versão do app: 2026-11-19 (andala-v3) · <a href="reset.html">atualizar ou limpar o cache</a></small>
-   <details class="adv"><summary class="sec">Modelos e modo técnico (opcional)</summary><small>Modelos prontos por canal (funcionam sem edição):</small><div class="chips" id="pmod"></div>
+<section class="card">
+<label class="ttl" for="pt">O que você quer criar?</label>
+<textarea id="pt" aria-label="Prompt do vídeo" spellcheck="false" placeholder="Ex.: Vídeo de 45s sobre Maquiavel e os fins que justificam os meios, com o Rafael."></textarea>
+<div class="cta"><button id="iaDir" type="button" class="pri">✨ Criar com IA</button><button id="pap" class="alt" type="button">Aplicar</button></div>
+<label class="chk"><input id="iaAuto" type="checkbox" checked> Gerar a voz com IA em seguida</label>
+<small id="iaDSt" role="status"></small>
+<small class="hint">Criar com IA usa internet. Aplicar funciona offline.</small>
+<details class="more"><summary>Mais ações</summary><div class="row"><button id="pcl" class="alt">Limpar</button><button id="ppa" class="alt">Colar</button><label class="b alt">Abrir .txt<input id="pfile" type="file" accept=".txt,text/plain"></label><button id="psv" class="alt">Salvar .txt</button><button id="pex" class="alt">Exportar estado atual</button><button id="pxm" class="alt">Exemplo</button></div></details>
+</section>
+<section class="card">
+<div class="ttl">Voz do vídeo</div>
+<div class="chips seg" role="radiogroup" aria-label="Voz do vídeo"><button class="chip on" role="radio" aria-checked="true" id="vzb">🔊 Voz do navegador</button><button class="chip" role="radio" aria-checked="false" id="vza">🎙 Meu áudio</button><button class="chip" role="radio" aria-checked="false" id="vzl">💬 Só legendas</button></div>
+<div class="f"><button id="vzf" class="alt" type="button">⬆ Carregar áudio do celular</button><small id="vzm" role="status"></small></div>
+<div class="f"><button id="iaGen" type="button" class="alt">🎙 Gerar voz com IA</button><small id="iaSt" role="status"></small></div>
+<details class="more"><summary>A voz do navegador entra no vídeo?</summary><small>Você a ouve ao tocar, mas ela não entra no arquivo baixado. Para ter voz no vídeo, use a voz com IA ou o seu áudio.</small></details>
+</section>
+<details class="adv"><summary>Avançado: modelos e modo técnico</summary><small>Modelos prontos por canal (funcionam sem edição):</small><div class="chips" id="pmod"></div>
    <div class="row" style="justify-content:flex-start;padding:0"><button id="pbl" class="alt">Baixar modelo em branco</button><button id="pcp" class="alt">Copiar instruções para IA</button><button id="pgd" class="alt">Guia</button></div>
    <small>Atalho: Ctrl+Enter aplica o prompt.</small></details>
    <div id="dtr" class="pn" style="padding:0" hidden></div>
@@ -351,37 +446,40 @@ details[open]::details-content{block-size:auto}
  <div class="pn" id="p0" role="tabpanel" aria-labelledby="t0" hidden>
   <textarea id="ta" aria-label="Roteiro"></textarea>
   <div id="ta2box" hidden><div class="sec" id="ta2lab">Roteiro do 2º avatar</div><textarea id="ta2" aria-label="Roteiro do segundo avatar" placeholder="Uma frase por linha. As falas entram intercaladas com o roteiro principal: 1ª do avatar 1, 1ª do avatar 2, 2ª do avatar 1…"></textarea><small>Intercalado com o roteiro de cima, linha a linha. Quer outra ordem? Escreva <b>&gt;1</b> ou <b>&gt;2</b> no começo de qualquer linha para escolher quem fala.</small></div>
-  <small>*destaque* em cor de marca · ! = momento importante · #2 = cenário 2 · [palavra] = mostra um cartão · (en-US) = voz noutra língua · texto || tradução = legenda bilíngue</small>
+  <details class="more"><summary>Marcas do roteiro</summary><small>*destaque* em cor de marca · ! = momento importante · #2 = cenário 2 · [palavra] = mostra um cartão · (en-US) = voz noutra língua · texto || tradução = legenda bilíngue</small></details>
   <div class="row" style="justify-content:flex-start;padding:0"><button id="apply" class="alt">Aplicar</button><button id="demo" class="alt">Prévia</button></div>
   <details id="qd" open><summary class="sec">Qualidade do roteiro</summary><ul id="ql"></ul><div class="row" style="justify-content:flex-start;padding:0"><label class="f">Duração alvo <select id="tgt" aria-label="Duração alvo"><option value="0">Automática</option><option value="30">30 s</option><option value="45">45 s</option><option value="60">60 s</option><option value="90">90 s</option></select></label><button id="fit" class="alt">Ajustar à duração</button></div></details>
   <div class="row" style="justify-content:flex-start;padding:0"><button id="srt" class="alt">Legendas .srt</button><button id="vtt" class="alt">Legendas .vtt</button></div>
-  <div class="sec">Gerador de roteiro</div>
+  <details class="adv"><summary>Gerador de roteiro</summary>
   <div class="f"><input id="tm" type="text" placeholder="Tema" aria-label="Tema"></div>
   <div class="f"><input id="pb" type="text" aria-label="Público"><select id="tn" aria-label="Tom"></select></div>
-  <button id="genscript" class="alt">✨ Criar rascunho editável</button>
+  <button id="genscript" class="alt">✨ Criar rascunho editável</button></details>
  </div>
  <div class="pn" id="p1" role="tabpanel" aria-labelledby="t1" hidden>
   <div class="sec">Predefinições prontas</div><div class="chips" id="presets"></div>
   <div class="sec">Formato de conteúdo</div><select id="fm" aria-label="Formato de conteúdo"></select>
   <div class="sec" id="cfh">Conteúdo do canal</div><div id="cf" class="pn" style="padding:0"></div>
   <button id="mk" class="alt">✨ Gerar roteiro</button>
-  <div class="sec">Mapa e linha do tempo</div>
+  <details class="adv"><summary>Mapa e linha do tempo</summary>
   <label class="fl"><small>Frase narrada</small><input id="gt" type="text" placeholder="O povo saiu do Egito rumo a Canaã." aria-label="Frase narrada"></label>
   <label class="fl"><small>Rota (use &gt; entre lugares)</small><input id="gr" type="text" placeholder="Egito&gt;Mar Vermelho&gt;Sinai&gt;Canaã" aria-label="Rota do mapa"></label>
   <button id="addmap" class="alt">🗺 Inserir mapa no roteiro</button>
   <label class="fl"><small>Linha do tempo (data|evento; data|evento)</small><input id="gl" type="text" placeholder="c. 2000 a.C.|Abraão;586 a.C.|Exílio" aria-label="Linha do tempo"></label>
   <button id="addtl" class="alt">⏳ Inserir linha do tempo no roteiro</button>
-  <small>Lugares conhecidos aparecem num mapa ilustrativo; nomes novos viram uma rota esquemática.</small>
-  <div class="sec">Quiz ou reflexão final</div>
+  <small>Lugares conhecidos aparecem num mapa ilustrativo; nomes novos viram uma rota esquemática.</small></details>
+  <details class="adv"><summary>Quiz ou reflexão final</summary>
   <label><input id="qon" type="checkbox" checked> Incluir no fim (contagem + selo de marca)</label>
   <label class="fl"><small>Pergunta (sem opções = reflexão)</small><input id="qq" type="text" aria-label="Pergunta"></label>
   <label class="fl"><input id="qa" type="text" placeholder="Opção A" aria-label="Opção A"></label>
   <label class="fl"><input id="qb" type="text" placeholder="Opção B" aria-label="Opção B"></label>
   <label class="fl"><input id="qc" type="text" placeholder="Opção C" aria-label="Opção C"></label>
   <div class="f"><select id="qr" aria-label="Resposta certa"><option value="0">Certa: A</option><option value="1">Certa: B</option><option value="2">Certa: C</option></select><input id="qx" type="text" placeholder="Explicação" aria-label="Explicação"></div>
-  <small>Com áudio próprio carregado, o quiz final não é adicionado (a narração é a sua).</small>
+  <small>Com áudio próprio carregado, o quiz final não é adicionado (a narração é a sua).</small></details>
  </div>
  <div class="pn" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+<section class="card"><div class="ttl">Cenário especial <span class="tag">100 opções · offline</span></div>
+<div class="f"><select id="cxSel" aria-label="Cenário especial"></select><button id="cxUse" type="button">Usar</button></div>
+<details class="more"><summary>Como trocar no meio do roteiro</summary><small>Comece a linha com ~nome-do-cenário (ex.: ~quarto-dia). Use ~0 para voltar ao cenário normal do canal.</small></details></section>
   <div class="sec">Cenário</div><select id="sfix" aria-label="Cenário"></select>
   <button id="stbtn" class="alt">Alternar cenários: LIGADO</button>
   <div class="sec">Avatar</div>
@@ -392,7 +490,7 @@ details[open]::details-content{block-size:auto}
   <button id="dlgb" class="alt">💬 Exemplo de diálogo</button>
   <small>No roteiro, comece a frase com &gt;1 ou &gt;2 para escolher quem fala. Cada pessoa tem voz e cor de legenda próprias.</small>
   <div class="sec">Estilo do avatar</div><div id="estilos" role="radiogroup" aria-label="Estilo do avatar"></div><small id="estdica"></small>
-  <label class="fl"><small>Camadas PNG (estilo "Minhas camadas")</small><input type="file" id="camf" accept="image/png" multiple></label><small>Nomes: corpo, cabeca, olhos_abertos, olhos_fechados, boca0 a boca3. Cabeça, olhos e bocas com o mesmo tamanho quadrado. Ficam só nesta sessão.</small><small id="camst">Nenhuma camada carregada.</small>
+  <details class="adv"><summary>Camadas PNG (estilo “Minhas camadas”)</summary><label class="fl"><small>Camadas PNG (estilo "Minhas camadas")</small><input type="file" id="camf" accept="image/png" multiple></label><small>Nomes: corpo, cabeca, olhos_abertos, olhos_fechados, boca0 a boca3. Cabeça, olhos e bocas com o mesmo tamanho quadrado. Ficam só nesta sessão.</small><small id="camst">Nenhuma camada carregada.</small></details>
   <div class="sec">Figurino</div><select id="fg" aria-label="Figurino"></select>
   <small>O figurino sugerido muda com o cenário, mas você pode trocá-lo. Por respeito, Deus e Jesus nunca são representados.</small>
   <small id="lg" hidden></small>
@@ -400,7 +498,7 @@ details[open]::details-content{block-size:auto}
  <div class="pn" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
   <div class="sec">Fonte da voz</div><select id="fonte" aria-label="Fonte da voz"><option value="auto">Automática: áudio próprio, senão voz do navegador, senão legendas</option><option value="navegador">Voz do navegador</option><option value="arquivo">Meu próprio áudio</option><option value="legendas">Só legendas (sem voz)</option></select>
   <small id="vinfo" role="status"></small>
-  <small><b>Importante:</b> a voz do navegador toca no aparelho, mas os navegadores não deixam gravá-la dentro do vídeo. Para ter voz no arquivo, carregue ou grave seu próprio áudio. Em "Só legendas", o vídeo sai com legendas, música e efeitos.</small>
+  <details class="more"><summary>Por que a voz do navegador não entra no vídeo?</summary><small><b>Importante:</b> a voz do navegador toca no aparelho, mas os navegadores não deixam gravá-la dentro do vídeo. Para ter voz no arquivo, carregue ou grave seu próprio áudio. Em "Só legendas", o vídeo sai com legendas, música e efeitos.</small></details>
   <details id="vhelp"><summary>Como instalar vozes</summary><small>Android: Configurações › Sistema › Idiomas e entrada › Saída de texto para voz › Mecanismo do Google › Instalar dados de voz.<br>Windows: Configurações › Hora e idioma › Fala › Adicionar vozes.<br>iPhone e iPad: Ajustes › Acessibilidade › Conteúdo falado › Vozes.<br>Chrome ou Edge: atualize o navegador e reabra esta página depois de instalar.</small></details>
   <div class="sec">Idioma da voz</div><select id="vl" aria-label="Idioma da voz"></select>
   <div class="f"><select id="vg" aria-label="Voz"><option value="f">Voz feminina</option><option value="m">Voz masculina</option></select><button id="vt" class="alt">🔊 Testar</button></div>
@@ -408,8 +506,13 @@ details[open]::details-content{block-size:auto}
   <label><input id="slow" type="checkbox"> Ouvir devagar</label>
   <label class="b alt">Usar meu próprio áudio<input id="file" type="file" accept="audio/*"></label>
   <button id="mic" class="alt" type="button">🎙 Gravar minha voz</button>
-  <small>A voz do navegador (a que você ouve na prévia) não pode ser gravada dentro do vídeo. Para ter voz no arquivo baixado, grave a sua aqui ou carregue um áudio.</small>
- </div>
+  
+ <details class="adv"><summary>IA: vozes dos avatares e acesso</summary>
+<small>Cada avatar tem sempre a mesma voz. A escolha e o código ficam só neste aparelho.</small>
+<div id="iaVoz"></div>
+<input id="iaCode" type="password" autocomplete="off" placeholder="Código de acesso" aria-label="Código de acesso da IA">
+</details>
+</div>
  <div class="pn" id="p4" role="tabpanel" aria-labelledby="t4" hidden>
   <label><input id="sale" type="checkbox"> Ativar modo venda de produto</label>
   <div id="salebox" hidden class="pn" style="padding:0">
@@ -419,24 +522,28 @@ details[open]::details-content{block-size:auto}
   </div>
  </div>
  <div class="pn" id="p5" role="tabpanel" aria-labelledby="t5" hidden>
-  <div class="sec">Kit de marca do canal</div>
+<section class="card steps"><div class="ttl">Gerar o vídeo</div><small>1. Toque em <b>Gerar vídeo</b>, abaixo da prévia.<br>2. Quando terminar, toque em <b>Baixar</b>.</small></section>
+<section class="card"><div class="ttl">Identidade do canal</div>
   <div class="f"><label>Cor <input id="kc" type="color" aria-label="Cor do canal"></label></div>
-  <div class="f"><input id="ksb" type="text" placeholder="Subtítulo" aria-label="Subtítulo do kit"></div>
-  <div class="f"><input id="kfs" type="text" placeholder="Frase do selo final" aria-label="Frase do selo final"></div>
+<label class="fl"><small>Subtítulo do kit</small><input id="ksb" type="text" placeholder="Subtítulo" aria-label="Subtítulo do kit"></label>
+<label class="fl"><small>Frase do selo final</small><input id="kfs" type="text" placeholder="Frase do selo final" aria-label="Frase do selo final"></label>
   <div class="row" style="justify-content:flex-start;padding:0"><button id="kap" class="alt">Aplicar kit</button><button id="ksv" class="alt">Salvar kit</button><button id="krs" class="alt">Restaurar padrão</button></div>
+</section>
+<section class="card"><div class="ttl">Apresentador</div>
+<label class="fl"><small>Nome do apresentador</small><input id="nm" type="text" value="Andala" aria-label="Nome do apresentador"></label>
+<label class="fl"><small>Subtítulo do apresentador</small><input id="sb" type="text" aria-label="Subtítulo"></label>
+</section>
+<section class="card"><div class="ttl">Acabamento</div>
   <div class="f"><label><input id="intro" type="checkbox" checked> Abertura animada</label><label><input id="sfx" type="checkbox" checked> Efeitos sonoros</label><label><input id="selo" type="checkbox" checked> Selo final</label></div>
   <div class="f"><span>Digitação</span><select id="dig" aria-label="Estilo de digitação"><option value="suave">Suave (palavra a palavra)</option><option value="pc">Computador (teclado, aleatória)</option></select><label><input id="tsom" type="checkbox" checked> Som de teclas</label></div>
-  <div class="f"><input id="nm" type="text" value="Andala" aria-label="Nome do apresentador"></div>
-  <div class="f"><input id="sb" type="text" aria-label="Subtítulo"></div>
-  <details><summary>Imagens, vídeos e música</summary>
+</section>
+<details class="adv"><summary>Imagens, vídeos e música</summary>
    <div class="f"><label class="b alt">Imagem ou vídeo<input id="med" type="file" accept="image/*,video/*" multiple></label><select id="mm" aria-label="Onde mostrar"><option value="full">Tela cheia com transições</option><option value="mini">Só na mini tela</option></select></div>
    <div class="f"><span>Trocar a cada</span><select id="ev" aria-label="Trocar a cada"><option>2</option><option>3</option><option selected>4</option><option>6</option><option>8</option></select><span>frases</span></div>
    <div class="f"><label class="b alt">Música de fundo<input id="mus" type="file" accept="audio/*"></label><input id="mv" type="range" min="0" max="35" value="12" aria-label="Volume da música"></div></details>
-  <small>Toque em ⏺ Gerar vídeo (abaixo da prévia) e depois em ⬇ Baixar.</small>
- </div>
 </section>
 </main>
-<div class="ft">Estúdio Andala</div>
+<div class="ft">Estúdio Andala · andala-v4 · <a href="reset.html">atualizar app</a></div>
 <audio id="au"></audio><audio id="mu" loop></audio>
 <div id="ldr" hidden role="status" aria-live="polite"><svg viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="60" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="4"/><circle id="ldrp" cx="66" cy="66" r="60" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 66 66)"/><circle class="sp" cx="66" cy="66" r="49" fill="none" stroke="var(--accent)" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2 9"/><text x="66" y="85" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="52" fill="#f4efe6">A</text></svg><h2>ESTÚDIO ANDALA</h2><canvas id="ldrv" width="560" height="112"></canvas><div id="ldrn">0%</div><div id="ldrs">Tom de linha…</div><button id="ldrk" class="alt" type="button">Abrir já ›</button></div>
 <script id="shellcap">window.__SHELL=document.documentElement.outerHTML</script>
@@ -2316,7 +2423,7 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   var tx=monta(ta.value);
   if(!tx.length){st.textContent='Escreva ou aplique o roteiro primeiro.';return}
   if(!navigator.onLine){st.textContent='Sem internet. O estúdio segue como antes: voz do navegador ou seu áudio.';return}
-  if(!E.code){st.textContent='Abra "Voz de cada avatar e código de acesso" e coloque o código.';return}
+  if(!E.code){st.textContent='Coloque o código de acesso na aba Voz, em “IA: vozes dos avatares e acesso”.';return}
   var dual=DUAL(),i1=+$('ch').value||0,i2=+$('ch2').value,v1=voz(i1),body={code:E.code};
   if(dual){var v2=voz(i2);if(v2===v1)v2=VZ[(VZ.indexOf(v1)+7)%VZ.length];
    body.speakers=[{name:'Avatar1',voice:v1},{name:'Avatar2',voice:v2}];
@@ -2341,7 +2448,7 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   var pd=($('pt').value||'').trim();
   if(pd.length<3){ds.textContent='Escreva o pedido na caixa do prompt, acima.';return}
   if(!navigator.onLine){ds.textContent='Sem internet. Use o prompt manual, que funciona offline.';return}
-  if(!E.code){ds.textContent='Abra "Voz de cada avatar e código de acesso" e coloque o código.';return}
+  if(!E.code){ds.textContent='Coloque o código de acesso na aba Voz, em “IA: vozes dos avatares e acesso”.';return}
   bd.disabled=true;ds.textContent='A IA está criando o roteiro e as cenas… pode levar até 1 minuto.';
   var ac=new AbortController(),to=setTimeout(function(){ac.abort()},58000),ok=false;
   try{

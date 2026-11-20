@@ -29,13 +29,18 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
   Sem internet o app avisa e continua funcionando como antes; nada quebra.
 
 5) COMO USAR A IA
-  Aba Prompt > escreva o pedido > "Criar roteiro e cenas com IA" (marque "gerar a voz depois").
-  Cada avatar tem uma voz fixa (em "Voz de cada avatar e código de acesso"; o código fica só neste aparelho).
-  Cenário especial: lista na aba Prompt, ou no roteiro com ~nome (ex.: ~china-rua-dia). ~0 volta ao normal.
+  Aba Prompt > escreva o pedido > "Criar com IA" (deixe marcado "Gerar a voz com IA em seguida").
+  Cada avatar tem uma voz fixa e o código de acesso fica na aba Voz > "IA: vozes dos avatares e acesso" (só neste aparelho).
+  Cenário especial: lista na aba Cena, ou no roteiro com ~nome (ex.: ~china-rua-dia). ~0 volta ao normal.
   O manual da IA está em api/_manual.js (é onde se melhora a "inteligência").
 
 6) ATUALIZAR / VERSÃO ANTIGA APARECENDO
-  A versão aparece no fim da aba Prompt. Ao publicar, mude VERSION no sw.js (hoje andala-v3).
+  A versão aparece no rodapé da página. Ao publicar, mude VERSION no sw.js (hoje andala-v4).
   Quando sair versão nova, o app mostra "Nova versão pronta. Toque para atualizar."
   Se aparecer versão antiga: abra seu-site/reset.html > "Atualizar agora" (não apaga projetos).
   Último recurso: "Baixar cópia" e depois "Limpar tudo" (apaga os dados deste aparelho).
+
+7) PAINEL (visual novo)
+  Celular: barra inferior com 7 abas (Prompt, Roteiro, Canal, Cena, Voz, Venda, Exportar).
+  Prompt: um só campo + "Criar com IA" (online) e "Aplicar" (offline); o resto está em "Mais ações" e "Avançado".
+  Cena: cenário especial (100) no topo. Voz: IA e vozes fixas dos avatares. Exportar: passos, identidade, acabamento.
