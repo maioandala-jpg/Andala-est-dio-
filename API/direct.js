@@ -1,7 +1,7 @@
 /* Andala estúdio.AI · Diretor (Vercel)
    Recebe um pedido ("vídeo sobre Maquiavel, 45s") e devolve um prompt ANDALA-PROMPT v1
    completo (roteiro, cenários, figurino, avatar) que o motor do estúdio já entende.
-   Variáveis: GEMINI_API_KEY, ACCESS_CODE (opcional), GEMINI_TEXT_MODEL (opcional, padrão gemini-3.8-flash) */
+   Variáveis: GEMINI_API_KEY, ACCESS_CODE (opcional), GEMINI_TEXT_MODEL (opcional, padrão gemini-2.5-flash) */
 const crypto = require('crypto');
 const MANUAL = require('./_manual.js');
 const { chamar, chaves, textoErro } = require('./_gemini.js');
@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
   const avatar = /^[\p{L} ]{1,20}$/u.test(b.avatar || '') ? String(b.avatar) : '';
 
   const pm = (process.env.GEMINI_TEXT_MODEL || '').trim();
-  const modelo = /^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(pm) ? pm : 'gemini-3.8-flash';
+  const modelo = /^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(pm) ? pm : 'gemini-2.5-flash';
   const user = 'PEDIDO DO USUÁRIO:\n' + pedido + (avatar ? '\n\nAvatar escolhido pelo usuário: ' + avatar + ' (use no campo avatar).' : '');
   const payload = {
     systemInstruction: { parts: [{ text: MANUAL }] },

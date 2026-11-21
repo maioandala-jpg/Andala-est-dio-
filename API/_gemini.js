@@ -23,6 +23,12 @@ function chaves() {
 const frio = k => (FRIO.get(k) || 0) > Date.now();
 const esfria = (k, ms) => FRIO.set(k, Date.now() + ms);
 
+/* Dois endereços, como no teste que funciona: chaves "AQ." (Vertex) usam aiplatform; as "AIza..." usam generativelanguage.
+   Cada chave tenta o endereço mais provável e, se der 404/401/403, tenta o outro. */
+const VERTEX = 'https://aiplatform.googleapis.com/v1/publishers/google/models/';
+const AISTUDIO = 'https://generativelanguage.googleapis.com/v1beta/models/';
+const basesDe = k => /^AQ\./.test(k) ? [VERTEX, AISTUDIO] : [AISTUDIO, VERTEX];
+
 /* aceita(json) -> true se a resposta serve (ex.: tem áudio); senão tenta a próxima chave. */
 async function chamar(modelo, payload, aceita) {
   const ks = chaves();
@@ -31,30 +37,40 @@ async function chamar(modelo, payload, aceita) {
   const ordem = ks.slice().sort((a, b) => (frio(a) ? 1 : 0) - (frio(b) ? 1 : 0) || ks.indexOf(a) - ks.indexOf(b));
   let ult = { tipo: 'tempo', status: 504, msg: '' };
   for (let n = 0; n < ordem.length; n++) {
-    const k = ordem[n], resta = fim - Date.now();
-    if (resta < 3000) break;
-    const lim = n === ordem.length - 1 ? resta : Math.min(resta, 22000);
-    let r, j;
-    try {
-      r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + modelo + ':generateContent', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': k },
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(lim)
-      });
-      j = await r.json().catch(() => null);
-    } catch (e) { ult = { tipo: 'tempo', status: 504, msg: '' }; esfria(k, 15000); continue; }
-    if (r.ok) {
-      if (aceita && !aceita(j)) { ult = { tipo: 'vazio', status: 502, msg: '' }; continue; }
-      return { ok: true, json: j, chave: ks.indexOf(k) + 1, total: ks.length };
+    const k = ordem[n];
+    let ultChave = null; // resultado do último endereço tentado com esta chave
+    for (const base of basesDe(k)) {
+      const resta = fim - Date.now();
+      if (resta < 3000) break;
+      const lim = n === ordem.length - 1 ? resta : Math.min(resta, 22000);
+      let r, j;
+      try {
+        r = await fetch(base + modelo + ':generateContent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': k },
+          body: JSON.stringify(payload),
+          signal: AbortSignal.timeout(lim)
+        });
+        j = await r.json().catch(() => null);
+      } catch (e) { ultChave = { tipo: 'tempo', status: 504, msg: '' }; esfria(k, 15000); break; }
+      if (r.ok) {
+        if (aceita && !aceita(j)) { ultChave = { tipo: 'vazio', status: 502, msg: '' }; break; }
+        return { ok: true, json: j, chave: ks.indexOf(k) + 1, total: ks.length };
+      }
+      const msg = String((j && j.error && j.error.message) || '').replace(/\s+/g, ' ').slice(0, 180);
+      if (r.status === 404) { ultChave = { tipo: 'pedido', status: 404, msg }; continue; }            // modelo/endereço errado: tenta o outro endereço
+      if (r.status === 401 || r.status === 403 || (r.status === 400 && /api key|api_key|key not valid|key expired/i.test(msg))) {
+        ultChave = { tipo: 'chave', status: r.status, msg }; continue;                               // chave não serve neste endereço: tenta o outro
+      }
+      if (r.status === 429) { ultChave = { tipo: 'cota', status: 429, msg }; esfria(k, 60000); break; }
+      if (r.status >= 500) { ultChave = { tipo: 'servidor', status: r.status, msg }; esfria(k, 10000); break; }
+      return { ok: false, tipo: 'pedido', status: r.status, msg, chave: ks.indexOf(k) + 1, total: ks.length };
     }
-    const msg = String((j && j.error && j.error.message) || '').replace(/\s+/g, ' ').slice(0, 180);
-    if (r.status === 401 || r.status === 403 || (r.status === 400 && /api key|api_key|key not valid|key expired/i.test(msg))) {
-      ult = { tipo: 'chave', status: r.status, msg }; esfria(k, 600000); continue;
+    if (ultChave) {
+      if (ultChave.tipo === 'chave') esfria(k, 600000);
+      if (ultChave.status === 404) return { ok: false, tipo: 'pedido', status: 404, msg: ultChave.msg, chave: ks.indexOf(k) + 1, total: ks.length };
+      ult = ultChave;
     }
-    if (r.status === 429) { ult = { tipo: 'cota', status: 429, msg }; esfria(k, 60000); continue; }
-    if (r.status >= 500) { ult = { tipo: 'servidor', status: r.status, msg }; esfria(k, 10000); continue; }
-    return { ok: false, tipo: 'pedido', status: r.status, msg, chave: ks.indexOf(k) + 1, total: ks.length };
   }
   return Object.assign({ ok: false, total: ks.length, todas: true }, ult);
 }

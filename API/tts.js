@@ -1,7 +1,7 @@
 /* Andala estúdio.AI · função segura de voz (Vercel)
    A chave do Gemini fica SÓ aqui, nas variáveis de ambiente da Vercel.
    Variáveis: GEMINI_API_KEY (obrigatória), ACCESS_CODE (opcional),
-              GEMINI_TTS_MODEL (opcional: gemini-3.8-flash-tts ou gemini-3.8-flash-lite-tts) */
+              GEMINI_TTS_MODEL (opcional, padrão gemini-2.5-flash-preview-tts) */
 const crypto = require('crypto');
 const { chamar, chaves, textoErro } = require('./_gemini.js');
 
@@ -41,22 +41,22 @@ module.exports = async (req, res) => {
   if (CODE && !igual(b.code || '', CODE)) return erro(res, 401, 'Código de acesso incorreto.'); // ACCESS_CODE é opcional
 
   const style = txt(b.style).slice(0, 120);
-  const meta = o => (style ? Object.assign(o, { style }) : o);
-  let parts, speechConfig, total = 0;
+  let texto, speechConfig, total = 0;
 
   if (Array.isArray(b.turns) && Array.isArray(b.speakers)) {
-    // Diálogo entre dois avatares
+    // Diálogo entre dois avatares: um só texto "Nome: fala" por linha (formato oficial do Gemini TTS)
     if (b.speakers.length !== 2 || b.turns.length < 1 || b.turns.length > MAX_TURNS) return erro(res, 400, 'Diálogo inválido.');
     const nomes = b.speakers.map(s => txt(s && s.name).replace(/[^A-Za-z0-9]/g, '').slice(0, 20));
     if (!nomes[0] || !nomes[1] || nomes[0] === nomes[1]) return erro(res, 400, 'Nomes de falantes inválidos.');
     if (!b.speakers.every(s => VOZES.has(s && s.voice))) return erro(res, 400, 'Voz inválida.');
-    parts = [];
+    const linhas = [];
     for (const t of b.turns) {
       const q = txt(t && t.text), sp = txt(t && t.speaker);
       if (!q || !nomes.includes(sp)) continue;
       total += q.length;
-      parts.push({ text: q, speech_metadata: meta({ speaker: sp }) });
+      linhas.push(sp + ': ' + q);
     }
+    texto = (style ? 'Conversa entre ' + nomes[0] + ' e ' + nomes[1] + ' (' + style + '):\n' : 'Conversa entre ' + nomes[0] + ' e ' + nomes[1] + ':\n') + linhas.join('\n');
     speechConfig = { multiSpeakerVoiceConfig: { speakerVoiceConfigs: b.speakers.map((s, i) => (
       { speaker: nomes[i], voiceConfig: { prebuiltVoiceConfig: { voiceName: s.voice } } })) } };
   } else {
@@ -65,14 +65,15 @@ module.exports = async (req, res) => {
     if (!q) return erro(res, 400, 'Roteiro vazio.');
     if (!VOZES.has(b.voice)) return erro(res, 400, 'Voz inválida.');
     total = q.length;
-    parts = [style ? { text: q, speech_metadata: { style } } : { text: q }];
-    speechConfig = { voiceConfig: { voice: b.voice } };
+    texto = (style ? 'Diga ' + style + ': ' : 'Diga de forma natural: ') + q;
+    speechConfig = { voiceConfig: { prebuiltVoiceConfig: { voiceName: b.voice } } };
   }
-  if (!parts.length || total < 1) return erro(res, 400, 'Roteiro vazio.');
+  if (total < 1) return erro(res, 400, 'Roteiro vazio.');
   if (total > MAX_CHARS) return erro(res, 413, 'Roteiro muito longo para uma vez (máx. ' + MAX_CHARS + ' letras). Divida em partes.');
+  const parts = [{ text: texto }];
 
   const pedido = (process.env.GEMINI_TTS_MODEL || '').trim();
-  const modelo = /^gemini-3\.8-[a-z-]*tts$/.test(pedido) ? pedido : 'gemini-3.8-flash-tts';
+  const modelo = /^gemini-[0-9.]+-[a-z0-9.-]*tts$/.test(pedido) ? pedido : 'gemini-2.5-flash-preview-tts';
   const payload = { contents: [{ role: 'user', parts }], generationConfig: { responseModalities: ['AUDIO'], speechConfig } };
 
   const temAudio = x => { const c = (((x || {}).candidates || [])[0] || {}).content; const p = c && (c.parts || []).find(q => q.inlineData || q.inline_data); const dd = p && (p.inlineData || p.inline_data); return !!(dd && dd.data); };
