@@ -3,7 +3,7 @@
    - Páginas: rede primeiro (recebe atualizações), cache como reserva.
    - Fontes do Google: guardadas na primeira visita e reutilizadas offline.
    Para publicar uma versão nova, mude VERSION. */
-const VERSION = 'andala-v4';
+const VERSION = 'andala-v9';
 const SHELL = ['./', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png', './icons/favicon-32.png'];

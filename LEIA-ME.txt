@@ -2,7 +2,7 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
 =================================================================
 
 1) ESTRUTURA (raiz do projeto na Vercel)
-  index.html · manifest.webmanifest · sw.js · reset.html · vercel.json
+  index.html · manifest.webmanifest · sw.js · reset.html · vercel.json  (TUDO na raiz do repositório, não dentro de outra pasta)
   icons/            <- a SUA pasta de ícones (icon-192, icon-512, icon-maskable-512,
                        apple-touch-icon, favicon-32). Se não tiver, copie os arquivos de
                        icones-reserva/ para uma pasta chamada icons/.
@@ -44,3 +44,32 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
   Celular: barra inferior com 7 abas (Prompt, Roteiro, Canal, Cena, Voz, Venda, Exportar).
   Prompt: um só campo + "Criar com IA" (online) e "Aplicar" (offline); o resto está em "Mais ações" e "Avançado".
   Cena: cenário especial (100) no topo. Voz: IA e vozes fixas dos avatares. Exportar: passos, identidade, acabamento.
+
+8) SE O DEPLOY FALHAR NA VERCEL
+  Erro "[unused_function] The pattern api/tts.js defined in functions doesn't match...": vercel.json listava funções
+  que não estavam no repositório. O vercel.json atual não lista funções, então esse erro não volta.
+  Erro 404 NOT_FOUND ao abrir o site: o index.html não está na RAIZ do repositório (ou o Root Directory da Vercel aponta para outra pasta).
+  A pasta api/ precisa estar na raiz, ao lado do index.html, com: tts.js, direct.js, _gemini.js, _manual.js.
+
+9) MODO DIRETO (sem servidor) · o jeito mais rápido
+  Aba Voz > "IA: chaves e vozes" > cole as chaves do Gemini (uma por linha) > "Salvar chaves".
+  As chaves ficam só no aparelho (localStorage), nunca no código nem no GitHub.
+  Com chaves salvas, "Criar com IA" e "Voz com IA" falam direto com o Gemini: não precisa da pasta api/ nem de ACCESS_CODE.
+  Se uma chave falhar (cota, chave inválida, erro, demora), entra a próxima; cada chave tem 2 tentativas.
+  Se todas falharem aparece um aviso amigável (volte mais tarde / aguarde / problema com as chaves).
+  Sem chaves no aparelho o app usa o modo servidor (api/), se existir.
+
+10) TEXTO PARA ÁUDIO (baixar)
+  Aba Voz > "Texto para áudio (baixar)": cole o texto, escolha a voz, "Gerar áudio" e depois "Baixar áudio (.wav)".
+  Textos longos são divididos em partes e juntados num só arquivo.
+
+11) CHAVES EMBUTIDAS (TEMPORÁRIO)
+  O index.html tem um bloco "TEMPORÁRIO: chaves embutidas" (procure por EMB no módulo da IA).
+  Quem abrir o site consegue ver essas chaves. Para remover: apague as 3 linhas de chaves e deixe  var EMB=[];
+  Depois gere chaves novas no Google AI Studio, apague as antigas e cole as novas em Voz > IA: chaves e vozes.
+  Se o repositório for público, o Google pode desativar as chaves sozinho (aí o app mostra "Problema com as chaves").
+
+12) PROGRESSO EM PORCENTAGEM (v8)
+  Ao criar roteiro, gerar voz ou texto para áudio aparece um cartão com a porcentagem e a chave em uso
+  ("Gerando a voz com IA… 42% · Chave 1 de 3"). O app não pede mais "código de acesso": ele só existe no modo servidor (opcional).
+  Se a tela pedir "código de acesso", é uma versão antiga: abra reset.html > Atualizar agora e confira "andala-v8" no rodapé.

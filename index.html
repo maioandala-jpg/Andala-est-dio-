@@ -379,6 +379,30 @@ input[type=color]{width:46px;height:36px;padding:2px;border:1px solid var(--hair
 #stats h3{font:600 12px var(--f-body);letter-spacing:.02em;text-transform:none}
 .st-kpi>div{background:var(--card);border:1px solid var(--hair)}
 .st-kpi b{color:var(--ink)}
+
+/* ---- chaves, aviso e texto para áudio ---- */
+textarea.mask{-webkit-text-security:disc;text-security:disc}
+#aiKeys{min-height:76px;font:13px/1.4 ui-monospace,Menlo,monospace}
+#t2aTxt{min-height:110px}
+#t2aAu{width:100%}
+#iaAviso{position:fixed;left:12px;right:12px;bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;z-index:9999;display:flex;gap:12px;padding:16px;border-radius:18px;background:var(--surface);border:1px solid var(--hair);box-shadow:0 24px 60px rgba(0,0,0,.55);animation:avIn .35s var(--ease)}
+#iaAviso .ic{font-size:28px;line-height:1}
+#iaAviso .bd{display:flex;flex-direction:column;gap:6px;min-width:0}
+#iaAviso .tt{font:700 15px var(--f-body);color:var(--ink)}
+#iaAviso .tx{font-size:13.5px;line-height:1.5;color:var(--muted)}
+#iaAviso .tn{font-size:12px;color:var(--muted);opacity:.8}
+#iaAviso button{align-self:flex-start;min-height:38px;padding:8px 16px;margin-top:4px}
+@keyframes avIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media(min-width:980px){#iaAviso{bottom:24px}}
+
+#iaProg{display:none;position:fixed;left:12px;right:12px;bottom:calc(var(--nav-h) + 20px + env(safe-area-inset-bottom,0px));max-width:440px;margin:0 auto;z-index:9998;padding:13px 15px;border-radius:16px;background:var(--surface);border:1px solid var(--hair);box-shadow:0 18px 44px rgba(0,0,0,.5)}
+#iaProg.on{display:block;animation:avIn .3s var(--ease)}
+#iaProg .row2{display:flex;justify-content:space-between;gap:10px;font:600 13.5px var(--f-body);color:var(--ink)}
+#iaProg .pp{color:var(--accent);font-variant-numeric:tabular-nums}
+#iaProg .sub{min-height:16px;margin-top:2px;font-size:12px;color:var(--muted)}
+#iaProg .bar{height:6px;margin-top:8px;border-radius:99px;background:var(--hair);overflow:hidden}
+#iaProg .bar i{display:block;width:0;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),#7a73ff);transition:width .25s linear}
+@media(min-width:980px){#iaProg{bottom:24px}}
 </style></head><body class="lock">
 <!-- ===== 2 · INTERFACE ===== -->
 <header class="hd">
@@ -492,6 +516,7 @@ input[type=color]{width:46px;height:36px;padding:2px;border:1px solid var(--hair
   <div class="sec">Estilo do avatar</div><div id="estilos" role="radiogroup" aria-label="Estilo do avatar"></div><small id="estdica"></small>
   <details class="adv"><summary>Camadas PNG (estilo “Minhas camadas”)</summary><label class="fl"><small>Camadas PNG (estilo "Minhas camadas")</small><input type="file" id="camf" accept="image/png" multiple></label><small>Nomes: corpo, cabeca, olhos_abertos, olhos_fechados, boca0 a boca3. Cabeça, olhos e bocas com o mesmo tamanho quadrado. Ficam só nesta sessão.</small><small id="camst">Nenhuma camada carregada.</small></details>
   <div class="sec">Figurino</div><select id="fg" aria-label="Figurino"></select>
+  <label class="chk"><input id="glam" type="checkbox"> Maquiagem e brilho glamour (canal Romance)</label>
   <small>O figurino sugerido muda com o cenário, mas você pode trocá-lo. Por respeito, Deus e Jesus nunca são representados.</small>
   <small id="lg" hidden></small>
  </div>
@@ -507,10 +532,23 @@ input[type=color]{width:46px;height:36px;padding:2px;border:1px solid var(--hair
   <label class="b alt">Usar meu próprio áudio<input id="file" type="file" accept="audio/*"></label>
   <button id="mic" class="alt" type="button">🎙 Gravar minha voz</button>
   
- <details class="adv"><summary>IA: vozes dos avatares e acesso</summary>
-<small>Cada avatar tem sempre a mesma voz. A escolha e o código ficam só neste aparelho.</small>
+ <details class="adv"><summary>IA: chaves e vozes</summary>
+<label class="fl"><small>Chaves do Gemini (uma por linha)</small><textarea id="aiKeys" rows="3" spellcheck="false" autocomplete="off" placeholder="Cole aqui as chaves, uma por linha"></textarea></label>
+<div class="f"><button id="aiKeysSave" class="alt" type="button">Salvar chaves</button><label class="chk"><input id="aiKeysShow" type="checkbox"> Mostrar</label></div>
+<small id="aiKeysSt" role="status"></small>
+<small>As chaves ficam só neste aparelho, nunca no código. Se uma falhar, entra a próxima (2 tentativas cada).</small>
+<small>Cada avatar tem sempre a mesma voz. A escolha fica só neste aparelho.</small>
 <div id="iaVoz"></div>
-<input id="iaCode" type="password" autocomplete="off" placeholder="Código de acesso" aria-label="Código de acesso da IA">
+<details class="more"><summary>Código de acesso (opcional)</summary><input id="iaCode" type="password" autocomplete="off" placeholder="Código de acesso (só se você criou ACCESS_CODE na Vercel)" aria-label="Código de acesso do servidor"></details>
+</details>
+<details class="adv"><summary>Texto para áudio (baixar)</summary>
+<label class="fl"><small>Texto</small><textarea id="t2aTxt" rows="5" spellcheck="false" placeholder="Cole o texto que quer transformar em áudio"></textarea></label>
+<div class="f"><select id="t2aVoz" aria-label="Voz"></select></div>
+<label class="fl"><small>Estilo (opcional)</small><input id="t2aEst" type="text" placeholder="ex.: calmo, caloroso, devagar"></label>
+<button id="t2aGo" type="button">Gerar áudio</button>
+<small id="t2aSt" role="status"></small>
+<audio id="t2aAu" controls hidden></audio>
+<a id="t2aDl" class="b alt" hidden download="audio.wav">⬇ Baixar áudio (.wav)</a>
 </details>
 </div>
  <div class="pn" id="p4" role="tabpanel" aria-labelledby="t4" hidden>
@@ -543,7 +581,7 @@ input[type=color]{width:46px;height:36px;padding:2px;border:1px solid var(--hair
    <div class="f"><label class="b alt">Música de fundo<input id="mus" type="file" accept="audio/*"></label><input id="mv" type="range" min="0" max="35" value="12" aria-label="Volume da música"></div></details>
 </section>
 </main>
-<div class="ft">Estúdio Andala · andala-v4 · <a href="reset.html">atualizar app</a></div>
+<div class="ft">Estúdio Andala · andala-v8 · <a href="reset.html">atualizar app</a></div>
 <audio id="au"></audio><audio id="mu" loop></audio>
 <div id="ldr" hidden role="status" aria-live="polite"><svg viewBox="0 0 132 132" aria-hidden="true"><circle cx="66" cy="66" r="60" fill="none" stroke="#fff" stroke-opacity=".08" stroke-width="4"/><circle id="ldrp" cx="66" cy="66" r="60" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377" transform="rotate(-90 66 66)"/><circle class="sp" cx="66" cy="66" r="49" fill="none" stroke="var(--accent)" stroke-opacity=".4" stroke-width="1.6" stroke-dasharray="2 9"/><text x="66" y="85" text-anchor="middle" font-family="Montserrat,sans-serif" font-weight="800" font-size="52" fill="#f4efe6">A</text></svg><h2>ESTÚDIO ANDALA</h2><canvas id="ldrv" width="560" height="112"></canvas><div id="ldrn">0%</div><div id="ldrs">Tom de linha…</div><button id="ldrk" class="alt" type="button">Abrir já ›</button></div>
 <script id="shellcap">window.__SHELL=document.documentElement.outerHTML</script>
@@ -638,6 +676,33 @@ const vE=(q,x,y,a,b,c,r)=>{q.fillStyle=c;q.beginPath();q.ellipse(x,y,a,b,r||0,0,
 const vR=(q,a,b,w,h,r)=>{q.beginPath();q.roundRect?q.roundRect(a,b,w,h,r):q.rect(a,b,w,h)};
 
 // ===== roupa partilhada por todos os estilos vetoriais (figurinos: aula, casual, blazer, malha, mandarim, tang, fato, colete, renas, casaco, vestido, elegante, tunica, manto, epoca, jornal, reporter) =====
+// ===== GLAMOUR (canal Romance): maquiagem, joias e decote elegante; liga/desliga na aba Cena =====
+function GLAM(){try{const v=localStorage.getItem('andala.glam.'+CHID);return v===null?CHID==='romance':v==='1'}catch(e){return CHID==='romance'}}
+function GP(){const i=Math.max(0,CHARS.indexOf(C))%4;return{lip:['#d0173f','#e0386a','#a8124a','#e8584a'][i],sh:['#c04a8a','#8a4ac0','#d08a4a','#4a7ac0'][i],bl:'#ff4f7a'}}
+function glamBefore(q){const P=GP();[-1,1].forEach(k=>{q.globalAlpha=.4;q.fillStyle=P.sh;q.beginPath();q.ellipse(k*34,-4,20,17,0,Math.PI,0);q.fill();q.globalAlpha=.34;vE(q,k*50,40,20,11,P.bl);q.globalAlpha=.24;vE(q,k*52,26,10,5,'#ffffff');q.globalAlpha=1})}
+function glamEyes(q,st){if(st.blink)return;q.save();q.lineCap='round';[-1,1].forEach(k=>{const ex=k*34,ey=8,rx=16,ry=22;q.strokeStyle='#14090f';q.lineWidth=4;q.beginPath();q.moveTo(ex+k*(rx-1),ey-ry*.55);q.quadraticCurveTo(ex+k*(rx+8),ey-ry*.8,ex+k*(rx+14),ey-ry*1.05);q.stroke();q.lineWidth=2.4;for(let i=0;i<4;i++){const a=Math.PI*(1.18+i*.2),x0=ex+Math.cos(a)*(rx+1),y0=ey+Math.sin(a)*(ry+1);q.beginPath();q.moveTo(x0,y0);q.lineTo(x0+Math.cos(a)*7+k*3,y0+Math.sin(a)*8);q.stroke()}});q.restore()}
+function glamLips(q,m,sm){const P=GP();q.save();q.translate(0,64);q.lineJoin='round';
+ if(m===0){q.fillStyle=P.lip;q.beginPath();q.moveTo(-15,-1);q.quadraticCurveTo(-7,-8,0,-4);q.quadraticCurveTo(7,-8,15,-1);q.quadraticCurveTo(0,11+sm*4,-15,-1);q.closePath();q.fill();q.strokeStyle='rgba(60,0,20,.45)';q.lineWidth=1.5;q.beginPath();q.moveTo(-15,-1);q.quadraticCurveTo(0,3+sm*3,15,-1);q.stroke();q.fillStyle='rgba(255,255,255,.55)';q.beginPath();q.ellipse(-4,4.5,4,1.5,-.2,0,7);q.fill()}
+ else{const rx=[0,7,11,15][m],ry=[0,5,9,13][m];q.strokeStyle=P.lip;q.lineWidth=5;q.beginPath();q.ellipse(0,0,rx+2,ry+2,0,0,7);q.stroke()}
+ q.restore()}
+function glamEar(q){[-1,1].forEach(k=>{q.fillStyle='#e8c25a';q.beginPath();q.arc(k*80,30,3.5,0,7);q.fill();q.strokeStyle='#e8c25a';q.lineWidth=2;q.beginPath();q.moveTo(k*80,32);q.lineTo(k*80,42);q.stroke();q.fillStyle=GP().lip;q.beginPath();q.arc(k*80,46,5,0,7);q.fill()})}
+function glamCloth(q,sx,py,U,A,sd,st){const fm=C.gn==='f',gd='#e8c25a';let k=UK;if(!fm)k='social';q.save();q.lineCap=q.lineJoin='round';
+ if(k==='social'){q.fillStyle=U.d;[-1,1].forEach(s=>{q.beginPath();q.moveTo(sx+s*44,py+92);q.lineTo(sx+s*18,py+96);q.lineTo(sx+s*40,py+206);q.closePath();q.fill()});
+  q.fillStyle=sd;q.beginPath();q.moveTo(sx-17,py+96);q.lineTo(sx,py+150);q.lineTo(sx+17,py+96);q.closePath();q.fill();
+  q.fillStyle='#f6f2ea';[-1,1].forEach(s=>{q.beginPath();q.moveTo(sx+s*17,py+96);q.lineTo(sx+s*50,py+90);q.lineTo(sx+s*28,py+134);q.closePath();q.fill()});
+  q.strokeStyle=gd;q.lineWidth=2.6;q.beginPath();q.moveTo(sx-15,py+98);q.quadraticCurveTo(sx,py+128,sx+15,py+98);q.stroke();q.fillStyle=gd;q.beginPath();q.arc(sx,py+127,3.4,0,7);q.fill()}
+ else if(k==='gala'){const P=()=>{q.moveTo(sx-54,py+96);q.bezierCurveTo(sx-60,py+142,sx-32,py+168,sx-14,py+148);q.quadraticCurveTo(sx,py+134,sx+14,py+148);q.bezierCurveTo(sx+32,py+168,sx+60,py+142,sx+54,py+96)};
+  q.fillStyle=sd;q.beginPath();P();q.closePath();q.fill();
+  q.strokeStyle=U.l;q.lineWidth=4;q.beginPath();P();q.stroke();
+  q.strokeStyle='rgba(60,10,20,.24)';q.lineWidth=3;q.beginPath();q.moveTo(sx,py+130);q.lineTo(sx,py+148);q.stroke();
+  q.strokeStyle=gd;q.lineWidth=2.4;q.beginPath();q.ellipse(sx,py+98,34,32,0,.25,Math.PI-.25);q.stroke();q.fillStyle=GP().lip;q.beginPath();q.arc(sx,py+130,5,0,7);q.fill();q.strokeStyle=gd;q.lineWidth=2;q.stroke()}
+ else{const P=()=>{q.moveTo(sx-46,py+94);q.quadraticCurveTo(sx-34,py+140,sx,py+176);q.quadraticCurveTo(sx+34,py+140,sx+46,py+94)};
+  q.fillStyle=sd;q.beginPath();P();q.closePath();q.fill();
+  q.strokeStyle=U.l;q.lineWidth=4;q.beginPath();P();q.stroke();
+  q.strokeStyle='rgba(60,10,20,.2)';q.lineWidth=3;q.beginPath();q.moveTo(sx,py+150);q.lineTo(sx,py+172);q.stroke();
+  q.strokeStyle=gd;q.lineWidth=2;q.beginPath();q.moveTo(sx-17,py+99);q.quadraticCurveTo(sx,py+158,sx+17,py+99);q.stroke();q.fillStyle=gd;q.beginPath();q.arc(sx,py+151,4.2,0,7);q.fill()}
+ if(fm&&k!=='social'){[-1,1].forEach(s=>{const cx=sx+s*27,cy=py+172,g=q.createRadialGradient(cx-s*6,cy-8,2,cx,cy,28);g.addColorStop(0,'rgba(255,255,255,.2)');g.addColorStop(1,'rgba(255,255,255,0)');q.fillStyle=g;q.beginPath();q.ellipse(cx,cy,26,22,0,0,7);q.fill();q.strokeStyle='rgba(0,0,0,.2)';q.lineWidth=3;q.beginPath();q.ellipse(cx,cy-2,26,22,0,.15*Math.PI,.85*Math.PI);q.stroke()})}
+ q.restore()}
 function vCloth(q,sx,py,U,A,sd,st){vCloth0(q,sx,py,U,A,sd);if(UK==='malha'||UK==='gola')vKnit(q,sx,py,U);vFolds(q,st,sx,py,U)}
 // malha de Léo (gola de camisa azul + nuvem) e gola alta canelada de Lívia (+ flor)
 function vKnit(q,sx,py,U){q.save();q.lineCap=q.lineJoin='round';const ol=mx(U.d,'#5a3a2c',.35);
@@ -660,7 +725,8 @@ function vCloth0(q,sx,py,U,A,sd){const gold='#f2c15a';
  else if(UK==='tunica'||UK==='manto'||UK==='epoca'){q.fillStyle=sd;q.beginPath();q.moveTo(sx-34,py+92);q.lineTo(sx,py+158);q.lineTo(sx+34,py+92);q.closePath();q.fill();q.fillStyle=U.d;vR(q,sx-112,py+214,224,24,8);q.fill();
   if(UK==='manto'){q.fillStyle=gold;q.beginPath();q.arc(sx-74,py+118,10,0,7);q.fill();q.strokeStyle=U.d;q.lineWidth=5;q.beginPath();q.moveTo(sx-74,py+128);q.quadraticCurveTo(sx-96,py+190,sx-104,py+260);q.stroke()}}
  else if(UK==='casaco'){q.fillStyle=U.d;[-1,1].forEach(k=>{q.beginPath();q.moveTo(sx+k*30,py+92);q.lineTo(sx+k*2,py+212);q.lineTo(sx+k*74,py+190);q.closePath();q.fill()});q.fillStyle='#b8412e';vR(q,sx-50,py+84,100,28,13);q.fill();vR(q,sx+12,py+98,26,72,10);q.fill()}
- else if(UK==='vestido'){q.fillStyle=sd;q.beginPath();q.ellipse(sx,py+92,54,32,0,0,Math.PI);q.fill();q.strokeStyle=U.l;q.lineWidth=6;q.beginPath();q.ellipse(sx,py+92,58,36,0,.05,Math.PI-.05);q.stroke()}
+ else if(UK==='gala'||UK==='noite'||UK==='social'){glamCloth(q,sx,py,U,A,sd,st)}
+  else if(UK==='vestido'){q.fillStyle=sd;q.beginPath();q.ellipse(sx,py+92,54,32,0,0,Math.PI);q.fill();q.strokeStyle=U.l;q.lineWidth=6;q.beginPath();q.ellipse(sx,py+92,58,36,0,.05,Math.PI-.05);q.stroke()}
  else{q.fillStyle=sd;q.beginPath();q.ellipse(sx,py+94,36,24,0,0,Math.PI);q.fill();q.strokeStyle=U.l;q.lineWidth=7;q.beginPath();q.ellipse(sx,py+94,40,28,0,.05,Math.PI-.05);q.stroke()}}
 // ===== ANIME (romântico e sério): mesmo motor, rosto mais fino, olhos com íris e brilho, franja em mechas =====
 function animeBody(q,st,ox,oy,rom){const C=st.C,U0=UF||{s:C.s,d:C.d,l:C.l},dk=u=>mx(u,'#000000',.14),U=rom?U0:{s:dk(U0.s),d:dk(U0.d),l:dk(U0.l)},A=(SCs&&SCs[3])||'#f2a93b',
@@ -672,11 +738,11 @@ function animeBody(q,st,ox,oy,rom){const C=st.C,U0=UF||{s:C.s,d:C.d,l:C.l},dk=u=
  vCloth(q,sx,py,U,A,sd,st);q.fillStyle='rgba(0,0,0,.18)';q.beginPath();q.ellipse(sx,py+72,28,14,0,0,7);q.fill();
  q.translate(px,py);q.rotate(tilt);if(C.fat)q.scale(1.1,1.05);
  q.save();q.translate((st.lag||0)*1.3,0);
- if(hs===1){q.fillStyle=hc;q.beginPath();q.moveTo(-96,-20);q.bezierCurveTo(-120,90,-104,170,-70,190);q.lineTo(70,190);q.bezierCurveTo(104,170,120,90,96,-20);q.closePath();q.fill()}
+ if(hs===1){q.fillStyle=hc;if(rom&&fm&&GLAM()&&/^(gala|noite|social)$/.test(UK)){[-1,1].forEach(k=>{q.beginPath();q.moveTo(k*96,-20);q.bezierCurveTo(k*122,60,k*114,120,k*90,150);q.lineTo(k*62,146);q.bezierCurveTo(k*72,90,k*72,30,k*68,-6);q.closePath();q.fill()});vE(q,0,-8,90,88,hc)}else{q.beginPath();q.moveTo(-96,-20);q.bezierCurveTo(-120,90,-104,170,-70,190);q.lineTo(70,190);q.bezierCurveTo(104,170,120,90,96,-20);q.closePath();q.fill()}}
  else if(hs===3){vE(q,96,60,26,84,hc,.28);vE(q,0,-6,90,90,hc)}
  else if(hs===2){for(let i=0;i<9;i++){const a=Math.PI*(1+i/8);vE(q,Math.cos(a)*88,-14+Math.sin(a)*80,30,36,hc,a)}}
  else if(hs===4){vE(q,0,-8,94,90,hc);[[-84,-34,-.5],[84,-34,.5],[-34,-92,-.2],[42,-94,.3],[0,-98,0],[-70,-70,-.4]].forEach(([x,y,a])=>vE(q,x,y,18,10,hc,a))}
- else if(hs===5){q.fillStyle=hc;q.beginPath();q.moveTo(-96,-20);q.bezierCurveTo(-120,40,-112,92,-90,114);q.quadraticCurveTo(0,134,90,114);q.bezierCurveTo(112,92,120,40,96,-20);q.closePath();q.fill()}
+ else if(hs===5){const bh=(rom&&fm&&GLAM()&&/^(gala|noite|social)$/.test(UK))?-18:0;q.fillStyle=hc;q.beginPath();q.moveTo(-96,-20);q.bezierCurveTo(-120,40,-112,92+bh,-90,114+bh);q.quadraticCurveTo(0,134+bh,90,114+bh);q.bezierCurveTo(112,92+bh,120,40,96,-20);q.closePath();q.fill()}
  else vE(q,0,-8,90,88,hc);
  q.restore();
  if(C.fat)vE(q,0,70,60,36,sd);
@@ -687,23 +753,24 @@ function animeBody(q,st,ox,oy,rom){const C=st.C,U0=UF||{s:C.s,d:C.d,l:C.l},dk=u=
  else if(big){const bc=sf?'rgba(255,140,130,.3)':'rgba(255,110,130,.32)';vE(q,-48,40,20,10,bc);vE(q,48,40,20,10,bc)}
  if(C.fat){const fb='rgba(255,120,120,.32)';vE(q,-52,44,24,14,fb);vE(q,52,44,24,14,fb)}
  if(C.bd){q.fillStyle=C.bd;q.beginPath();q.moveTo(-70,30);q.bezierCurveTo(-60,92,-30,100,0,100);q.bezierCurveTo(30,100,60,92,70,30);q.quadraticCurveTo(44,56,24,50);q.quadraticCurveTo(0,44,-24,50);q.quadraticCurveTo(-44,56,-70,30);q.fill()}
+ if(rom&&fm&&GLAM())glamBefore(q);
  // olhos
  [-1,1].forEach(k=>{const ex=k*34,ey=8,rx=big?(rom?16:15):15,ry=(sf?20:fm?(rom?22:17):11)+(st.peak?1:0);
   if(st.blink){const L=st.lf>.05;q.strokeStyle=hc;q.lineWidth=6;q.beginPath();L?q.arc(ex,ey+5,13,Math.PI+.2,2*Math.PI-.2):q.arc(ex,ey,13,.2,Math.PI-.2);q.stroke()}
   else{vE(q,ex,ey,rx,ry,'#fff');const GX=(st.gz||[0,0])[0]*3.5,GY=(st.gz||[0,0])[1]*2.5,ig=q.createLinearGradient(0,ey-ry,0,ey+ry);ig.addColorStop(0,mx(iris,'#000000',.4));ig.addColorStop(1,mx(iris,'#ffffff',.25));
    q.save();q.beginPath();q.ellipse(ex,ey,rx,ry,0,0,7);q.clip();q.fillStyle=ig;q.beginPath();q.ellipse(ex+GX,ey+2+GY,rx*.75,ry*.88,0,0,7);q.fill();vE(q,ex+GX,ey+2+GY,rx*.34,ry*.46,'#10131a');vE(q,ex-5+GX*.6,ey-ry*.42+GY*.6,5.5,5.5,'#fff');vE(q,ex+5+GX*.6,ey+ry*.45+GY*.6,2.8,2.8,'rgba(255,255,255,.85)');q.restore();
    q.strokeStyle=sf?'#5a3a2c':hc;q.lineWidth=sf?5:fm?7:9;q.beginPath();q.ellipse(ex,ey,rx+1,ry+1,0,Math.PI*1.08,Math.PI*1.92);q.stroke();if(fm){q.lineWidth=5;q.beginPath();q.moveTo(ex+k*(rx-1),ey-ry*.55);q.lineTo(ex+k*(rx+9),ey-ry*.8);q.stroke()}}});
- q.strokeStyle='rgba(0,0,0,.28)';q.lineWidth=3;q.beginPath();q.moveTo(0,38);q.lineTo(3,44);q.stroke();
+ q.strokeStyle='rgba(0,0,0,.28)';q.lineWidth=3;q.beginPath();q.moveTo(0,38);q.lineTo(3,44);q.stroke();if(rom&&fm&&GLAM())glamEyes(q,st);
  // boca (4 formas ligadas à voz)
  q.save();q.translate(0,64);const m=st.m;
  if(m===0){q.strokeStyle=sf?'#c27a78':'#a8505a';q.lineWidth=sf?3:4;q.beginPath();if(rom){q.moveTo(-12,-2);q.quadraticCurveTo(0,(big?8:3.5)+(st.sm||0)*(big?6:5),12,-2)}else{q.moveTo(-11,1);q.quadraticCurveTo(0,3+(st.sm||0)*5,11,1)}q.stroke()}
  else{const rx=[0,7,11,15][m],ry=[0,5,9,13][m];vE(q,0,0,rx,ry,'#5a1d28');q.save();q.beginPath();q.ellipse(0,0,rx,ry,0,0,7);q.clip();vE(q,0,ry*.7,rx*.7,ry*.45,'#d9677a');q.restore();if(m>1){q.fillStyle='#fff';q.beginPath();q.ellipse(0,-ry*.55,rx*.8,ry*.3,0,0,Math.PI);q.fill()}}
- q.restore();
+ q.restore();if(rom&&fm&&GLAM())glamLips(q,st.m,st.sm||0);
  // franja em mechas + mechas laterais + brilho
  q.fillStyle=hc;q.beginPath();q.moveTo(-88,-4);q.bezierCurveTo(-96,-96,96,-96,88,-4);(hs===4?[[70,-8],[60,-34],[46,-18],[32,-40],[14,-14],[-2,-38],[-18,-12],[-36,-34],[-52,-10],[-70,-24],[-88,-4]]:hs===5?[[70,-6],[62,-30],[44,-26],[24,-34],[0,-30],[-24,-34],[-44,-26],[-62,-30],[-70,-6],[-88,-4]]:fm?[[64,-10],[54,-52],[34,-12],[20,-54],[-2,-12],[-18,-52],[-36,-14],[-54,-50],[-70,-8],[-88,-4]]:[[66,-14],[46,-32],[20,-36],[-8,-32],[-34,-28],[-58,-18],[-72,-6],[-88,-4]]).forEach(p=>q.lineTo(p[0],p[1]));q.closePath();q.fill();
  if(fm||hs===1||hs===5)[-1,1].forEach(k=>{q.beginPath();q.moveTo(k*88,-4);q.bezierCurveTo(k*96,40,k*92,80,k*78,104);q.bezierCurveTo(k*76,70,k*74,30,k*70,-6);q.closePath();q.fill()});else[-1,1].forEach(k=>{q.beginPath();q.moveTo(k*88,-4);q.lineTo(k*84,36);q.lineTo(k*72,28);q.lineTo(k*70,-6);q.closePath();q.fill()});
  q.strokeStyle=hl;q.lineWidth=7;q.beginPath();q.arc(0,-14,70,Math.PI*1.12,Math.PI*1.45);q.stroke();q.lineWidth=3;q.beginPath();q.arc(0,-14,58,Math.PI*1.2,Math.PI*1.4);q.stroke();
- if(C.hoop){q.strokeStyle='#e0b050';q.lineWidth=3;[-1,1].forEach(k=>{q.beginPath();q.arc(k*80,28,6,0,7);q.stroke()})}
+ if(C.hoop){q.strokeStyle='#e0b050';q.lineWidth=3;[-1,1].forEach(k=>{q.beginPath();q.arc(k*80,28,6,0,7);q.stroke()})}if(rom&&fm&&GLAM()&&!C.hoop)glamEar(q);
  // sobrancelhas (por cima da franja)
  [-1,1].forEach(k=>{const ex=k*34,by=8-(sf?20:fm?(rom?22:17):11)-(big?16:10)-brow*6;q.strokeStyle=sf?mx(hc,'#000000',.25):hc;q.lineWidth=sf?4:fm?(rom?5:6):9;q.beginPath();if(rom&&big){q.moveTo(ex-15,by+3);q.quadraticCurveTo(ex,by-5,ex+15,by+1)}else if(fm){q.moveTo(ex-k*15,by+6);q.quadraticCurveTo(ex,by-3,ex+k*16,by-2)}else{q.moveTo(ex+k*17,by-1);q.lineTo(ex-k*15,by+(rom?2:5))}q.stroke()});
  if(C.gl){q.strokeStyle='#111418';q.lineWidth=5;[-34,34].forEach(k=>{q.beginPath();q.arc(k,8,27,0,7);q.stroke()});q.beginPath();q.moveTo(-8,6);q.lineTo(8,6);q.stroke()}
@@ -1443,8 +1510,8 @@ function SCfinish(t){x.globalAlpha=.09;R(0,0,90,160,SCs[3]);x.globalAlpha=1;cons
 // =====================================================================
 // ===== FIGURINOS (Fase 2) · cor se harmoniza com o cenário ============
 // =====================================================================
-const UC={blazer:'#2b3140',fato:'#2a303c',colete:'#e6e1d4',renas:'#4a1830',casaco:'#4a3b3b',elegante:'#1b1626',tunica:'#d8c8a0',manto:'#7a5a3a',epoca:'#2e4a7a',mandarim:'#8a1f2b',tang:'#1f3a5a',jornal:'#222a3a',reporter:'#4a5a3a'},GD='#d9b25a';
-function SCsetup(){SCs=SECRET_SC||(CXCUR>=0&&CENX[CXCUR])||CH.scenarios[CURSC]||CH.scenarios[0];D=DESKS[SCs[5]]||DESKS.wood;UK=C.out||CH.costumeKinds[+$('fg').value||0]||'aula';
+const UC={blazer:'#2b3140',fato:'#2a303c',colete:'#e6e1d4',renas:'#4a1830',casaco:'#4a3b3b',elegante:'#1b1626',tunica:'#d8c8a0',manto:'#7a5a3a',epoca:'#2e4a7a',mandarim:'#8a1f2b',tang:'#1f3a5a',jornal:'#222a3a',reporter:'#4a5a3a',gala:'#6e1130',noite:'#15101c',social:'#1b1830'},GD='#d9b25a';
+function SCsetup(){SCs=SECRET_SC||(CXCUR>=0&&CENX[CXCUR])||CH.scenarios[CURSC]||CH.scenarios[0];D=DESKS[SCs[5]]||DESKS.wood;UK=(k=>/^(gala|noite|social)$/.test(k)?k:(C.out||k||'aula'))(CH.costumeKinds[+$('fg').value||0]);
  let b=UC[UK]||C.s;if(UK==='casual')b=mx(C.s,'#000000',.2);if(UK==='vestido')b=mx(C.s,'#a02848',.4);const s0=mx(b,SCs[2],C.soft?.07:.22);UF={s:s0,d:mx(s0,'#000000',.25),l:mx(s0,'#ffffff',.2)}}
 function uniform(cx,hy){const k=UK,{s,d,l}=UF,sk=C.k,A=SCs[3];R(cx-17,hy+13,35,44,s);R(cx-17,hy+13,35,3,l);R(cx+10,hy+16,7,41,d);R(cx-17,hy+16,4,41,d);
  const V=(w,h,c)=>{for(let i=0;i<h;i++)R(cx-w+i,hy+12+i,w*2-2*i+1,1,c)},lap=()=>{ln(cx-7,hy+13,cx-2,hy+30,2,d);ln(cx+7,hy+13,cx+2,hy+30,2,d)};
@@ -1499,8 +1566,8 @@ const CHANNELS={
   presets:[{label:'Efeito Zeigarnik',sc:2,fg:3,fm:0,t:'Efeito Zeigarnik',script:DEFAULT},{label:'Lei do dia',sc:1,fg:2,fm:1,t:'Observe antes de agir'}]},
  romance:{name:'Romance',icon:'🌹',accent:'#ff7a8a',bg:'#14080e',surface:'#22101a',
   tagline:'Romance em 1 minuto',idle:'Escolha o cenário e toque em Tocar',outro:'Continua no próximo episódio',notice:'',
-  scenarios:[['Café parisiense com chuva','#0d1220','#2a3550','#9fb7e8','cafe','wood','',0],['Varanda ao pôr do sol','#2a0f14','#7a3326','#ffb36b','var','plum','',1],['Biblioteca com lareira','#1a0a08','#5a2a12','#ff9a4a','lar','wood','',2],['Jardim à noite com pirilampos','#050f12','#0f3a3a','#d6ff7a','jar','stone','',3],['Quarto de escritora','#1a0a12','#521830','#ff7a8a','qto','plum','',2]],
-  costumes:['Casaco','Vestido','Malha','Elegante noturno'],costumeKinds:['casaco','vestido','malha','elegante'],studio:[],
+  scenarios:[['Café parisiense com chuva','#0d1220','#2a3550','#9fb7e8','cafe','wood','',4],['Varanda ao pôr do sol','#2a0f14','#7a3326','#ffb36b','var','plum','',5],['Biblioteca com lareira','#1a0a08','#5a2a12','#ff9a4a','lar','wood','',6],['Jardim à noite com pirilampos','#050f12','#0f3a3a','#d6ff7a','jar','stone','',3],['Quarto de escritora','#1a0a12','#521830','#ff7a8a','qto','plum','',4]],
+  costumes:['Casaco','Vestido','Malha','Elegante noturno','Gala glamour','Noite glamour','Social glamour'],costumeKinds:['casaco','vestido','malha','elegante','gala','noite','social'],studio:[],
   formats:['Conto em 1 minuto','Capítulo da noite','Carta de amor','Poema do dia','Conselho de relacionamento'],tones:['Delicado','Nostálgico','Esperançoso'],audience:'Quem ama histórias de amor',
   langs:PT,cards:['Episódio','Carta','Poema','Continua…'],sfx:'suave',
   skel:(f,t,p,n)=>`${f}: *${t}*\nUma história para ${p.toLowerCase()}, em tom ${n.toLowerCase()}.\nA chuva caía devagar, e ela ainda *esperava*.\n!Ele chegou sem dizer nada, e o silêncio disse *tudo*.\nAlgumas despedidas são, na verdade, *começos*.\nContinua no próximo *episódio*.`,
@@ -2423,14 +2490,13 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   var tx=monta(ta.value);
   if(!tx.length){st.textContent='Escreva ou aplique o roteiro primeiro.';return}
   if(!navigator.onLine){st.textContent='Sem internet. O estúdio segue como antes: voz do navegador ou seu áudio.';return}
-  if(!E.code){st.textContent='Coloque o código de acesso na aba Voz, em “IA: vozes dos avatares e acesso”.';return}
-  var dual=DUAL(),i1=+$('ch').value||0,i2=+$('ch2').value,v1=voz(i1),body={code:E.code};
+    var dual=DUAL(),i1=+$('ch').value||0,i2=+$('ch2').value,v1=voz(i1),body={code:E.code};
   if(dual){var v2=voz(i2);if(v2===v1)v2=VZ[(VZ.indexOf(v1)+7)%VZ.length];
    body.speakers=[{name:'Avatar1',voice:v1},{name:'Avatar2',voice:v2}];
    body.turns=tx.map(function(x){return{speaker:x.s===2?'Avatar2':'Avatar1',text:x.t}})}
   else{body.voice=v1;body.text=tx.map(function(x){return x.t}).join('\n')}
-  bt.disabled=true;st.textContent='Gerando a voz com IA… pode levar até 1 minuto.';
-  var ac=new AbortController(),to=setTimeout(function(){ac.abort()},58000);
+  bt.disabled=true;st.textContent='Gerando a voz com IA… pode levar até 2 minutos.';
+  var ac=new AbortController(),to=setTimeout(function(){ac.abort()},170000);
   try{
    var r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ac.signal});
    if(!r.ok){var j=null;try{j=await r.json()}catch(e){}throw new Error((j&&j.erro)||('Erro '+r.status))}
@@ -2448,9 +2514,8 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   var pd=($('pt').value||'').trim();
   if(pd.length<3){ds.textContent='Escreva o pedido na caixa do prompt, acima.';return}
   if(!navigator.onLine){ds.textContent='Sem internet. Use o prompt manual, que funciona offline.';return}
-  if(!E.code){ds.textContent='Coloque o código de acesso na aba Voz, em “IA: vozes dos avatares e acesso”.';return}
-  bd.disabled=true;ds.textContent='A IA está criando o roteiro e as cenas… pode levar até 1 minuto.';
-  var ac=new AbortController(),to=setTimeout(function(){ac.abort()},58000),ok=false;
+    bd.disabled=true;ds.textContent='A IA está criando o roteiro e as cenas… pode levar até 2 minutos.';
+  var ac=new AbortController(),to=setTimeout(function(){ac.abort()},170000),ok=false;
   try{
    var r=await fetch('/api/direct',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code:E.code,pedido:pd}),signal:ac.signal});
    if(!r.ok){var j0=null;try{j0=await r.json()}catch(e){}throw new Error((j0&&j0.erro)||('Erro '+r.status))}
@@ -2469,6 +2534,130 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
   CENX.forEach(function(c){var o=document.createElement('option');o.value=c[8];o.textContent=c[0];cs.appendChild(o)});
   cu.onclick=function(){var ls=String(ta.value||'').split('\n'),i=ls.findIndex(function(q){return q.trim()});if(i<0)return;
    ls[i]=ls[i].replace(/^\s*~[\w-]+\s*/,'');if(cs.value)ls[i]='~'+cs.value+' '+ls[i];ta.value=ls.join('\n');setScript(ta.value);}}
+})();
+</script>
+<script>
+(function(){var g=document.getElementById('glam');if(!g||typeof GLAM!=='function')return;
+ function sync(){try{g.checked=GLAM()}catch(e){}}
+ g.onchange=function(){try{localStorage.setItem('andala.glam.'+CHID,g.checked?'1':'0')}catch(e){}try{last=-2}catch(e){}};
+ sync();document.querySelectorAll('#chsel .chn,#t2').forEach(function(b){b.addEventListener('click',function(){setTimeout(sync,60)})});
+})();
+</script>
+<script>window.ANDALA_MANUAL="PAPEL\nVocê é o Redator de Prompts Andala. Sua única tarefa é escrever prompts no formato ANDALA-PROMPT v1 para o Estúdio Andala, um programa que transforma esse texto em vídeo vertical 9:16. Responda sempre e somente com o prompt pronto, em texto simples, dentro de um único bloco de código, sem markdown dentro do bloco e sem explicações fora dele. Comece sempre com a linha #ANDALA v1. Se faltar informação, escolha valores sensatos, ou use auto, e não pergunte. Escreva em português. Regras de respeito: Deus e Jesus nunca são representados; no canal bíblico use só traduções em domínio público (ARC, KJV, Figueiredo); persuasão sempre ética e honesta; nada explícito no canal romance; não invente citações de pessoas reais, use \"Inspirado em ... (paráfrase)\".\n\nESPECIFICAÇÃO ANDALA-PROMPT v1\n\nREGRAS DE SINTAXE\n- Primeira linha: #ANDALA v1\n- Uma configuração por linha: chave: valor\n- Comentário: linha iniciada por # (dentro do roteiro, # NÃO é comentário)\n- Seções entre colchetes: [apresentacao], [voz], [marca], [conteudo], [quiz], [venda], [roteiro]\n- Valor em várias linhas: as linhas seguintes começam com dois espaços\n- Roteiro: tudo entre [roteiro] e @fim (opcional; se vazio, o Estúdio escreve o rascunho sozinho)\n- Chaves em minúsculas e sem acento\n- auto significa: o sistema decide e mostra o que decidiu\n- Chave ausente significa: usar o padrão do canal\n- Itens podem ser dados pelo nome (Biblioteca) ou pelo número (1)\n- Chaves desconhecidas nunca quebram nada: viram aviso no relatório\n\nCHAVES PRINCIPAIS\ncanal: auto | idiomas | mentalidade | romance | biblico | noticias\nformato: um dos formatos do canal (nome ou número)\ntema: o assunto\npublico: auto ou texto livre\ntom: um dos tons do canal\nduracao: 30s | 45s | 60s | 90s | auto\nlinguagem_voz: pt-BR | pt-PT (e en-US | fr-FR | zh-CN só no canal idiomas)\n[apresentacao]\ncenario: nome ou número do cenário do canal\ntroca_cenarios: sim | nao\navatar: Andala | Jacinta | Rafael | Beatriz | Marina | Tomás | Mário | nenhum\navatar2: segundo avatar para diálogo (ou nenhum)\nfigurino: nome ou número do figurino do canal\nfundo: auto (o do cenário)\nnome_apresentador: texto\nsubtitulo: texto\n[voz]\nfonte: auto | navegador | arquivo | legendas\ngenero: f | m\ngenero2: f | m (voz do segundo avatar)\nvelocidade: lenta | normal\n[marca]\nabertura: sim | nao\nefeitos: sim | nao\nselo_final: sim | nao\nmusica: sim | nao (sim apenas se houver arquivo carregado)\n[quiz]\npergunta: texto\nopcoes: opção A | opção B | opção C (no máximo 3; vazio = pergunta de reflexão)\ncerta: número da opção certa (1 a 3) ou letra A, B, C\nexplicacao: texto\n[venda] (só quando o vídeo vende um produto; ativa o modo venda)\nproduto: nome do produto\npreco: texto livre, ex.: R$ 29,90\nlink: chamada do link, ex.: Link na descrição\n[roteiro]\numa frase por linha\n@fim\n\nCHAVES DE CONTEÚDO POR CANAL (seção [conteudo])\n- idiomas: idioma_aula (en | fr | zh mandarim | pt; em zh a pronúncia é o pinyin), nivel (0 iniciante, 1 intermédio, 2 avançado), palavras (uma por linha, com as linhas seguintes recuadas em dois espaços: palavra | pronúncia | tradução | definição | exemplo | tradução do exemplo | sinónimos)\n- mentalidade: conceito, citacao, autor, aplique\n- romance: genero (0 clássico, 1 drama, 2 comédia romântica, 3 esperança), episodio, titulo, texto (carta ou poema, uma linha por verso, recuadas), gancho (frase do Continua...)\n- noticias: manchete, lide (o quê, quem, quando, onde), detalhes (contexto e dados), origem (fonte da informação)\n- biblico: referencia, versiculo (só domínio público: ARC, KJV, Figueiredo), contexto, original (palavra | transliteração | significado), aplicacao, mapa (rota com >, ex.: Egito>Sinai>Canaã), linha_do_tempo (data|evento; data|evento)\n\nCATÁLOGO DE VALORES VÁLIDOS\n- idiomas\n  formatos: Palavra do dia, Aula de vocabulário, Frase útil, Mini quiz\n  tons: Didático, Descontraído, Formal\n  cenários: Sala de aula moderna, Biblioteca, Estúdio de podcast, Inglês azul-marinho e vermelho, Francês creme e dourado, Português madeira e verde-garrafa, Mandarim vermelho e dourado\n  figurinos: Roupa de aula, Casual elegante, Blazer, Malha e camisa, Túnica mandarim, Traje Tang\n- mentalidade\n  formatos: Conceito em 1 minuto, Lei do dia, Erro comum, Técnica de persuasão, Roteiro de venda\n  tons: Estratégico, Direto, Inspirador\n  cenários: Gabinete de estratégia, Biblioteca renascentista, Estúdio de psicologia, Sala de negociação\n  figurinos: Fato, Colete, Traje renascentista, Casual executivo\n- romance\n  formatos: Conto em 1 minuto, Capítulo da noite, Carta de amor, Poema do dia, Conselho de relacionamento\n  tons: Delicado, Nostálgico, Esperançoso\n  cenários: Café parisiense com chuva, Varanda ao pôr do sol, Biblioteca com lareira, Jardim à noite com pirilampos, Quarto de escritora\n  figurinos: Casaco, Vestido, Malha, Elegante noturno, Gala glamour, Noite glamour, Social glamour\n- biblico\n  formatos: História em 1 minuto, Versículo do dia, Personagem bíblico, Você sabia?, Lugar bíblico, Estudo temático, Devocional, Versão infantil\n  tons: Respeitoso, Devocional, Didático\n  cenários: Deserto ao amanhecer, Aldeia de Israel antiga, Sala de estudo com pergaminhos, Jerusalém antiga à noite, Mar da Galileia, Estúdio moderno de ensino\n  figurinos: Túnica, Manto, Roupa de época, Blazer moderno\n- noticias\n  formatos: Manchete do dia, Resumo em 1 minuto, Notícia de última hora, Análise rápida, Emprego e mercado de trabalho\n  tons: Neutro e factual, Urgente, Explicativo\n  cenários: Redação de jornal, Estúdio de telejornal, Repórter na cidade à noite\n  figurinos: Apresentador de telejornal, Repórter de campo, Blazer, Fato\n\nMARCAS DO ROTEIRO\n*destaque* = palavra em cor de marca · ! no início = momento importante (pausa com digitação) · #2 = muda para o cenário 2 · [palavra] = mostra um cartão durante a frase · (en-US) = voz noutra língua · texto || tradução = legenda bilíngue · >1 e >2 = quem fala · [mapa] frase || Lugar>Lugar · [linha] frase || data|evento; data|evento\n\nDETECÇÃO AUTOMÁTICA (canal: auto)\nO Estúdio pontua o texto por palavras-chave e escolhe o canal de maior pontuação. Idiomas: palavras em inglês ou francês, tradução, pronúncia, como se diz, vocabulário. Romance: amor, saudade, carta, beijo, coração, episódio, paixão. Bíblico: livros da Bíblia, versículo, Salmo, Davi, Moisés, Paulo, profeta, evangelho, devocional. Notícias: notícia, manchete, última hora, telejornal, repórter, mercado de trabalho, desemprego. Mentalidade: persuasão, vendas, hábito, estratégia, Maquiavel, produtividade, negociação. Se a confiança for baixa, o Estúdio pergunta. Por isso, prefira escrever canal: explicitamente.\n\nREGRAS DE VOZ (chave fonte)\n1 arquivo: usa o áudio próprio carregado. 2 navegador: usa a voz do navegador (melhor voz disponível do idioma e do gênero). 3 legendas: sem voz, ritmo de leitura, com legendas, música e efeitos. 4 auto: arquivo se existir; senão voz do navegador; se não houver voz do idioma, cai em legendas e avisa. Atenção: a voz do navegador não é gravada dentro do vídeo; para voz no arquivo, o usuário carrega o próprio áudio.\n\nCOMO RESPONDER\n1. Entregue um único bloco de código com o prompt completo, começando por #ANDALA v1.\n2. Use só nomes de formato, tom, cenário e figurino do catálogo do canal escolhido.\n3. Escreva o roteiro com 8 a 14 linhas curtas para 45 a 60 segundos (cerca de 14 caracteres por segundo), com *destaques* e um \"!\" no ponto mais importante, e termine com @fim.\n4. No canal bíblico, só versículos de domínio público, com a sigla da tradução no fim, ex.: (ARC).\n\n\nMANUAL DE DIREÇÃO ANDALA (retenção e cinema)\nVocê também é o diretor do vídeo. Ao escrever o roteiro e as cenas, siga:\n- Gancho: a 1ª frase prende em até 2 segundos (pergunta, promessa ou contraste) e começa com ! (momento importante).\n- Frases curtas (6 a 14 palavras), uma ideia por frase, linguagem simples que qualquer pessoa entende.\n- Ritmo de fala: cerca de 2,3 palavras por segundo. 30s = ~70 palavras, 45s = ~105, 60s = ~140, 90s = ~210. Respeite a duração pedida (auto = 45s).\n- Cenas: quando o tema pedir, use troca_cenarios: sim e marque a mudança com #2, #3... a cada 2 a 4 frases, voltando ao cenário 1 para concluir. Escolha cenários e figurinos que existam no catálogo do canal OU use os cenários especiais com a marca ~ (veja abaixo).\n- Cartões [palavra] só em termos-chave (no máximo 1 a cada 2 frases). *destaque* em 1 ou 2 palavras por frase.\n- Diálogo (avatar2 e marcas >1 e >2) só quando ajudar a explicar.\n- Fecho: a última frase resume a ideia e chama para agir (seguir, salvar ou compartilhar).\n- Escolha o canal certo pelo tema (ex.: Maquiavel = mentalidade; \"bom dia em mandarim\" = idiomas com idioma_aula: zh).\n- Use fonte: auto na seção [voz] (a voz com IA é gerada depois pelo estúdio).\n- Use avatar: nenhum somente se o pedido disser que o vídeo é só ilustrativo.\n- Sempre inclua [roteiro] completo terminando em @fim. Nunca deixe o roteiro vazio.\n\n\nCENÁRIOS ESPECIAIS (100) · marca ~ no roteiro\nAlém dos cenários do canal, existem 100 cenários especiais (25 locais x 4 atmosferas: dia, tarde, noite, clima). Use a marca ~nome no INÍCIO de uma linha de roteiro, antes do texto, na mesma linha. Exemplo: ~china-rua-dia !Bom dia em mandarim.\n- A marca vale daquela frase em diante, até aparecer outra marca. ~0 volta ao cenário normal do canal (estúdio).\n- Nunca deixe uma linha só com a marca. Escreva o nome exatamente como na lista (ou o número).\n- Quando o tema pedir um ambiente (China, guerra, quarto, dinheiro, espaço...), comece o roteiro com a marca certa. Em histórias, troque de cenário a cada 2 a 4 frases; para explicar com calma, volte ao ~0.\n- Combine a atmosfera com a emoção: dia = claro e didático; tarde = esperança e reflexão; noite = mistério e intimidade; clima = tensão e drama.\n- Se o pedido for só ilustrativo (sem avatar), use avatar: nenhum e continue marcando os cenários.\nLISTA (número nome = descrição):\n1 china-rua-dia = Rua da China · Dia\n2 china-rua-tarde = Rua da China · Entardecer\n3 china-rua-noite = Rua da China · Noite\n4 china-rua-clima = Rua da China · Tempo fechado\n5 china-mercado-dia = Mercado oriental · Dia\n6 china-mercado-tarde = Mercado oriental · Entardecer\n7 china-mercado-noite = Mercado oriental · Noite\n8 china-mercado-clima = Mercado oriental · Tempo fechado\n9 guerra-dia = Campo de batalha · Dia\n10 guerra-tarde = Campo de batalha · Entardecer\n11 guerra-noite = Campo de batalha · Noite\n12 guerra-clima = Campo de batalha · Tempo fechado\n13 castelo-dia = Castelo medieval · Dia\n14 castelo-tarde = Castelo medieval · Entardecer\n15 castelo-noite = Castelo medieval · Noite\n16 castelo-clima = Castelo medieval · Tempo fechado\n17 egito-dia = Pirâmides do Egito · Dia\n18 egito-tarde = Pirâmides do Egito · Entardecer\n19 egito-noite = Pirâmides do Egito · Noite\n20 egito-clima = Pirâmides do Egito · Tempo fechado\n21 deserto-dia = Deserto · Dia\n22 deserto-tarde = Deserto · Entardecer\n23 deserto-noite = Deserto · Noite\n24 deserto-clima = Deserto · Tempo fechado\n25 floresta-dia = Floresta · Dia\n26 floresta-tarde = Floresta · Entardecer\n27 floresta-noite = Floresta · Noite\n28 floresta-clima = Floresta · Tempo fechado\n29 neve-dia = Montanhas nevadas · Dia\n30 neve-tarde = Montanhas nevadas · Entardecer\n31 neve-noite = Montanhas nevadas · Noite\n32 neve-clima = Montanhas nevadas · Tempo fechado\n33 praia-dia = Praia · Dia\n34 praia-tarde = Praia · Entardecer\n35 praia-noite = Praia · Noite\n36 praia-clima = Praia · Tempo fechado\n37 navio-dia = Mar aberto · Dia\n38 navio-tarde = Mar aberto · Entardecer\n39 navio-noite = Mar aberto · Noite\n40 navio-clima = Mar aberto · Tempo fechado\n41 cidade-dia = Cidade moderna · Dia\n42 cidade-tarde = Cidade moderna · Entardecer\n43 cidade-noite = Cidade moderna · Noite\n44 cidade-clima = Cidade moderna · Tempo fechado\n45 bairro-dia = Rua de bairro · Dia\n46 bairro-tarde = Rua de bairro · Entardecer\n47 bairro-noite = Rua de bairro · Noite\n48 bairro-clima = Rua de bairro · Tempo fechado\n49 escritorio-dia = Escritório moderno · Dia\n50 escritorio-tarde = Escritório moderno · Entardecer\n51 escritorio-noite = Escritório moderno · Noite\n52 escritorio-clima = Escritório moderno · Tempo fechado\n53 cofre-dia = Banco e dinheiro · Dia\n54 cofre-tarde = Banco e dinheiro · Entardecer\n55 cofre-noite = Banco e dinheiro · Noite\n56 cofre-clima = Banco e dinheiro · Tempo fechado\n57 lab-dia = Laboratório futurista · Dia\n58 lab-tarde = Laboratório futurista · Entardecer\n59 lab-noite = Laboratório futurista · Noite\n60 lab-clima = Laboratório futurista · Tempo fechado\n61 espaco-dia = Espaço · Dia\n62 espaco-tarde = Espaço · Entardecer\n63 espaco-noite = Espaço · Noite\n64 espaco-clima = Espaço · Tempo fechado\n65 fazenda-dia = Fazenda · Dia\n66 fazenda-tarde = Fazenda · Entardecer\n67 fazenda-noite = Fazenda · Noite\n68 fazenda-clima = Fazenda · Tempo fechado\n69 savana-dia = Savana africana · Dia\n70 savana-tarde = Savana africana · Entardecer\n71 savana-noite = Savana africana · Noite\n72 savana-clima = Savana africana · Tempo fechado\n73 vila-dia = Vila africana · Dia\n74 vila-tarde = Vila africana · Entardecer\n75 vila-noite = Vila africana · Noite\n76 vila-clima = Vila africana · Tempo fechado\n77 grecia-dia = Templo grego · Dia\n78 grecia-tarde = Templo grego · Entardecer\n79 grecia-noite = Templo grego · Noite\n80 grecia-clima = Templo grego · Tempo fechado\n81 olimpo-dia = Olimpo nas nuvens · Dia\n82 olimpo-tarde = Olimpo nas nuvens · Entardecer\n83 olimpo-noite = Olimpo nas nuvens · Noite\n84 olimpo-clima = Olimpo nas nuvens · Tempo fechado\n85 ruinas-dia = Ruínas antigas · Dia\n86 ruinas-tarde = Ruínas antigas · Entardecer\n87 ruinas-noite = Ruínas antigas · Noite\n88 ruinas-clima = Ruínas antigas · Tempo fechado\n89 cyber-dia = Cidade futurista · Dia\n90 cyber-tarde = Cidade futurista · Entardecer\n91 cyber-noite = Cidade futurista · Noite\n92 cyber-clima = Cidade futurista · Tempo fechado\n93 quarto-dia = Quarto · Dia\n94 quarto-tarde = Quarto · Entardecer\n95 quarto-noite = Quarto · Noite\n96 quarto-clima = Quarto · Tempo fechado\n97 cozinha-dia = Cozinha · Dia\n98 cozinha-tarde = Cozinha · Entardecer\n99 cozinha-noite = Cozinha · Noite\n100 cozinha-clima = Cozinha · Tempo fechado\n\nGLAMOUR NO CANAL ROMANCE\nNo canal romance os personagens têm maquiagem marcante, joias e decote elegante quando o figurino é Gala glamour (decote coração), Noite glamour (decote em V) ou Social glamour (camisa aberta, lapelas e corrente). Para temas românticos, sensuais ou de sedução prefira esses figurinos (Gala para cafés e jantares, Noite para varanda e noite, Social para lareira e conversas íntimas). Para temas de ensino ou reflexão calma, use Casaco, Vestido ou Malha.\n";</script>
+<script>
+(function(){
+/* Andala estúdio.AI · modo direto: as chaves do Gemini ficam SÓ neste aparelho (localStorage) e nunca no código.
+   Se uma chave falha, entra a próxima. Cada chave tem 2 tentativas. Se todas falharem, aparece um aviso amigável. */
+var KEYS='andala.chaves.v1',MODEL_TTS='gemini-3.8-flash-tts',MODEL_TXT='gemini-3.8-flash';
+/* Sem chaves no código: as chaves reais ficam nas variáveis da Vercel (GEMINI_API_KEY, _2, _3). */
+var EMB=[];
+
+var VOZES=['Zephyr','Puck','Charon','Kore','Fenrir','Leda','Orus','Aoede','Callirrhoe','Autonoe','Enceladus','Iapetus','Umbriel','Algieba','Despina','Erinome','Algenib','Rasalgethi','Laomedeia','Achernar','Alnilam','Schedar','Gacrux','Pulcherrima','Achird','Zubenelgenubi','Vindemiatrix','Sadachbia','Sadaltager','Sulafat'];
+var _f=window.fetch.bind(window),good=0;
+function $(i){return document.getElementById(i)}
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+/* ---------- progresso em porcentagem ---------- */
+var PG={t0:0,est:20,v:0,timer:0,label:'',sub:''};
+function pEl(){var e=$('iaProg');if(!e){e=document.createElement('div');e.id='iaProg';e.setAttribute('role','status');e.innerHTML='<div class="row2"><span class="pl"></span><span class="pp">0%</span></div><div class="sub"></div><div class="bar"><i></i></div>';document.body.appendChild(e)}return e}
+function pDraw(){var e=pEl();e.querySelector('.pl').textContent=PG.label;e.querySelector('.pp').textContent=Math.round(PG.v)+'%';e.querySelector('.sub').textContent=PG.sub||'';e.querySelector('.bar i').style.width=PG.v+'%'}
+function pStart(label,est){clearInterval(PG.timer);clearTimeout(PG.hide);PG.label=label;PG.sub='';PG.v=2;PG.est=est||20;PG.t0=Date.now();pEl().classList.add('on');pDraw();PG.timer=setInterval(function(){var el=(Date.now()-PG.t0)/1000;PG.v=Math.max(PG.v,Math.min(92,92*(1-Math.exp(-el/(PG.est/2.2)))));pDraw()},250)}
+function pSet(v){PG.v=Math.max(PG.v,Math.min(99,v));pDraw()}
+function pSub(t){PG.sub=t;var e=$('iaProg');if(e&&e.classList.contains('on'))pDraw()}
+function pEnd(ok){clearInterval(PG.timer);var e=pEl();clearTimeout(PG.hide);if(ok){PG.v=100;pDraw();PG.hide=setTimeout(function(){e.classList.remove('on')},800)}else e.classList.remove('on')}
+function dev(){try{var a=JSON.parse(localStorage.getItem(KEYS)||'[]');return Array.isArray(a)?a.filter(function(k){return typeof k==='string'&&k.length>=20}):[]}catch(e){return[]}}
+function keys(){var a=dev();EMB.forEach(function(k){if(a.indexOf(k)<0)a.push(k)});return a}
+function saveKeys(txt){var a=[];String(txt||'').split(/[\s,;]+/).forEach(function(k){k=k.replace(/^["']|["']$/g,'').trim();if(k.length>=20&&a.indexOf(k)<0)a.push(k)});try{localStorage.setItem(KEYS,JSON.stringify(a))}catch(e){}return a.length}
+/* ---------- chamada com troca de chave ---------- */
+async function gem(modelo,payload,aceita){
+ var ks=keys();if(!ks.length)return{ok:false,tipo:'semchave',total:0};
+ var ord=ks.map(function(_,i){return i}).sort(function(a,b){return ((a-good+ks.length)%ks.length)-((b-good+ks.length)%ks.length)});
+ var ult={tipo:'servidor',msg:''};
+ for(var n=0;n<ord.length;n++){var ki=ord[n];
+  for(var at=0;at<2;at++){var r,j;pSub('Chave '+(ki+1)+' de '+ks.length+(at?' · segunda tentativa':''));
+   try{var ac=new AbortController(),to=setTimeout(function(){ac.abort()},25000);
+    r=await _f('https://generativelanguage.googleapis.com/v1beta/models/'+modelo+':generateContent',{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':ks[ki]},body:JSON.stringify(payload),signal:ac.signal});
+    clearTimeout(to);j=await r.json().catch(function(){return null})}
+   catch(e){ult={tipo:navigator.onLine===false?'rede':'tempo',msg:''};await sleep(700);continue}
+   if(r.ok){if(aceita&&!aceita(j)){ult={tipo:'vazio',msg:''};await sleep(600);continue}good=ki;return{ok:true,json:j,chave:ki+1,total:ks.length}}
+   var msg=String((j&&j.error&&j.error.message)||'').replace(/\s+/g,' ').slice(0,160);
+   if(r.status===401||r.status===403||(r.status===400&&/api key|api_key|key not valid|key expired/i.test(msg))){ult={tipo:'chave',msg:msg};break}
+   if(r.status===429){ult={tipo:'cota',msg:msg};await sleep(900);continue}
+   if(r.status>=500){ult={tipo:'servidor',msg:msg};await sleep(900);continue}
+   return{ok:false,tipo:'pedido',msg:msg,status:r.status,total:ks.length}}}
+ return{ok:false,tipo:ult.tipo,msg:ult.msg,total:ks.length,todas:true}}
+/* ---------- aviso bonito ---------- */
+var TXT={cota:['⏳','Muitos pedidos neste momento','A cota da IA está no limite. Aguarde alguns minutos e tente novamente.'],
+ chave:['🔑','Problema com as chaves de acesso','Nenhuma das chaves está funcionando. Confira se foram coladas certas, na aba Voz, em “IA”.'],
+ rede:['📡','Sem conexão','Verifique a sua internet e tente de novo. O resto do estúdio continua funcionando offline.'],
+ tempo:['🛠','A IA está instável','O serviço não respondeu depois de várias tentativas. Volte mais tarde.'],
+ servidor:['🛠','A IA está instável','Estamos com um problema no serviço da IA. Volte mais tarde ou tente de novo em alguns minutos.'],
+ vazio:['🛠','A IA não devolveu o resultado','Tente de novo. Se continuar, volte mais tarde.'],
+ pedido:['⚠️','Não consegui processar este pedido',''],
+ semchave:['🔑','Falta a chave de acesso','Cole as chaves do Gemini na aba Voz, em “IA”.']};
+function aviso(o){var t=TXT[o.tipo]||TXT.servidor,el=$('iaAviso');if(el)el.remove();
+ el=document.createElement('div');el.id='iaAviso';el.setAttribute('role','alert');
+ var tent=o.todas&&o.total>0?'Tentei '+o.total+(o.total>1?' chaves':' chave')+', 2 vezes cada.':'';
+ el.innerHTML='<div class="ic" aria-hidden="true"></div><div class="bd"><div class="tt"></div><div class="tx"></div><div class="tn"></div><button type="button" class="alt">Entendi</button></div>';
+ el.querySelector('.ic').textContent=t[0];el.querySelector('.tt').textContent=t[1];el.querySelector('.tx').textContent=t[2]||o.msg||'Tente de novo.';el.querySelector('.tn').textContent=tent;
+ el.querySelector('button').onclick=function(){el.remove()};document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.remove()},14000)}
+function msgCurta(o){var t=TXT[o.tipo]||TXT.servidor;return t[1]+'. '+(t[2]||o.msg||'')}
+/* ---------- voz (TTS) ---------- */
+function b64u8(b){var s=atob(b),u=new Uint8Array(s.length);for(var i=0;i<s.length;i++)u[i]=s.charCodeAt(i);return u}
+function wavHead(n,rate){var b=new ArrayBuffer(44),d=new DataView(b);function w(o,s){for(var i=0;i<s.length;i++)d.setUint8(o+i,s.charCodeAt(i))}w(0,'RIFF');d.setUint32(4,36+n,true);w(8,'WAVEfmt ');d.setUint32(16,16,true);d.setUint16(20,1,true);d.setUint16(22,1,true);d.setUint32(24,rate,true);d.setUint32(28,rate*2,true);d.setUint16(32,2,true);d.setUint16(34,16,true);w(36,'data');d.setUint32(40,n,true);return new Uint8Array(b)}
+function pcmDe(u8,mime){ // devolve {pcm,rate} a partir de WAV ou PCM cru
+ if(u8.length>44&&String.fromCharCode(u8[0],u8[1],u8[2],u8[3])==='RIFF'){var rate=new DataView(u8.buffer,u8.byteOffset).getUint32(24,true),i=12;
+  while(i+8<u8.length){var id=String.fromCharCode(u8[i],u8[i+1],u8[i+2],u8[i+3]),sz=new DataView(u8.buffer,u8.byteOffset).getUint32(i+4,true);if(id==='data')return{pcm:u8.subarray(i+8,Math.min(u8.length,i+8+sz)),rate:rate};i+=8+sz+(sz&1)}
+  return{pcm:u8.subarray(44),rate:rate}}
+ var m=/rate=(\d+)/.exec(mime||'');return{pcm:u8,rate:m?+m[1]:24000}}
+function juntaWav(partes,rate){var n=0;partes.forEach(function(p){n+=p.length});var out=new Uint8Array(44+n);out.set(wavHead(n,rate),0);var o=44;partes.forEach(function(p){out.set(p,o);o+=p.length});return out}
+function ttsPayload(b){var parts,sc,style=String(b.style||'').replace(/\s+/g,' ').trim().slice(0,120),meta=function(o){return style?Object.assign(o,{style:style}):o};
+ if(Array.isArray(b.turns)&&Array.isArray(b.speakers)){parts=b.turns.filter(function(t){return t&&String(t.text||'').trim()}).map(function(t){return{text:String(t.text).replace(/\s+/g,' ').trim(),speech_metadata:meta({speaker:t.speaker})}});
+  sc={multiSpeakerVoiceConfig:{speakerVoiceConfigs:b.speakers.map(function(s){return{speaker:s.name,voiceConfig:{prebuiltVoiceConfig:{voiceName:s.voice}}}})}}}
+ else{var q=String(b.text||'').replace(/[ \t]+/g,' ').trim();parts=[style?{text:q,speech_metadata:{style:style}}:{text:q}];sc={voiceConfig:{voice:b.voice}}}
+ return{contents:[{role:'user',parts:parts}],generationConfig:{responseModalities:['AUDIO'],speechConfig:sc}}}
+function temAudio(x){var c=(((x||{}).candidates||[])[0]||{}).content;var p=c&&(c.parts||[]).find(function(q){return q.inlineData||q.inline_data});var d=p&&(p.inlineData||p.inline_data);return !!(d&&d.data)}
+async function ttsPcm(b){
+ if(b.voice&&VOZES.indexOf(b.voice)<0&&!b.speakers)return{erro:{ok:false,tipo:'pedido',msg:'Voz inválida.'}};
+ var o=await gem(MODEL_TTS,ttsPayload(b),temAudio);if(!o.ok)return{erro:o};
+ var c=o.json.candidates[0].content,p=c.parts.find(function(q){return q.inlineData||q.inline_data}),d=p.inlineData||p.inline_data;
+ return pcmDe(b64u8(d.data),d.mimeType||d.mime_type)}
+/* ---------- roteiro e cenas (Diretor) ---------- */
+async function diretor(pedido){var man=window.ANDALA_MANUAL||'';
+ var payload={systemInstruction:{parts:[{text:man}]},contents:[{role:'user',parts:[{text:'PEDIDO DO USUÁRIO:\n'+pedido}]}],generationConfig:{temperature:.8,maxOutputTokens:6000}};
+ var o=await gem(MODEL_TXT,payload,function(x){var c=(((x||{}).candidates||[])[0]||{}).content;return !!(c&&(c.parts||[]).some(function(q){return q&&q.text}))});
+ if(!o.ok)return{erro:o};
+ var t=((o.json.candidates[0].content.parts)||[]).map(function(p){return(p&&p.text)||''}).join('').trim();var f=/```[a-z]*\n([\s\S]*?)```/i.exec(t);if(f)t=f[1].trim();
+ var i=t.search(/^#ANDALA v1/im);if(i<0)return{erro:{ok:false,tipo:'vazio',total:o.total}};t=t.slice(i).trim();
+ if(!/^\[roteiro\]\s*$/im.test(t)||t.length>14000)return{erro:{ok:false,tipo:'vazio',total:o.total}};return{prompt:t}}
+/* ---------- intercepta /api/tts e /api/direct quando há chaves no aparelho ---------- */
+function J(obj,st){return new Response(JSON.stringify(obj),{status:st,headers:{'Content-Type':'application/json'}})}
+async function handle(url,opt){var b={};try{b=JSON.parse(opt&&opt.body||'{}')}catch(e){}
+ if(/\/api\/tts$/.test(url)){var n=String(b.text||(b.turns||[]).map(function(t){return t.text}).join(' ')).length;pStart('Gerando a voz com IA…',5+n/40);
+  var r=await ttsPcm(b);if(r.erro){pEnd(false);aviso(r.erro);return J({erro:msgCurta(r.erro)},r.erro.tipo==='cota'?429:502)}
+  pEnd(true);return new Response(new Blob([juntaWav([r.pcm],r.rate)],{type:'audio/wav'}),{status:200,headers:{'Content-Type':'audio/wav'}})}
+ pStart('Criando roteiro e cenas…',14);var d=await diretor(String(b.pedido||'').trim());
+ if(d.erro){pEnd(false);aviso(d.erro);return J({erro:msgCurta(d.erro)},d.erro.tipo==='cota'?429:502)}
+ pEnd(true);return J({prompt:d.prompt},200)}
+window.fetch=function(u,o){var url=typeof u==='string'?u:(u&&u.url)||'';if(keys().length&&/\/api\/(tts|direct)(\?|$)/.test(url))return handle(url.split('?')[0],o);return _f(u,o)};
+window.AIc={has:function(){return keys().length>0},aviso:aviso};
+/* ---------- interface: chaves e texto para áudio ---------- */
+var kt=$('aiKeys'),ks=$('aiKeysSave'),kst=$('aiKeysSt'),kv=$('aiKeysShow');
+function kinfo(){var n=dev().length,e=EMB.length;kst.textContent=(n?n+(n>1?' chaves salvas neste aparelho':' chave salva neste aparelho'):'Nenhuma chave salva neste aparelho')+(e?' · '+e+' embutidas no código (temporário).':'.')}
+if(kt&&ks&&kst){kt.value=dev().join('\n');kinfo();ks.onclick=function(){var n=saveKeys(kt.value);kt.value=dev().join('\n');kinfo();if(!n)kst.textContent='Nenhuma chave válida encontrada.'};
+ if(kv)kv.onchange=function(){kt.classList.toggle('mask',!kv.checked)};kt.classList.add('mask')}
+var tg=$('t2aGo'),tx=$('t2aTxt'),tv=$('t2aVoz'),te=$('t2aEst'),ts=$('t2aSt'),ta=$('t2aAu'),td=$('t2aDl');
+if(tg&&tx&&tv){VOZES.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;tv.appendChild(o)});tv.value='Kore';
+ function pedacos(t){var s=String(t).replace(/\r/g,'').split(/(?<=[.!?…\n])\s+/),out=[],c='';s.forEach(function(x){if((c+' '+x).length>3200&&c){out.push(c);c=x}else c=c?c+' '+x:x});if(c)out.push(c);return out}
+ tg.onclick=async function(){var txt=tx.value.trim();if(!txt){ts.textContent='Cole o texto primeiro.';return}
+  if(!keys().length){aviso({tipo:'semchave'});ts.textContent='Falta a chave de acesso.';return}
+  if(navigator.onLine===false){aviso({tipo:'rede'});ts.textContent='Sem internet.';return}
+  var ps=pedacos(txt),partes=[],rate=24000;tg.disabled=true;ta.hidden=true;td.hidden=true;pStart('Gerando o áudio…',ps.length*(5+ps[0].length/40));
+  try{for(var i=0;i<ps.length;i++){ts.textContent='Gerando o áudio… parte '+(i+1)+' de '+ps.length;pSub('Parte '+(i+1)+' de '+ps.length);
+    var r=await ttsPcm({voice:tv.value,text:ps[i],style:te&&te.value});if(r.erro){pEnd(false);aviso(r.erro);ts.textContent=msgCurta(r.erro);return}partes.push(r.pcm);rate=r.rate;pSet((i+1)/ps.length*95)}pEnd(true);
+   var blob=new Blob([juntaWav(partes,rate)],{type:'audio/wav'}),u=URL.createObjectURL(blob);
+   if(td.dataset.u)URL.revokeObjectURL(td.dataset.u);td.dataset.u=u;ta.src=u;ta.hidden=false;td.href=u;td.download='audio-'+tv.value.toLowerCase()+'-'+new Date().toISOString().slice(0,10)+'.wav';td.hidden=false;
+   ts.textContent='Áudio pronto ('+Math.round(blob.size/1024)+' KB, '+Math.round(partes.reduce(function(a,p){return a+p.length},0)/2/rate)+' s).'}
+  catch(e){pEnd(false);aviso({tipo:'rede'});ts.textContent='Não consegui gerar. Tente de novo.'}finally{tg.disabled=false}}}
 })();
 </script>
 <script type="text/plain" id="__warp">
