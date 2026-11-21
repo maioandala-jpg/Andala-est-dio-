@@ -57,3 +57,6 @@ module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.end(JSON.stringify({ prompt: t }));
 };
+
+/* duração máxima da função (a IA pode levar até 1 minuto) */
+module.exports.config = { maxDuration: 60 };
