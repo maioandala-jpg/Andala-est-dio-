@@ -1,6 +1,6 @@
 /* Andala estúdio.AI · função segura de voz (Vercel)
    A chave do Gemini fica SÓ aqui, nas variáveis de ambiente da Vercel.
-   Variáveis: GEMINI_API_KEY (obrigatória), ACCESS_CODE (obrigatória),
+   Variáveis: GEMINI_API_KEY (obrigatória), ACCESS_CODE (opcional),
               GEMINI_TTS_MODEL (opcional: gemini-3.8-flash-tts ou gemini-3.8-flash-lite-tts) */
 const crypto = require('crypto');
 const { chamar, chaves, textoErro } = require('./_gemini.js');
@@ -33,12 +33,12 @@ const txt = v => String(v == null ? '' : v).replace(/\s+/g, ' ').trim();
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return erro(res, 405, 'Método não permitido.');
   const CODE = process.env.ACCESS_CODE;
-  if (!chaves().length || !CODE) return erro(res, 500, 'O servidor ainda não está configurado: faltam a chave do Gemini (GEMINI_API_KEY) e o ACCESS_CODE na Vercel.');
+  if (!chaves().length) return erro(res, 500, 'O servidor ainda não tem chave do Gemini: crie GEMINI_API_KEY na Vercel e faça Redeploy.');
 
   let b = req.body;
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch (e) { b = null; } }
   if (!b || typeof b !== 'object') return erro(res, 400, 'Pedido inválido.');
-  if (!igual(b.code || '', CODE)) return erro(res, 401, 'Código de acesso incorreto.');
+  if (CODE && !igual(b.code || '', CODE)) return erro(res, 401, 'Código de acesso incorreto.'); // ACCESS_CODE é opcional
 
   const style = txt(b.style).slice(0, 120);
   const meta = o => (style ? Object.assign(o, { style }) : o);
@@ -93,3 +93,6 @@ module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.end(audio);
 };
+
+/* duração máxima da função (a IA pode levar até 1 minuto) */
+module.exports.config = { maxDuration: 60 };
