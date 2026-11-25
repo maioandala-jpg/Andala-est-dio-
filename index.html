@@ -1068,7 +1068,7 @@ function vecDraw(ox,oy){if(!VEC||!VST.length)return;const SY=AVATAR_STYLES[estAt
  VST.forEach((st,i)=>{const L=LG_[i]||(LG_[i]={p:st.hx,v:0,b:0,s:0,w:0,gx:0,gy:0}),ac=st.ACT&&tx,X=ac?vecDraw.x:{k:'',b:0,s:0},gw=ac&&vecDraw.g?Math.max(0,Math.min(1,(el-.3)/.5))*Math.max(0,Math.min(1,(2.8-el)/.6)):0;
   L.v=(L.v+(st.hx-L.p)*.1)*.84;L.p+=L.v;L.b+=((st.brow||0)+X.b-L.b)*.2;L.s+=(X.s-L.s)*.12;L.w+=(gw-L.w)*.16;
   const gl=ac&&Math.sin(n/4300+i)>.55?Math.sin(n/700)*.7:0,gyT=(st.sg>.4&&st.sg<.9)?.8:(ac&&vecDraw.q?-.5:0);L.gx+=(gl-L.gx)*.12;L.gy+=(gyT-L.gy)*.1;
-  st.lag=Math.max(-7,Math.min(7,-L.v*16+(st.ACT?Math.sin(st.t/650+i)*1.4:0)));st.brow=L.b;st.sm=L.s;const cg=(st.ACT&&VST.length<2)?CAMD:{gx:0,gy:0};st.gz=[L.gx+cg.gx*1.5,L.gy+cg.gy*1.4];st.lag=Math.max(-10,Math.min(10,st.lag+cg.gx*4));st.yaw=Math.max(-1,Math.min(1,cg.gx/1.2));
+  st.lag=Math.max(-7,Math.min(7,-L.v*16+(st.ACT?Math.sin(st.t/650+i)*1.4:0)));st.brow=L.b;st.sm=L.s;const cg=(st.ACT&&VST.length<2)?CAMD:{gx:0,gy:0};st.gz=[L.gx+cg.gx*1.5,L.gy+cg.gy*1.4];st.lag=Math.max(-10,Math.min(10,st.lag+cg.gx*4));st.yaw=0; /* cabeça sempre de frente: a virada para os lados ficou desativada */
   if(ac&&X.k==='surpresa'){st.peak=true;if(!st.m)st.m=1}
   st.gx=NEW_GESTURES&&L.w>.02?{type:vecDraw.g,w:L.w,k:(tk|0)%2}:null;
   const u=st.sg||0,lf=st.lf||0,br=Math.sin(n/950+st.cx)*.6+(u?(u<.4?u/.4:1-(u-.4)/.6)*1.7:0);st.tr=[1+.004*br,1+.007*br,lf?Math.sin(Math.PI*lf)*Math.sin(n/52)*3.2:0]});
