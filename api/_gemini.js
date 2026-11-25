@@ -73,6 +73,13 @@ async function tentar(modelo, payload, aceita, fim) {
   return Object.assign({ ok: false, total: ks.length, todas: true }, ult);
 }
 
+/* Modelo de texto: gemini-2.5-flash-lite (confirmado a funcionar com as chaves). Pode ser trocado na Vercel com GEMINI_TEXT_MODEL. */
+const MODELO_PADRAO = 'gemini-2.5-flash-lite';
+const RESERVAS = ['gemini-2.5-flash', 'gemini-3.8-flash'];
+function modeloTexto() {
+  const pm = (process.env.GEMINI_TEXT_MODEL || '').trim();
+  return /^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(pm) ? pm : MODELO_PADRAO;
+}
 const dorme = ms => new Promise(r => setTimeout(r, ms));
 /* Chama o modelo; se o Google estiver sobrecarregado (erro 5xx, ex.: 503 "high demand"), espera um pouco,
    tenta de novo e, em modelos de texto (texto=true), tenta modelos reserva:
@@ -86,8 +93,9 @@ async function chamar(modelo, payload, aceita, texto) {
   }
   if (!r.ok && r.tipo === 'servidor' && texto) {
     const lista = [];
-    if (/-flash$/.test(modelo)) lista.push(modelo + '-lite');
     String(process.env.GEMINI_TEXT_FALLBACK || '').split(/[\s,;]+/).forEach(m => { if (/^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(m)) lista.push(m); });
+    RESERVAS.forEach(m => lista.push(m));
+    if (/-flash$/.test(modelo)) lista.push(modelo + '-lite');
     for (const m of lista) {
       if (m === modelo || fim - Date.now() < 8000) continue;
       const x = await tentar(m, payload, aceita, fim);
@@ -108,4 +116,4 @@ function textoErro(o) {
   if (o.tipo === 'vazio') return t + 'A IA não devolveu o resultado. Tente de novo.';
   return t + 'A IA recusou o pedido (' + o.status + ').' + (o.msg ? ' ' + o.msg : '');
 }
-module.exports = { chamar, chaves, textoErro };
+module.exports = { chamar, chaves, textoErro, modeloTexto };

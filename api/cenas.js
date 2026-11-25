@@ -6,7 +6,7 @@
    O desenho é feito em SVG (código): não usa modelo de imagens, por isso não tem custo extra.
    Variáveis: GEMINI_API_KEY(_2,_3), ACCESS_CODE (opcional), GEMINI_TEXT_MODEL (opcional). */
 const crypto = require('crypto');
-const { chamar, chaves, textoErro } = require('./_gemini.js');
+const { chamar, chaves, textoErro, modeloTexto } = require('./_gemini.js');
 
 function erro(res, status, msg) {
   res.statusCode = status;
@@ -74,10 +74,6 @@ Answer ONLY with JSON, no markdown: {"titulo":"...","linhas":["..."],"paleta":"#
 
 const CODIGOS = `Also add silent audio cue codes at the start of the lines where they help retention, using ONLY: [sfx:hit] [sfx:whoosh] [sfx:pop] [sfx:riser] [sfx:ding] [sfx:error] [sfx:success] [sfx:tick] [sfx:heartbeat] [sfx:swipe] [sfx:camera] [sfx:sparkle] [pause:0.4] [music:calm|tense|uplift|epic|warm|none] [voice:slow|fast|whisper|excited|serious]. Rules: a strong cue ([sfx:hit] or [sfx:riser]) on line 1; at most one sound effect every 4 to 6 seconds; a reveal follows the pattern [sfx:riser] [pause:0.4] then the line; [sfx:error] for myths and mistakes, [sfx:success] or [sfx:ding] for solutions; set [music:...] on line 1 and change it only when the topic changes; end with [sfx:sparkle]. The codes are never spoken.`;
 
-function modeloTexto() {
-  const pm = (process.env.GEMINI_TEXT_MODEL || '').trim();
-  return /^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(pm) ? pm : 'gemini-3.8-flash';
-}
 const temTexto = x => { const c = (((x || {}).candidates || [])[0] || {}).content; return !!(c && (c.parts || []).some(q => q && q.text)); };
 function textoDe(json) {
   const cand = ((json || {}).candidates || [])[0] || {};
