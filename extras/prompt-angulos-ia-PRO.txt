@@ -1,0 +1,112 @@
+PROMPT PROFISSIONAL: CABEÇA EM VÁRIOS ÂNGULOS PARA ANIMAÇÃO 2D (ESTÚDIO ANDALA)
+==============================================================================
+
+COMO USAR
+1. Abra uma IA de imagens que aceite uma imagem de referência (ex.: Gemini, ChatGPT, Midjourney com --cref/--oref).
+2. Anexe a imagem do personagem DE FRENTE (a sua cabeca.png ou uma imagem do avatar).
+3. Copie o PROMPT MESTRE (parte A) e troque o que está entre [COLCHETES].
+4. Depois use as partes B, C e D, sempre ANEXANDO a imagem aprovada do passo anterior.
+5. Se algo sair mal, use a parte E (correções).
+
+NOTA HONESTA SOBRE O QUE O ESTÚDIO USA HOJE
+O estúdio usa UM ângulo por lado: cabeca_esq e cabeca_dir (3/4, cerca de 35 a 45 graus), mais
+olhos e bocas com _esq / _dir. O perfil de 90 graus pode ser gerado já, mas o estúdio ainda não o
+usa: guarde-o para quando se pedir essa atualização. Comece por 3/4.
+
+--------------------------------------------------------------------------------
+A) PROMPT MESTRE: FOLHA DE ÂNGULOS (copie e cole; está em inglês de propósito, as IAs seguem melhor)
+--------------------------------------------------------------------------------
+ROLE: You are a senior character artist preparing a production-ready 2D animation rig.
+
+TASK: Using the attached reference image as the single source of truth, draw the SAME character's
+HEAD ONLY at three angles on one sheet, left to right:
+  1) front view (0 degrees), 2) three-quarter view turned to the viewer's LEFT (about 40 degrees),
+  3) three-quarter view turned to the viewer's RIGHT (about 40 degrees).
+
+CHARACTER: [descreva: ex. adult man, short black hair, full black beard, warm brown skin, no glasses]
+
+STYLE LOCK (must not change): identical art style, line weight, flat colors, shading, highlight shapes
+and color palette as the reference. Same face proportions, same eye size and shape, same hairstyle,
+same skin tone, same accessories. Vector-clean look, smooth edges, no texture noise, no painterly
+rendering, no 3D render, no photo realism.
+
+PRODUCTION RULES (very important):
+- Head only: hair, face, ears, a short neck stub cut straight at the bottom. No shoulders, no body, no clothes.
+- Neutral expression: eyes open, looking straight ahead along the head direction, mouth closed.
+- All three heads have exactly the SAME height, the SAME scale and the SAME vertical position:
+  eye line, nose tip, mouth line and chin sit on identical horizontal guide lines across the three views.
+- Heads centered in equal square cells, even spacing, no overlap, nothing cropped.
+- Perfect symmetry in the front view. In three-quarter views keep correct perspective: the far eye is
+  slightly narrower, the far ear is hidden, the nose overlaps the far cheek, the jaw line turns naturally.
+- Background: one flat solid color #FF00FF (magenta), no gradient, no shadow on the background,
+  no ground, no text, no labels, no watermark, no border. (Magenta makes background removal clean.)
+- Output: square cells, very high resolution, sharp edges, no blur.
+
+QUALITY BAR: The result must look like assets from a professional VTuber / Live2D rig or a studio
+2D animation turnaround sheet: consistent, clean, ready to be cut into layers without redrawing.
+
+NEGATIVE: different face between views, changed hairstyle, changed colors, extra fingers or objects,
+hat, glasses unless in reference, tilted head, perspective distortion, uneven sizes, cropped head,
+body, text, signature, blurry, noisy, realistic skin pores, 3D shading, gradient background.
+
+--------------------------------------------------------------------------------
+B) PROMPT: OLHOS FECHADOS (um por ângulo; anexe a imagem aprovada daquele ângulo)
+--------------------------------------------------------------------------------
+Edit the attached image. Change ONLY the eyes: close both eyes naturally (relaxed blink, the line of
+the closed eyelid curves down with lashes if the reference has them). Keep everything else
+pixel-identical: same head position, size, hair, skin, outline, background (#FF00FF), eyebrows.
+Do not move or resize anything.
+
+--------------------------------------------------------------------------------
+C) PROMPT: 4 BOCAS (um pedido por boca; anexe a imagem aprovada daquele ângulo)
+--------------------------------------------------------------------------------
+Edit the attached image. Change ONLY the mouth, keep everything else pixel-identical (same head
+position and scale, same eyes, hair, skin, outline, background #FF00FF). Draw this mouth shape in the
+same art style, correct for the head angle:
+  boca0: mouth closed, relaxed, very slight smile.
+  boca1: mouth slightly open, small oval, lips apart (sound "e").
+  boca2: mouth clearly open, upper teeth visible if the reference style has teeth (sound "a").
+  boca3: mouth wide open, excited, tongue visible (shouting / big vowel "A").
+The mouth must stay at the same position, centered on the same mouth line, scaled to the head.
+
+--------------------------------------------------------------------------------
+D) PROMPT: CABEÇA LIMPA (SEM OLHOS E SEM BOCA) PARA A CAMADA "cabeca"
+--------------------------------------------------------------------------------
+Edit the attached image. Remove the eyes, eyebrows and mouth completely and fill those areas with
+the natural skin color and shading so the face is smooth and blank. Keep head shape, hair, ears,
+nose, beard, outline, position, scale and background (#FF00FF) exactly the same.
+(Se a barba cobrir a boca, mantenha a barba e apague só os lábios.)
+
+--------------------------------------------------------------------------------
+E) CORREÇÕES RÁPIDAS (quando a IA errar)
+--------------------------------------------------------------------------------
+- Rosto diferente entre ângulos:
+  "The face drifted from the reference. Regenerate using the attached reference as the strict source.
+   Same face shape, same eyes, same hair, same colors. Change only the head angle."
+- Cabeças de tamanhos ou alturas diferentes:
+  "Make all heads the same size and align eyes, nose and chin on the same horizontal lines."
+- Fundo com sombra ou degradê:
+  "Replace the background with a perfectly flat #FF00FF, remove any shadow or gradient."
+- Estilo mudou (ficou realista ou 3D):
+  "Keep the exact flat 2D vector style of the reference. No 3D, no realism, no texture."
+- Perspetiva errada no 3/4:
+  "In the three-quarter view the far eye must be narrower, the far ear hidden, the nose in front of the
+   far cheek. Keep the angle at about 40 degrees, not a full profile."
+
+--------------------------------------------------------------------------------
+F) DEPOIS DE GERAR: PREPARAR OS FICHEIROS (sem IA, 10 minutos no Photopea)
+--------------------------------------------------------------------------------
+1. Remover o magenta: Seleção > Gama de cores (ou varinha com tolerância baixa) > apagar > fundo transparente.
+   Passe um "Contrair 1px" na seleção para tirar o rebordo rosa do cabelo.
+2. Cortar cada cabeça para um quadrado igual (ex.: 512x512) com a cabeça no MESMO sítio. Use guias.
+3. Nomes finais (tudo minúsculo, sem acentos, PNG com transparência):
+     frente (já tem):  cabeca  olhos_abertos  olhos_fechados  boca0 boca1 boca2 boca3
+     esquerda:         cabeca_esq  olhos_abertos_esq  olhos_fechados_esq  boca0_esq ... boca3_esq
+     direita:          cabeca_dir  olhos_abertos_dir  olhos_fechados_dir  boca0_dir ... boca3_dir
+   Cada camada de olhos/boca = só esses elementos, resto transparente, mesmo tamanho da cabeça.
+4. Aba Cena > Camadas PNG > carregar tudo > estilo "Minhas camadas".
+
+LISTA DE VERIFICAÇÃO ANTES DE USAR
+[ ] A mesma pessoa nos três ângulos      [ ] Cabeças do mesmo tamanho e altura
+[ ] Fundo removido sem rebordo           [ ] Olhos e bocas alinhados com a cabeça
+[ ] Todos os PNG com o mesmo tamanho     [ ] Nomes exatamente como na lista

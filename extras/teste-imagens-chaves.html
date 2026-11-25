@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teste de imagens com as chaves Gemini</title>
+<style>
+  :root{--bg:#0f1115;--card:#1a1d24;--tx:#e8eaf0;--mut:#9aa3b2;--ok:#3ecf8e;--er:#ff6b6b;--ac:#7c8cff}
+  *{box-sizing:border-box}
+  body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,sans-serif;max-width:760px;margin-inline:auto}
+  h1{font-size:20px;margin:0 0 4px}
+  p.s{color:var(--mut);margin:0 0 14px;font-size:13px}
+  .c{background:var(--card);border-radius:12px;padding:14px;margin-bottom:12px}
+  label{display:block;font-size:12px;color:var(--mut);margin:8px 0 3px}
+  input,select,textarea{width:100%;padding:9px;border-radius:8px;border:1px solid #2c313c;background:#0f1115;color:var(--tx);font:inherit}
+  textarea{min-height:60px}
+  button{padding:10px 14px;border:0;border-radius:8px;background:var(--ac);color:#fff;font:inherit;font-weight:600;cursor:pointer;margin:8px 8px 0 0}
+  button.g{background:#2c313c}
+  button:disabled{opacity:.5}
+  .r{border-left:4px solid var(--mut);padding:8px 10px;margin-top:8px;background:#12151b;border-radius:6px;font-size:13px;word-break:break-word}
+  .r.ok{border-color:var(--ok)} .r.er{border-color:var(--er)}
+  .r b{display:block}
+  img{max-width:220px;border-radius:8px;margin-top:8px;display:block}
+  .w{font-size:12px;color:#f5c26b;margin-top:8px}
+  code{background:#12151b;padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<h1>Teste de imagens com as chaves Gemini</h1>
+<p class="s">As chaves ficam só nesta página, no teu navegador. Não são guardadas nem enviadas para mim: o teste fala direto com o Google.</p>
+
+<div class="c">
+  <label>Chave 1</label><input id="k1" type="password" placeholder="AIza... ou AQ...." autocomplete="off">
+  <label>Chave 2 (opcional)</label><input id="k2" type="password" autocomplete="off">
+  <label>Chave 3 (opcional)</label><input id="k3" type="password" autocomplete="off">
+  <label>Modelo de imagem</label>
+  <select id="m">
+    <option value="gemini-2.5-flash-image">gemini-2.5-flash-image (Gemini, ~0,039 USD/imagem)</option>
+    <option value="imagen-4.0-fast-generate-001">imagen-4.0-fast-generate-001 (Imagen 4 Fast, ~0,02 USD)</option>
+    <option value="imagen-4.0-generate-001">imagen-4.0-generate-001 (Imagen 4, ~0,04 USD)</option>
+    <option value="custom">Outro (escrever abaixo)</option>
+  </select>
+  <label>Nome do modelo personalizado (só se escolheste "Outro")</label>
+  <input id="mc" placeholder="ex.: nome copiado da lista de modelos">
+  <label>Texto da imagem</label>
+  <textarea id="p">Vertical illustration, modern anime-inspired style, a girl studying at a desk at night, warm soft light, no text, no watermark</textarea>
+  <button id="go">Testar 1 imagem em cada chave</button>
+  <button class="g" id="ls">Listar modelos de imagem da chave 1</button>
+  <div class="w">Atenção: cada imagem gerada com sucesso é cobrada se a faturação estiver ativa (cerca de 0,02 a 0,04 USD). Se a faturação não estiver ativa, o Google deve devolver um erro e não cobra nada.</div>
+</div>
+
+<div id="out"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const out=$('#out');
+function base(k){return k.startsWith('AQ.')?'https://aiplatform.googleapis.com/v1/publishers/google/models/':'https://generativelanguage.googleapis.com/v1beta/models/'}
+function modelo(){const v=$('#m').value;return v==='custom'?$('#mc').value.trim():v}
+function add(cls,titulo,txt,img){
+  const d=document.createElement('div');d.className='r '+cls;
+  const b=document.createElement('b');b.textContent=titulo;d.appendChild(b);
+  if(txt){const t=document.createElement('span');t.textContent=txt;d.appendChild(t)}
+  if(img){const i=document.createElement('img');i.src=img;d.appendChild(i)}
+  out.appendChild(d)
+}
+function explica(status,msg){
+  const m=(msg||'').toLowerCase();
+  if(status===429||m.includes('quota')||m.includes('exhausted'))return 'Sem cota para este modelo. No plano gratuito imagens não estão incluídas: ativa a faturação ou espera a cota repor.';
+  if(m.includes('billing')||m.includes('free tier'))return 'Este modelo precisa de faturação ativa no projeto da chave.';
+  if(status===404||m.includes('not found'))return 'O modelo não existe ou não está disponível para esta chave. Usa "Listar modelos" e copia o nome certo.';
+  if(status===400&&m.includes('api key'))return 'Chave inválida.';
+  if(status===401||status===403)return 'Chave sem permissão para este modelo ou inválida.';
+  return '';
+}
+async function uma(k,i){
+  const mod=modelo(),p=$('#p').value.trim();
+  if(!mod){add('er','Chave '+i,'Escolhe ou escreve um modelo.');return}
+  const img=mod.startsWith('imagen');
+  const url=base(k)+mod+(img?':predict':':generateContent')+'?key='+encodeURIComponent(k);
+  const body=img
+    ?{instances:[{prompt:p}],parameters:{sampleCount:1,aspectRatio:'9:16'}}
+    :{contents:[{role:'user',parts:[{text:p}]}],generationConfig:{responseModalities:['TEXT','IMAGE']}};
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok){
+      const msg=(j.error&&j.error.message)||('HTTP '+r.status);
+      add('er','Chave '+i+' ('+k.slice(0,4)+'…): FALHOU ('+r.status+')',msg+' | '+explica(r.status,msg));return
+    }
+    let b64=null,mime='image/png';
+    if(img){const pr=j.predictions&&j.predictions[0];if(pr){b64=pr.bytesBase64Encoded;mime=pr.mimeType||mime}}
+    else{const ps=(j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts)||[];
+      for(const x of ps){const d=x.inlineData||x.inline_data;if(d&&d.data){b64=d.data;mime=d.mimeType||d.mime_type||mime;break}}}
+    if(b64)add('ok','Chave '+i+' ('+k.slice(0,4)+'…): FUNCIONA, imagem gerada','',`data:${mime};base64,${b64}`);
+    else add('er','Chave '+i+': respondeu mas sem imagem',JSON.stringify(j).slice(0,400));
+  }catch(e){
+    add('er','Chave '+i+': erro de rede',String(e.message||e)+(k.startsWith('AQ.')?' | Chaves AQ. podem ser bloqueadas pelo navegador (CORS). Isso não quer dizer que não funcionem no servidor da Vercel.':''));
+  }
+}
+$('#go').onclick=async()=>{
+  out.innerHTML='';
+  const ks=['k1','k2','k3'].map(id=>$('#'+id).value.trim());
+  if(!ks.some(Boolean)){add('er','Falta chave','Cola pelo menos a chave 1.');return}
+  $('#go').disabled=true;
+  for(let i=0;i<3;i++){if(ks[i])await uma(ks[i],i+1)}
+  $('#go').disabled=false;
+};
+$('#ls').onclick=async()=>{
+  out.innerHTML='';
+  const k=$('#k1').value.trim();
+  if(!k){add('er','Falta chave','Cola a chave 1.');return}
+  try{
+    const u=k.startsWith('AQ.')?'https://aiplatform.googleapis.com/v1/publishers/google/models?key=':'https://generativelanguage.googleapis.com/v1beta/models?pageSize=200&key=';
+    const r=await fetch(u+encodeURIComponent(k));
+    const j=await r.json();
+    if(!r.ok){add('er','Falhou ('+r.status+')',(j.error&&j.error.message)||'');return}
+    const l=(j.models||j.publisherModels||[]).map(m=>(m.name||'').replace(/^models\//,'').replace(/^publishers\/google\/models\//,'')).filter(n=>/image|imagen/i.test(n));
+    add(l.length?'ok':'er',l.length?'Modelos de imagem desta chave':'Nenhum modelo de imagem listado',l.join('  |  '));
+  }catch(e){add('er','Erro de rede',String(e.message||e))}
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+PROMPT PARA A IA: CABEÇA VIRADA (ESQUERDA / DIREITA) PARA O ESTILO "MINHAS CAMADAS"
+================================================================================
+
+PARA QUE SERVE
+Os avatares desenhados pelo estúdio (Cartoon, Anime, Blocos) já viram o rosto sozinhos.
+Este prompt é só para quem usa o estilo "Minhas camadas" (PNG próprios) e quer cabeça virada.
+O estúdio usa estas camadas extra quando a câmera olha para o lado (são opcionais):
+
+  cabeca_esq.png  olhos_abertos_esq.png  olhos_fechados_esq.png  boca0_esq.png ... boca3_esq.png
+  cabeca_dir.png  olhos_abertos_dir.png  olhos_fechados_dir.png  boca0_dir.png ... boca3_dir.png
+
+  esq = rosto virado para a ESQUERDA do ecrã    dir = rosto virado para a DIREITA do ecrã
+  Sem estas camadas, o estúdio usa as de frente (cabeca.png etc.) e continua a funcionar.
+
+REGRAS DE TODAS AS IMAGENS
+- PNG com fundo transparente, quadrado (ex.: 512x512), todas do mesmo tamanho.
+- A cabeça fica centrada e no MESMO sítio e tamanho em todas as camadas do mesmo lado.
+- "cabeca" = cabeça + cabelo + orelhas, SEM olhos e SEM boca (a pele fica lisa onde eles estariam).
+- "olhos_abertos" / "olhos_fechados" = só os olhos (e sobrancelhas), no sítio certo, resto transparente.
+- "boca0" (fechada) até "boca3" (muito aberta) = só a boca, resto transparente.
+- Rotação ligeira, cerca de 20 a 30 graus (3/4), nunca perfil total.
+
+PASSO 1: CRIAR O PERSONAGEM VIRADO (copie e cole na IA de imagens)
+------------------------------------------------------------------
+Mesmo personagem do anexo (use a imagem de frente como referência), cabeça virada 25 graus
+para a esquerda do ecrã, vista de 3/4, olhando ligeiramente para fora da imagem.
+Mantém exatamente o mesmo cabelo, cor da pele, barba/maquiagem, óculos, tamanho da cabeça,
+traço, cores e sombreado da imagem de referência. Fundo branco liso, sem cenário, sem pescoço
+além do necessário, sem corpo, só a cabeça. Expressão neutra, boca fechada, olhos abertos.
+Quadrado 1:1, alta resolução.
+(Repita trocando "esquerda" por "direita" para o outro lado.)
+
+PASSO 2: VARIAÇÕES DO MESMO ÂNGULO
+-----------------------------------
+Usa a imagem do passo 1 como referência e gera, SEM mudar a posição nem o tamanho da cabeça:
+ a) mesma imagem com olhos fechados;
+ b) boca ligeiramente aberta (som "é");
+ c) boca bem aberta (som "á");
+ d) boca muito aberta, a gritar de entusiasmo.
+Exatamente o mesmo enquadramento, o mesmo fundo branco. Só muda a boca/olhos.
+
+PASSO 3: SEPARAR EM CAMADAS (sem IA, 5 minutos)
+-----------------------------------------------
+Abra as imagens num editor (ex.: Photopea, grátis, no navegador) e:
+ 1. Remova o fundo branco (fundo transparente).
+ 2. Duplique a imagem "neutra": numa cópia apague olhos e boca (pinte com a cor da pele): é a cabeca_esq.
+ 3. Noutra cópia apague tudo menos os olhos: é olhos_abertos_esq. Faça o mesmo com a versão de olhos fechados.
+ 4. Das imagens com a boca, apague tudo menos a boca: boca0_esq a boca3_esq.
+ 5. Exporte tudo como PNG com os nomes certos, do mesmo tamanho.
+Carregue os PNG em "Camadas PNG" (aba Cena) e escolha o estilo "Minhas camadas".
+
+DICAS
+- Se a IA mudar o rosto entre imagens, volte a gerar usando sempre a MESMA imagem como referência.
+- Se as peças não encaixarem, é porque a cabeça mudou de posição entre as imagens. Alinhe no editor.
+- Comece só com cabeca_esq + cabeca_dir (sem olhos/bocas laterais): o estúdio usa os olhos e
+  bocas de frente por cima, o que já é aceitável para um ângulo pequeno.

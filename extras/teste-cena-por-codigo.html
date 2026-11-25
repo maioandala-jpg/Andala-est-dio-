@@ -1,0 +1,46 @@
+<!doctype html><html lang="pt"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cena por código (SVG)</title>
+<style>
+:root{--bg:#0f1115;--card:#1a1d24;--tx:#e8eaf0;--mut:#9aa3b2;--ac:#7c8cff}
+*{box-sizing:border-box}body{margin:0;padding:16px;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,sans-serif;max-width:900px;margin-inline:auto}
+h1{font-size:20px;margin:0 0 4px}p.s{color:var(--mut);font-size:13px;margin:0 0 12px}
+.row{display:flex;gap:14px;flex-wrap:wrap}.c{background:var(--card);border-radius:12px;padding:14px;flex:1;min-width:280px}
+textarea{width:100%;height:230px;background:#0f1115;color:var(--tx);border:1px solid #2c313c;border-radius:8px;padding:8px;font:12px/1.4 monospace}
+select,button{padding:9px 12px;border-radius:8px;border:0;font:inherit;margin:6px 6px 0 0}button{background:var(--ac);color:#fff;font-weight:600;cursor:pointer}select{background:#2c313c;color:var(--tx)}
+#fr{width:270px;height:480px;background:#000;border-radius:10px;overflow:hidden;margin:auto;position:relative}
+#fr svg{width:100%;height:100%;display:block;transform-origin:50% 50%}
+@keyframes z{from{transform:scale(1)}to{transform:scale(1.18)}}
+#err{color:#ff6b6b;font-size:13px;margin-top:6px}
+</style></head><body>
+<h1>Cena por código (SVG)</h1>
+<p class="s">1) Copia o prompt do estilo, 2) cola-o numa IA de texto (Gemini grátis serve), 3) cola aqui o código SVG que ela devolver, 4) vê o resultado com zoom lento.</p>
+<div class="row">
+<div class="c">
+<select id="st"><option value="c">Cartoon plano</option><option value="p">Pixel art</option><option value="a">Anime simples</option></select>
+<button id="cp">Copiar prompt do estilo</button>
+<label style="display:block;font-size:12px;color:var(--mut);margin-top:8px">Cena que queres (em português)</label>
+<input id="sc" style="width:100%;padding:9px;border-radius:8px;border:1px solid #2c313c;background:#0f1115;color:var(--tx)" value="uma rapariga a estudar de noite com um candeeiro">
+<label style="display:block;font-size:12px;color:var(--mut);margin-top:8px">Cola aqui o SVG</label>
+<textarea id="code"></textarea>
+<button id="go">Ver cena</button><button id="zm" style="background:#2c313c">Zoom lento on/off</button>
+<div id="err"></div></div>
+<div class="c"><div id="fr"></div></div></div>
+<script>
+const SAMPLE="<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 720 1280\">\n<defs>\n<linearGradient id=\"sky\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#1b1f4b\"/><stop offset=\"1\" stop-color=\"#6b3fa0\"/></linearGradient>\n<radialGradient id=\"lamp\" cx=\".5\" cy=\".5\" r=\".5\"><stop offset=\"0\" stop-color=\"#ffd27a\" stop-opacity=\".9\"/><stop offset=\"1\" stop-color=\"#ffd27a\" stop-opacity=\"0\"/></radialGradient>\n</defs>\n<rect width=\"720\" height=\"1280\" fill=\"url(#sky)\"/>\n<g fill=\"#fff\"><circle cx=\"90\" cy=\"150\" r=\"3\"/><circle cx=\"250\" cy=\"90\" r=\"2\"/><circle cx=\"420\" cy=\"170\" r=\"3\"/><circle cx=\"610\" cy=\"110\" r=\"2.5\"/><circle cx=\"560\" cy=\"250\" r=\"2\"/><circle cx=\"160\" cy=\"300\" r=\"2\"/></g>\n<circle cx=\"540\" cy=\"200\" r=\"70\" fill=\"#fff4c9\"/><circle cx=\"515\" cy=\"188\" r=\"70\" fill=\"#1b1f4b\" opacity=\".0\"/>\n<rect x=\"0\" y=\"560\" width=\"720\" height=\"720\" fill=\"#2a2150\"/>\n<rect x=\"60\" y=\"300\" width=\"260\" height=\"300\" rx=\"12\" fill=\"#14183a\"/>\n<rect x=\"80\" y=\"320\" width=\"220\" height=\"260\" rx=\"6\" fill=\"#26306b\"/>\n<path d=\"M80 480 L190 380 L300 480 Z\" fill=\"#3a4a9a\"/>\n<circle cx=\"150\" cy=\"370\" r=\"22\" fill=\"#ffd27a\"/>\n<ellipse cx=\"460\" cy=\"720\" rx=\"260\" ry=\"200\" fill=\"url(#lamp)\"/>\n<rect x=\"0\" y=\"880\" width=\"720\" height=\"400\" fill=\"#4b2f2a\"/>\n<rect x=\"0\" y=\"880\" width=\"720\" height=\"22\" fill=\"#6b4238\"/>\n<rect x=\"400\" y=\"760\" width=\"14\" height=\"120\" fill=\"#222\"/>\n<path d=\"M370 770 L444 770 L470 720 L344 720 Z\" fill=\"#ff6b6b\"/>\n<g>\n<rect x=\"150\" y=\"760\" width=\"170\" height=\"20\" rx=\"4\" fill=\"#e8e8f0\"/>\n<rect x=\"165\" y=\"660\" width=\"140\" height=\"100\" rx=\"8\" fill=\"#ffffff\"/>\n<rect x=\"175\" y=\"670\" width=\"120\" height=\"80\" rx=\"4\" fill=\"#9fd3ff\"/>\n</g>\n<path d=\"M230 1280 L250 1040 Q360 980 470 1040 L490 1280 Z\" fill=\"#ff9f43\"/>\n<rect x=\"335\" y=\"960\" width=\"50\" height=\"70\" fill=\"#f5c9a0\"/>\n<circle cx=\"360\" cy=\"900\" r=\"92\" fill=\"#f5c9a0\"/>\n<path d=\"M265 890 Q260 790 360 790 Q460 790 455 890 Q430 850 360 850 Q290 850 265 890 Z\" fill=\"#2b2b3a\"/>\n<ellipse cx=\"322\" cy=\"905\" rx=\"11\" ry=\"15\" fill=\"#2b2b3a\"/><ellipse cx=\"398\" cy=\"905\" rx=\"11\" ry=\"15\" fill=\"#2b2b3a\"/>\n<circle cx=\"326\" cy=\"899\" r=\"4\" fill=\"#fff\"/><circle cx=\"402\" cy=\"899\" r=\"4\" fill=\"#fff\"/>\n<path d=\"M335 945 Q360 962 385 945\" stroke=\"#8a4b3a\" stroke-width=\"5\" fill=\"none\" stroke-linecap=\"round\"/>\n<ellipse cx=\"305\" cy=\"935\" rx=\"14\" ry=\"8\" fill=\"#ff9aa2\" opacity=\".6\"/><ellipse cx=\"415\" cy=\"935\" rx=\"14\" ry=\"8\" fill=\"#ff9aa2\" opacity=\".6\"/>\n<rect x=\"250\" y=\"1100\" width=\"220\" height=\"180\" rx=\"14\" fill=\"#ff9f43\"/>\n</svg>\n";
+const COM='Responde SOMENTE com um bloco de codigo SVG, sem explicacao. Formato: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 1280">. Vertical 9:16. Sem texto, sem letras, sem imagens externas, sem scripts, sem fontes. Usa so formas (rect, circle, ellipse, path, polygon, linearGradient). Deixa o terco de cima mais calmo (espaco para legendas). Maximo 90 elementos. Sem pessoas reais nem personagens famosos. ';
+const EST={
+c:'ESTILO: cartoon plano moderno, cores solidas, sem contornos pretos fortes, formas arredondadas, paleta harmoniosa de 6 a 8 cores, 2 gradientes suaves no maximo, luz quente suave. Personagem simples: cabeca redonda, olhos ovais, sorriso pequeno, bochechas rosadas. ',
+p:'ESTILO: pixel art. Imagina uma grelha de 90x160 e cada pixel e um <rect width="8" height="8"> em escala (viewBox 720x1280), shape-rendering="crispEdges". Paleta fixa de 12 cores. Sem gradientes, sem curvas. Agrupa pixels iguais em retangulos maiores para reduzir elementos. ',
+a:'ESTILO: anime simples estilizado: olhos grandes com brilho branco, cabelo em 2 ou 3 formas com mechas, queixo pontiagudo, sombra cell-shading de 1 tom por area, fundo suave com gradiente e desfoque falso (circulos translucidos). Cores vibrantes mas harmoniosas. '
+};
+const fr=document.getElementById('fr'),err=document.getElementById('err');let zo=true;
+function show(){err.textContent='';let s=document.getElementById('code').value.trim();
+ const m=s.match(/<svg[\s\S]*<\/svg>/i);if(!m){err.textContent='Nao encontrei <svg>...</svg> no texto colado.';return}
+ s=m[0].replace(/<script[\s\S]*?<\/script>/gi,'').replace(/\son\w+="[^"]*"/gi,'').replace(/<image[\s\S]*?>/gi,'');
+ const d=new DOMParser().parseFromString(s,'image/svg+xml');if(d.querySelector('parsererror')){err.textContent='SVG invalido (erro de sintaxe). Pede a IA para corrigir.';return}
+ fr.innerHTML=s;const e=fr.querySelector('svg');if(e){e.setAttribute('preserveAspectRatio','xMidYMid slice');e.style.animation=zo?'z 8s ease-in-out infinite alternate':'none'}}
+document.getElementById('go').onclick=show;
+document.getElementById('zm').onclick=()=>{zo=!zo;const e=fr.querySelector('svg');if(e)e.style.animation=zo?'z 8s ease-in-out infinite alternate':'none'};
+document.getElementById('cp').onclick=async()=>{const t=COM+EST[document.getElementById('st').value]+'CENA: '+document.getElementById('sc').value;
+ try{await navigator.clipboard.writeText(t);err.style.color='#3ecf8e';err.textContent='Prompt copiado. Cola-o na IA.'}catch(e){document.getElementById('code').value=t;err.textContent='Copia o texto da caixa.'}};
+document.getElementById('code').value=SAMPLE;show();
+</script></body></html>

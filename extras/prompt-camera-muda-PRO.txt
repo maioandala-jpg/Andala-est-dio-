@@ -1,0 +1,134 @@
+PROMPT PROFISSIONAL: A CÂMERA MUDA DE LUGAR, A CABEÇA SÓ ACOMPANHA (ESTÚDIO ANDALA)
+================================================================================
+
+A IDEIA (para a IA perceber)
+O personagem NÃO muda de sítio nem faz uma pose nova. Quem se mexe é a CÂMERA: ela orbita à volta
+do personagem, num arco horizontal, sempre à mesma distância. Por isso o ESTÚDIO INTEIRO muda de
+perspetiva (prateleiras, secretária, microfone, luzes LED), e o personagem apenas gira a cabeça e
+os olhos para continuar a olhar para a lente. É o que acontece num estúdio real com várias câmeras.
+
+O QUE SE GERA (3 câmeras principais; 4 e 5 opcionais)
+  CÂMERA 1  frente, 0 graus, ao nível dos olhos                    (a que o estúdio já tem)
+  CÂMERA 2  à ESQUERDA do personagem, cerca de 35 graus
+  CÂMERA 3  à DIREITA do personagem, cerca de 35 graus
+  CÂMERA 4  (opcional) um pouco acima, a olhar ligeiramente para baixo
+  CÂMERA 5  (opcional) um pouco abaixo, a olhar ligeiramente para cima
+
+POR QUE 35 E NÃO 90 GRAUS
+Com 90 graus a câmera ficaria de lado e o personagem teria de ser visto de perfil e a olhar para
+trás. Isso fica falso. A 35 graus a mudança de ângulo é clara, a cabeça acompanha de forma natural e
+o resultado parece profissional.
+
+COMO O ESTÚDIO USA ESTAS IMAGENS (já implementado: aba Cena > "Multi-câmera")
+Carregue os ficheiros cam1_... a cam5_... (nomes na secção F). O estúdio corta sozinho entre as câmeras:
+  plano geral, médio e close  -> cam1 (frente)        plano da esquerda -> cam2      plano da direita -> cam3
+  plano de cima               -> cam4                  plano de baixo    -> cam5
+Se uma câmera não existir, usa a cam1. Mínimo por câmera: cam?_fundo + cam?_cabeca. A boca mexe com a voz,
+os olhos piscam e há respiração. Só para um avatar (não vale para diálogo a dois). Sem imagens, o
+estúdio usa os avatares desenhados por código, como antes.
+
+--------------------------------------------------------------------------------
+A) PROMPT MESTRE: AS 3 CÂMERAS NA MESMA FOLHA (copie e cole; anexe a imagem de referência)
+--------------------------------------------------------------------------------
+ROLE: You are a senior 2D art director building a production-ready multi-camera virtual studio.
+
+TASK: Using the attached reference image as the single source of truth, create three images of the
+SAME scene and the SAME character, each seen from a different camera position:
+  Camera 1: front, 0 degrees, eye level.
+  Camera 2: the camera is moved to the LEFT of the character, orbiting about 35 degrees.
+  Camera 3: the camera is moved to the RIGHT of the character, orbiting about 35 degrees.
+
+SCENE: [descreva o estúdio: ex. cozy podcast studio, wooden desk in front, bookshelf on the right,
+        boom microphone, warm LED strips on the walls, soft window light from the left]
+CHARACTER: [descreva: ex. adult man, short black hair, full black beard, olive green sweater, headphones]
+
+CAMERA PHYSICS (most important): the character and every object in the room stay in EXACTLY the same
+place. Only the camera moves, orbiting around the character on a horizontal arc at constant distance,
+constant height and constant lens (about 50 mm equivalent, no wide-angle distortion). Because of that
+the background shows true perspective change: in Camera 2 the left wall comes closer and the desk edge
+angles to the right; in Camera 3 the mirror happens. Furniture, shelves and lights keep the same
+positions and proportions relative to each other.
+
+CHARACTER BEHAVIOR: the character sits in the same pose and position in all three images, shoulders
+turned only slightly (about 10 degrees) toward the camera. The HEAD and EYES turn to look straight into
+the lens in every image. Neutral expression, mouth closed, eyes open. Nothing else changes.
+
+STYLE LOCK: identical art style, line weight, flat colors, shading, highlight shapes and palette as
+the reference. Clean 2D vector look, smooth edges, no 3D render, no photo, no painterly texture,
+no film grain, no lens blur.
+
+COMPOSITION: vertical 9:16 for every image, character centered, bust and head clearly visible, same
+framing size in all three, equal lighting direction in the scene (the light source stays fixed in the
+room, so shadows shift consistently with the camera).
+
+OUTPUT: three separate images, very high resolution, sharp, no text, no labels, no watermark.
+
+QUALITY BAR: the three images must look like three cameras of one real studio, ready to be cut
+between in a live production, with no continuity errors.
+
+NEGATIVE: different face between cameras, changed outfit or colors, objects that move or disappear,
+changed room layout, wide-angle distortion, fisheye, tilted horizon, extra people, extra hands,
+text, signature, blur, noise, 3D shading, realistic skin.
+
+--------------------------------------------------------------------------------
+B) FUNDO SEM O PERSONAGEM (um por câmera; anexe a imagem aprovada daquela câmera)
+--------------------------------------------------------------------------------
+Edit the attached image. Remove the character completely and leave the chair empty. Reconstruct the
+parts of the room, desk and chair that were hidden behind him in the same style, same perspective and
+same lighting. Keep everything else identical. Output: the empty studio from this exact camera angle.
+
+--------------------------------------------------------------------------------
+C) PERSONAGEM ISOLADO (um por câmera; anexe a imagem aprovada daquela câmera)
+--------------------------------------------------------------------------------
+Edit the attached image. Keep ONLY the character from the head down to the desk edge (bust and
+arms resting). Remove the whole background and replace it with one flat solid color #FF00FF
+(magenta), no gradient, no shadow on the background. Keep the character's size, position, outline,
+colors and head direction exactly the same.
+
+--------------------------------------------------------------------------------
+D) OLHOS FECHADOS e 4 BOCAS (por câmera; anexe o personagem isolado daquela câmera)
+--------------------------------------------------------------------------------
+Edit the attached image. Change ONLY the requested part and keep everything else pixel-identical
+(same position, scale, outline, colors, magenta background, head direction):
+  olhos fechados: both eyes closed in a relaxed natural blink.
+  boca0: closed, relaxed, very slight smile.
+  boca1: slightly open, small oval, lips apart (sound "e").
+  boca2: clearly open, teeth visible if the style has teeth (sound "a").
+  boca3: wide open, excited, tongue visible.
+Each mouth stays on the same mouth line, scaled to the head, correct for this head direction.
+
+--------------------------------------------------------------------------------
+E) CORREÇÕES RÁPIDAS (quando a IA errar)
+--------------------------------------------------------------------------------
+- A sala mudou entre câmeras:
+  "The room layout drifted. Keep every object in the exact same place. Only the camera angle changes,
+   orbiting around the character. Redo with true perspective change only."
+- O personagem mudou de pose ou de lugar:
+  "The character must stay in the exact same position and pose. Only the camera moves."
+- Cabeça não olha para a lente:
+  "The head and eyes must turn to look straight into the camera lens, shoulders only slightly turned."
+- Distorção (olho de peixe, grande angular):
+  "Use a normal 50 mm lens look, no wide-angle distortion, straight verticals."
+- Estilo mudou (3D, realista):
+  "Keep the exact flat 2D vector style of the reference. No 3D, no realism, no texture."
+- Câmeras com enquadramentos diferentes:
+  "Use the same framing, same character size and same camera distance in all images."
+
+--------------------------------------------------------------------------------
+F) PREPARAR OS FICHEIROS (Photopea, grátis)
+--------------------------------------------------------------------------------
+1. No personagem isolado (passo C): remover o magenta (Seleção > Gama de cores), contrair 1 px.
+2. Todas as camadas da MESMA câmera: PNG do mesmo tamanho 9:16 (ex.: 1080x1920), a camada com o personagem no
+   sítio certo da imagem inteira (o resto transparente). O estúdio recorta sozinho as áreas vazias.
+3. Separar o personagem em camadas, por câmera: corpo (sem cabeça), cabeca (sem olhos nem boca),
+   olhos_abertos, olhos_fechados, boca0 a boca3.
+4. Nomes propostos para a atualização "Multi-câmera" (minúsculas, sem acentos, PNG):
+     cam1_fundo   cam1_corpo   cam1_cabeca   cam1_olhos_abertos   cam1_olhos_fechados   cam1_boca0 ... cam1_boca3
+     cam2_...     (câmera da esquerda, mesma lista)
+     cam3_...     (câmera da direita, mesma lista)
+     cam4_... e cam5_...  (opcionais)
+
+LISTA DE VERIFICAÇÃO
+[ ] Mesma pessoa e mesma roupa nas câmeras      [ ] Sala igual, só a perspetiva muda
+[ ] Personagem no mesmo sítio e tamanho         [ ] Cabeça a olhar para a lente em cada câmera
+[ ] Fundo limpo, sem rebordo magenta            [ ] Todas as imagens com o mesmo tamanho

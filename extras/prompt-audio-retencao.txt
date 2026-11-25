@@ -1,0 +1,117 @@
+CÓDIGOS DE ÁUDIO PARA RETENÇÃO + PLANO "VÍDEO ILUSTRADO COM IA" (ESTÚDIO ANDALA)
+================================================================================
+
+ESTADO REAL (honesto)
+- Hoje o estúdio toca sozinho só 3 sons: whoosh (troca de cena), boom (impacto) e pop (destaque).
+- Ele AINDA NÃO lê códigos de áudio escritos no roteiro. Os códigos abaixo são uma proposta:
+  1) a IA do roteiro passa a escrevê-los (prompt na parte B);
+  2) o estúdio precisa de uma atualização para os tocar (parte C). Peça-a quando aprovar o conjunto.
+- Música de fundo e sons devem ser SINTETIZADOS pelo estúdio ou livres de direitos. Nada de músicas
+  conhecidas.
+
+--------------------------------------------------------------------------------
+A) CÓDIGOS PROPOSTOS (entre colchetes, no início ou no fim da linha do roteiro)
+--------------------------------------------------------------------------------
+EFEITOS (curtos, discretos)
+  [sfx:hit]       impacto grave. Gancho (primeiros 2 s) e frase-choque.
+  [sfx:whoosh]    deslize rápido. Troca de tema, de cena, de câmera.
+  [sfx:pop]       estalo leve. Palavra-chave, número, destaque.
+  [sfx:riser]     subida de tensão de 1 a 2 s. ANTES de uma revelação.
+  [sfx:ding]      campainha clara. Ideia certa, "acertou", dica útil.
+  [sfx:error]     tom descendente seco. Mito, erro comum, "isto está errado".
+  [sfx:success]   acorde curto a subir. Resultado, solução, conquista.
+  [sfx:tick]      tique-taque curto. Urgência, contagem, "só 5 minutos".
+  [sfx:heartbeat] batida grave. Suspense, confissão, momento emotivo.
+  [sfx:swipe]     deslize suave. Lista, passo seguinte ("primeiro... segundo...").
+  [sfx:camera]    clique de câmera. Prova, exemplo, "olhe para isto".
+  [sfx:sparkle]   brilho suave. Final feliz, transformação, benefício.
+SILÊNCIO (o mais poderoso e gratuito)
+  [pause:0.4]     corta tudo por 0,4 s antes da frase mais importante (máx. 0,8 s).
+MÚSICA DE FUNDO (por secção; baixa sempre sob a voz)
+  [music:calm]  [music:tense]  [music:uplift]  [music:epic]  [music:warm]  [music:none]
+VOZ (ritmo/emoção da linha, para a voz de IA)
+  [voice:slow]  [voice:fast]  [voice:whisper]  [voice:excited]  [voice:serious]
+
+REGRAS DE ÁUDIO PARA RETENÇÃO
+ 1. Gancho: [sfx:hit] ou [sfx:riser] nos primeiros 2 segundos. Nunca abrir em silêncio morto.
+ 2. No máximo 1 efeito a cada 4 a 6 segundos. Muitos efeitos cansam e parecem spam.
+ 3. Revelação = [sfx:riser] + [pause:0.4] + a frase. Depois [sfx:hit] ou [sfx:ding].
+ 4. Efeitos 10 a 14 dB abaixo da voz; música 18 a 22 dB abaixo, a descer ainda mais quando se fala.
+ 5. Troca de tema = [sfx:whoosh] ou mudança de [music:...]. Quebra o cansaço do ouvinte.
+ 6. Mito ou erro = [sfx:error]; solução = [sfx:success] ou [sfx:ding]. O ouvido aprende o padrão.
+ 7. Nunca pôr som em cima de uma palavra importante da voz; põe-se antes dela.
+ 8. Último segundo: pequeno final suave ([sfx:sparkle] ou fim da música), sem corte seco.
+ 9. Música: uma só por secção, sem mudar a cada frase.
+
+ESCOLHA POR SITUAÇÃO (qualquer tema)
+  Gancho/pergunta forte      [sfx:hit] [voice:serious]
+  Mito, erro comum           [sfx:error]
+  Número, estatística        [sfx:pop] + [pause:0.4] antes do número
+  Passos / lista             [sfx:swipe] a cada passo
+  Revelação / "o truque é"   [sfx:riser] [pause:0.4] [sfx:hit]
+  História, emoção           [music:warm] [sfx:heartbeat]
+  Dica útil / solução        [sfx:ding] ou [sfx:success]
+  Urgência / tempo           [sfx:tick] [voice:fast]
+  Mudança de assunto         [sfx:whoosh]
+  Chamada para ação final    [music:uplift] [sfx:sparkle] [voice:excited]
+
+--------------------------------------------------------------------------------
+B) PROMPT PARA A IA DO ROTEIRO (copie e cole no fim das instruções do gerador de roteiros)
+--------------------------------------------------------------------------------
+You are a short-form video sound director. After writing the script lines, ADD audio cue codes
+in square brackets at the start of the lines where they help retention. Use ONLY these codes:
+[sfx:hit] [sfx:whoosh] [sfx:pop] [sfx:riser] [sfx:ding] [sfx:error] [sfx:success] [sfx:tick]
+[sfx:heartbeat] [sfx:swipe] [sfx:camera] [sfx:sparkle] [pause:0.4] [music:calm|tense|uplift|epic|warm|none]
+[voice:slow|fast|whisper|excited|serious].
+RULES: a strong cue ([sfx:hit] or [sfx:riser]) in the first 2 seconds; at most one sound effect
+every 4 to 6 seconds; a reveal always follows the pattern [sfx:riser] then [pause:0.4] then the line;
+use [sfx:error] for myths and mistakes and [sfx:success] or [sfx:ding] for solutions; change
+[music:...] only when the topic changes (never every line); end with a soft [sfx:sparkle] or
+[music:none]. Never place a cue on the same line as a key word spoken in the same instant
+(cue goes before the line). Do not invent other codes. Keep the spoken text unchanged: codes are
+silent instructions, never read aloud. Output the script exactly as before, only with the codes added.
+
+Exemplo de resultado:
+  [sfx:hit] [voice:serious] Você já foi dormir pensando numa tarefa *pela metade*?
+  [sfx:whoosh] [music:calm] Isto tem nome: efeito Zeigarnik.
+  [sfx:riser] [pause:0.4] A mente guarda o que está *incompleto*.
+  [sfx:hit] E existe um truque simples para usar isso a seu favor.
+  [sfx:error] A maioria tenta terminar tudo de uma vez.
+  [sfx:success] Comece só por *cinco minutos*.
+  [sfx:sparkle] [music:none] Faça isso hoje.
+
+--------------------------------------------------------------------------------
+C) O QUE O ESTÚDIO PRECISA PARA TOCAR ISTO (atualização futura, ~150 a 250 linhas)
+--------------------------------------------------------------------------------
+- Ler os códigos [..] no roteiro e tirá-los do texto falado e das legendas.
+- Banco de sons sintetizados (já temos whoosh/boom/pop; faltam riser, ding, error, success, tick,
+  heartbeat, swipe, camera, sparkle).
+- Música de fundo sintetizada por humor (calm, tense, uplift, epic, warm) com descida automática
+  sob a voz (ducking) e troca suave entre secções.
+- Pausa [pause:x] e estilo de voz [voice:x] aplicados ao pedido de voz.
+- Interruptor "Sons de retenção" e volume geral, para o exportar com tudo dentro.
+
+--------------------------------------------------------------------------------
+D) PLANO "VÍDEO ILUSTRADO": PEDE-SE UM TEMA E SAI O VÍDEO COM VOZ E IMAGENS
+--------------------------------------------------------------------------------
+FLUXO PROPOSTO (dois modos à escolha: Avatar a falar OU Vídeo ilustrado)
+  1. O utilizador escreve: "quero um vídeo sobre X".
+  2. A IA escreve o roteiro e, para cada cena, uma descrição da imagem ilustrativa.
+  3. A voz é gerada (já existe).
+  4. A IA de imagens gera uma imagem por cena, todas no MESMO estilo (anime ou cartoon).
+  5. O estúdio junta tudo: imagens com movimento lento (zoom/pan), transições, legendas, sons e
+     música, e exporta o vídeo com o áudio já dentro (a exportação já existe).
+ESTADO REAL: os passos 1 a 3 e 5 já existem em parte (o modo com imagens "Mídia" aceita as imagens
+que você carrega). Falta o passo 4: gerar as imagens automaticamente (precisa de um novo endereço na
+Vercel que use o modelo de imagens do Google com as mesmas chaves) e juntar à criação do roteiro.
+CUIDADOS: gerar 15 a 30 imagens por vídeo consome cota e pode ter custo, confirme limites e preços
+na sua conta do Google AI Studio; manter o mesmo estilo e personagem entre imagens exige um
+"bloco de estilo" fixo (abaixo); não pedir "no estilo de [estúdio/personagem famoso]".
+
+BLOCO DE ESTILO FIXO (colar no início de TODOS os pedidos de imagem de um vídeo; ajuste entre [])
+  Vertical 9:16 illustration for a short educational video. Style: [modern anime-inspired digital
+  illustration / clean flat cartoon vector], soft cinematic lighting, vibrant but harmonious palette
+  [cores do canal], clean line art, expressive characters, consistent character design: [descreva o
+  personagem principal uma vez e repita igual]. Composition: subject in the center, empty space at the top
+  for captions, no text, no letters, no watermark, no logo, no real people, no famous characters.
+  Scene: [descrição da cena do roteiro].
