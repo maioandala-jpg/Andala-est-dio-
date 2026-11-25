@@ -12,7 +12,7 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
 2) VARIÁVEIS NA VERCEL (Settings > Environment Variables) e depois novo deploy
   GEMINI_API_KEY, GEMINI_API_KEY_2, GEMINI_API_KEY_3   suas chaves (a 2ª e a 3ª entram sozinhas se a 1ª falhar)
   ACCESS_CODE                                           código só seu (o mesmo digitado no app)
-  GEMINI_TEXT_MODEL / GEMINI_TTS_MODEL                  opcionais (padrões: gemini-3.8-flash / gemini-3.8-flash-tts)
+  GEMINI_TEXT_MODEL / GEMINI_TTS_MODEL                  opcionais (padrões: gemini-3.8-flash / gemini-2.5-flash-preview-tts)
   Nunca coloque chaves no index.html nem no chat. Defina um limite de gasto no Google AI Studio.
 
 3) INSTALAR NO CELULAR
@@ -73,3 +73,90 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
   Ao criar roteiro, gerar voz ou texto para áudio aparece um cartão com a porcentagem e a chave em uso
   ("Gerando a voz com IA… 42% · Chave 1 de 3"). O app não pede mais "código de acesso": ele só existe no modo servidor (opcional).
   Se a tela pedir "código de acesso", é uma versão antiga: abra reset.html > Atualizar agora e confira "andala-v8" no rodapé.
+
+
+5) CÂMERA DINÂMICA (aba Cena)
+  Liga/desliga em "Câmera dinâmica" e escolhe a intensidade (Suave, Normal, Intensa).
+  Planos: geral, médio, close e close extra, com zoom lento; aproximação rápida nas frases com *destaque*;
+  planos laterais, de cima e de baixo, em que o avatar olha para o lado da câmera e volta ao centro.
+  Com dois avatares, a câmera acompanha quem fala. Vale também para o vídeo exportado.
+  Rosto virado: em todos os estilos (Pixel, Cartoon, Anime, Anime sério e Blocos) o rosto vira para o lado da câmera (3/4). No estilo "Minhas camadas"
+  podes juntar PNG opcionais cabeca_esq / cabeca_dir (e olhos/bocas _esq / _dir); veja extras/prompt-angulos-ia.txt.
+
+6) MULTI-CÂMERA (aba Cena)
+  Carregue imagens cam1_... a cam5_... (fundo, corpo, cabeca, olhos_abertos, olhos_fechados, boca0..boca3, todas 9:16 do mesmo tamanho).
+  O diretor de câmera corta entre elas: esquerda=cam2, direita=cam3, cima=cam4, baixo=cam5, resto=cam1. Mínimo: fundo + cabeca.
+  Interruptor "Usar multi-câmera" e botão "Limpar câmeras". Só para um avatar. Guia: extras/prompt-camera-muda-PRO.txt
+
+7) MODO RETENÇÃO (aba Cena, ligado por defeito)
+  A câmera é decidida pelo estúdio a partir do roteiro (a IA do Gemini só escreve o texto): gancho em plano médio no início,
+  corte a cada 2 a 4 segundos (frases longas são reenquadradas a meio), zoom extra nos *destaques* e nas frases com ? ou !,
+  e fecho em close na última frase. Com multi-câmera, os cortes também trocam de câmera. Desligue para o comportamento anterior.
+
+8) ABA "ILUSTRADO" (VÍDEO ILUSTRADO COM IA, SEM CUSTO DE IMAGENS)
+   Suba também o ficheiro novo  api/cenas.js  (na pasta api, junto de tts.js e direct.js) e faça Redeploy.
+   Usa as mesmas chaves do Gemini (texto), por isso NÃO gasta cota de imagens.
+   Fluxo: escreva o tema > "Criar roteiro com IA" > "Gerar cenas" (a IA desenha cada cena em SVG) >
+          "Gerar voz" (uma voz por cena, guardada no aparelho para não repetir) > Tocar > Exportar com áudio.
+   - Estilos: Cartoon plano, Pixel art, Anime simples. Personagem e cores ficam fixos no vídeo todo.
+   - Cada cena tem paralaxe (4 camadas), zoom lento, legendas palavra a palavra e transições.
+   - Códigos no roteiro (a IA escreve-os, ou você): [sfx:hit|whoosh|pop|riser|ding|error|success|tick|heartbeat|swipe|camera|sparkle]
+     [pause:0.4]  [music:calm|warm|tense|uplift|epic|none]  [voice:slow|fast|whisper|excited|serious]
+   - Sons e música são sintetizados no próprio estúdio (sem direitos). A música baixa sozinha quando há voz.
+   - "Colar cenas de outra IA" funciona offline (formato === SCENE 1 === CAPTION: ... <svg>...</svg>).
+   - Se o Google limitar a voz por minuto, o estúdio espera e tenta de novo sozinho.
+   - Exportar grava em tempo real: deixe a aba aberta e à frente até terminar.
+
+9) IMAGENS INTELIGENTES NO VÍDEO DO AVATAR  (aba Cena > Imagens, vídeos e música)
+   Escolha "Inteligente: ilustrações da IA", a quantidade (3 a 6) e o estilo, e toque em "Gerar ilustrações com IA"
+   (precisa do roteiro aplicado e do api/cenas.js atualizado). A IA escolhe os momentos de explicação, desenha as
+   ilustrações (sem custo de imagens) e o vídeo alterna: avatar > imagem > avatar. As ilustrações ficam guardadas no aparelho.
+   Isto substitui as imagens que você tinha carregado. O modo "Tela cheia com transições" continua como antes.
+
+10) CAIXA DE SONS  (aba Cena > Caixa de sons)
+   - Códigos no começo da frase do roteiro: [sfx:hit] [sfx:whoosh] [sfx:pop] [sfx:riser] [sfx:ding] [sfx:error]
+     [sfx:success] [sfx:tick] [sfx:heartbeat] [sfx:swipe] [sfx:camera] [sfx:sparkle]   [music:calm|warm|tense|uplift|epic|none]
+   - Toque num som para ouvir; o "+" insere o código no roteiro. Tudo é sintetizado no aparelho: funciona offline e sem direitos.
+   - "Adicionar meus áudios": carregue ficheiros seus; cada um ganha um nome (o do ficheiro) e passa a ser um código
+     [sfx:nome]. Ficam guardados no aparelho, com volume ajustável, e valem também na aba Ilustrado.
+   - Música: "Automática" segue o primeiro [music:...] do roteiro; ou escolha uma. É gerada do tamanho do vídeo e usa o
+     mesmo leitor da música de fundo (baixa sozinha quando há voz). Se carregar o seu ficheiro de música, ele tem prioridade
+     em "Automática".
+   - Nos vídeos com avatar valem [sfx] e [music]. [pause] e [voice] valem na aba Ilustrado.
+
+11) CENÁRIOS NOVOS
+   - Janelas panorâmicas (para todos os canais; aba Cena > cenário especial, ou ~janela-cidade-dia no roteiro):
+     janela-cidade-dia | -tarde | -noite | -clima   e   janela-praia-dia | -tarde | -noite | -clima
+     Animações: nuvens, avião com rasto, pássaros, limpador de vidros na corda (dia e tarde), barco, ondas, brilho do sol
+     na água, palmeira, chuva com gotas no vidro e relâmpagos (clima).
+   - Canal de notícias: 4 estúdios novos na lista de cenários do canal: Portal de notícias · Redação (parede de vídeo),
+     Estúdio com parede de LED, Mesa do tempo · Meteorologia, Plantão · Última hora (sirene a piscar).
+
+12) MINI AVATAR NA ABA ILUSTRADO  (Legendas, sons e ritmo > Avatar na mini tela)
+   Mostra o avatar escolhido na aba Cena, de busto, numa mini tela no canto (direita/esquerda; 3 tamanhos), com a boca a
+   seguir o volume da voz e gestos. As legendas sobem sozinhas para não ficarem por cima. Também sai no vídeo exportado.
+
+13) VERSÃO FINAL: NOSSO ESTÚDIO + O MELHOR DO v9
+   Juntei o v9 ao nosso index.html (fusão de 3 versões, sem perder nada de nenhuma):
+   - Canal CURIOSIDADES: 10 estúdios temáticos (Estufa, Savana, Oceano, Showroom, Corpo, Central de Partidas,
+     Espaço, Galeria do Tempo, Circuitos, Planeta Terra), 10 figurinos, formatos e quiz.
+   - Canal NOTÍCIAS (Redação): 10 estúdios (redação, bancada, rua, dados, clima, serviço público, esportes,
+     cultura, checagem, mobilidade), campos editoriais, status (apuração/simulação/verificado), faixa inferior.
+   - Multi-câmera: "Fonte de imagem" na aba Cena. Por defeito fica "Cena original (pixel)", que mantém tudo como
+     antes. Escolha "Estúdio vetorial" para o estúdio em 5 câmeras, ou "Pacote PNG" para as suas camadas.
+   - Figurinos novos (bolero, kimono, hanbok), sons de canal "cinematico" e "redacao", idiomas es/ja/ko no manual.
+   - Mantido do nosso: aba Ilustrado, imagens inteligentes, caixa de sons, mini avatar, janelas panorâmicas, modo retenção.
+   - Os 4 estúdios de notícias em pixel (portal, parede LED, mesa do tempo, plantão) agora estão em
+     Cenário especial: ~noticia-portal, ~noticia-led, ~noticia-tempo, ~noticia-plantao.
+   - api/_manual.js atualizado: o Prompt conhece Curiosidades, Notícias, os novos cenários e os códigos de som.
+   Publicar: substitua index.html, sw.js (v19) e api/_manual.js, depois Redeploy.
+
+14) AJUSTE FINAL
+   - REMOVIDO o multi-câmera vetorial do v9 (o apresentador vetorial, as câmeras CAM 01 a 05, o "Pacote PNG" e o
+     zip de camadas). Em todos os canais volta o nosso avatar de sempre, com a câmera dinâmica e as atualizações.
+     (Ignore a frase sobre "Estúdio vetorial" na secção 13.)
+   - Os estúdios temáticos de Curiosidades e Notícias ficam, mas desenhados com o NOSSO avatar.
+   - NOVO no canal Curiosidades, aba Canal: cartão "Curiosidade com IA". Escreva um tema (ou escolha a categoria,
+     ou toque em Surpreenda-me), escolha formato e duração. A IA cria o roteiro com gancho, revelação, fonte e sons,
+     gera a voz e, se marcar, desenha 3 a 5 ilustrações no meio do vídeo. Confira sempre a fonte antes de publicar.
+   Publicar: substitua index.html e sw.js (v20), depois Redeploy.
