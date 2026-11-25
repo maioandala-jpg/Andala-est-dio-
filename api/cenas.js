@@ -7,6 +7,7 @@
    Variáveis: GEMINI_API_KEY(_2,_3), ACCESS_CODE (opcional), GEMINI_TEXT_MODEL (opcional). */
 const crypto = require('crypto');
 const { chamar, chaves, textoErro, modeloTexto } = require('./_gemini.js');
+const { biblioteca } = require('./_pecas.js');
 
 function erro(res, status, msg) {
   res.statusCode = status;
@@ -51,7 +52,7 @@ TECHNICAL RULES (must obey):
   <g id="frente">     foreground objects, soft vignette, light particles (circles with low opacity)
 - The studio moves these groups at different speeds (parallax) and zooms slowly. So "fundo" and "meio" MUST bleed 80px beyond the canvas on every side (x from -80 to 800, y from -80 to 1360). Never leave an edge visible.
 - Each group must be self-contained: nothing in "personagem" may depend on a shape of another group to look complete.
-- Between 40 and 90 elements. Merge shapes into paths when possible. No tiny noise.
+- Between 40 and 90 elements (up to 140 when most come from the piece library). Merge shapes into paths when possible. No tiny noise.
 - Numbers with at most 1 decimal. Close every tag. Valid XML.
 - Define every gradient inside <defs> with ids prefixed by the scene number (g{N}_sky...). Ids must be unique.
 
@@ -67,9 +68,29 @@ QUALITY CHECK (silently, before answering): valid XML, only allowed elements and
 
 SAFETY: no real people, celebrities, existing cartoon or anime characters, logos, brands or copyrighted scenes. Invent original characters only.`;
 
+const CEREBRO = `HOW THE STUDIO WORKS (read this, it is why your drawings must follow the rules):
+- Your SVG is rasterized by the studio into 4 layers (fundo, meio, personagem, frente) at 880x1440 and shown in a vertical 9:16 video. Layers move at different speeds (parallax), the whole image zooms slowly, the character bobs while the voice speaks, and captions are drawn over the bottom third. So: calm bottom area, a clear hero in the middle, nothing important at the edges.
+- A previous version of you drew characters and objects from scratch and the result was a mess: random spikes, giant translucent white blobs over the subject, overlapping shapes, unreadable animals. Do NOT improvise complex shapes. Compose scenes from the PIECE LIBRARY below, which was drawn and tested by hand.
+
+HOW TO COMPOSE (follow in order):
+1. fundo: one full-bleed rect (x -80, y -80, width 880, height 1440) with a vertical linearGradient from the palette; add 2 or 3 big soft circles (fill-opacity at most .18) for atmosphere; add a floor or horizon band; optionally a "cidade", "nuvem", "sol_lua" or "arvore" piece, small and low contrast.
+2. meio: environment or the hero object. Place each piece as <g transform="translate(X Y) scale(S)"> followed by the piece markup </g>. X,Y is the bottom-center of the piece. Uniform scale only (the same number for x and y). To mirror a piece use scale(-S S).
+3. personagem: the main subject. For a person use pessoa_corpo + pessoa_cabeca + one boca_* + one sobrancelhas_* (see VARIANTS), all inside ONE <g transform="translate(360 980) scale(0.9)">. At scale 0.9 the head is at y about 555 and the person fills y 480 to 980. For a close-up use scale 1.5 to 1.9 and translate(360 1180) so the face sits near y 500. For two people use scale 0.62 at x 220 and x 500 with different colors.
+4. frente: a vignette (two translucent gradient rects at the edges) plus 6 to 10 small low-opacity circles as light dust. Nothing that covers the subject.
+
+HERO RULE: the object or action that carries the meaning of the line must be BIG (at least 35 percent of the canvas width) and next to or in front of the character. A person alone with no prop is a failed scene unless the line is about the person. Use visual metaphors: moedas for money, grafico_subindo for growth, porta_cadeado for a block or secret, lampada for an idea, relogio for time, livro for learning, coracao for health or love, laptop or celular for online work.
+EMOTION RULE: pick the mouth and eyebrows that fit the line (boca_surpreso, boca_preocupado, boca_feliz_grande, sobrancelhas_bravo...). Raise the arm (braco_direito_levantado) when the character explains or points.
+COLOR RULE: recolor pieces to the PALETTE by replacing the hex fills (skin, hair, shirt, pants, object colors). Keep the geometry unchanged. The shirt color must contrast with the background.
+IF A THING IS NOT IN THE LIBRARY (car, plane, rocket, phone tower...), build it from at most 12 simple primitives: rounded rects, circles, ellipses, simple polygons, in the same flat style, symmetrical, with one darker shade for shadow. Never draw animals, hands or faces from scratch.
+BANNED: spiky or random polygons, shapes with more than 12 path commands that you invented, translucent white shapes over the subject, stroke-only drawings, tiny details under 6 px.
+Element budget: up to 140 elements are fine when most come from the library pieces.
+
+PIECE LIBRARY (copy the markup exactly; local coordinates):
+`;
+
 const SISTEMA_ROTEIRO = `You write narration scripts for vertical short videos (TikTok, Reels, Shorts) with very high retention.
 Rules: the first line is a strong hook (max 12 words) that creates curiosity or a clear promise; every line is ONE spoken sentence of at most 18 words, easy to say aloud, no hashtags, no emojis, no stage directions; build tension, then a reveal, then a practical takeaway; the last line is a short call to action. Never invent statistics or scientific claims; if unsure, speak in general terms. One line = one illustrated scene, so each line must be easy to picture.
-You also propose ONE original main character (a visual bible: age, face shape, hair, clothes with exact colors, in one short English paragraph) and a palette of 6 to 7 hex colors with names (in English, one line) that fit the topic and the mood.
+You also propose ONE original main character as a short English bible that uses ONLY these parameters: name, gender, age, skin #hex (use one of #f5c9a0 light, #e0ac7e tan, #b97a50 brown, #8a5a3c dark brown), hair #hex and style (short | long | bun | bald), shirt #hex, pants #hex, mood and a palette of 6 to 7 hex colors with names (in English, one line) that fit the topic and the mood.
 Answer ONLY with JSON, no markdown: {"titulo":"...","linhas":["..."],"paleta":"#hex name, #hex name, ...","personagem":"..."}`;
 
 const CODIGOS = `Also add silent audio cue codes at the start of the lines where they help retention, using ONLY: [sfx:hit] [sfx:whoosh] [sfx:pop] [sfx:riser] [sfx:ding] [sfx:error] [sfx:success] [sfx:tick] [sfx:heartbeat] [sfx:swipe] [sfx:camera] [sfx:sparkle] [pause:0.4] [music:calm|tense|uplift|epic|warm|none] [voice:slow|fast|whisper|excited|serious]. Rules: a strong cue ([sfx:hit] or [sfx:riser]) on line 1; at most one sound effect every 4 to 6 seconds; a reveal follows the pattern [sfx:riser] [pause:0.4] then the line; [sfx:error] for myths and mistakes, [sfx:success] or [sfx:ding] for solutions; set [music:...] on line 1 and change it only when the topic changes; end with [sfx:sparkle]. The codes are never spoken.`;
@@ -134,9 +155,9 @@ async function cena(b, res) {
     ref ? 'REFERENCE CHARACTER GROUP from scene 1. Reuse its exact shapes, proportions and colors for the character (only change pose, expression, position and scale to fit this shot):\n' + ref : ''
   ].filter(Boolean).join('\n\n');
   const payload = {
-    systemInstruction: { parts: [{ text: SISTEMA_CENA }] },
+    systemInstruction: { parts: [{ text: estilo === 'p' ? SISTEMA_CENA : SISTEMA_CENA + '\n\n' + CEREBRO + biblioteca() }] },
     contents: [{ role: 'user', parts: [{ text: user }] }],
-    generationConfig: { temperature: 0.7, maxOutputTokens: 9000 }
+    generationConfig: { temperature: estilo === 'p' ? 0.7 : 0.45, maxOutputTokens: 12000 }
   };
   const out = await chamar(modeloTexto(), payload, temTexto, true);
   if (!out.ok) return erro(res, out.tipo === 'cota' ? 429 : out.tipo === 'tempo' ? 504 : 502, textoErro(out));
