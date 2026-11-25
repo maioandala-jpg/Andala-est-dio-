@@ -95,7 +95,7 @@ async function roteiro(b, res) {
     contents: [{ role: 'user', parts: [{ text: user }] }],
     generationConfig: { temperature: 0.9, maxOutputTokens: 3000 }
   };
-  const out = await chamar(modeloTexto(), payload, temTexto);
+  const out = await chamar(modeloTexto(), payload, temTexto, true);
   if (!out.ok) return erro(res, out.tipo === 'cota' ? 429 : out.tipo === 'tempo' ? 504 : 502, textoErro(out));
   let t = textoDe(out.json);
   const f = /```[a-z]*\n([\s\S]*?)```/i.exec(t);
@@ -142,7 +142,7 @@ async function cena(b, res) {
     contents: [{ role: 'user', parts: [{ text: user }] }],
     generationConfig: { temperature: 0.7, maxOutputTokens: 9000 }
   };
-  const out = await chamar(modeloTexto(), payload, temTexto);
+  const out = await chamar(modeloTexto(), payload, temTexto, true);
   if (!out.ok) return erro(res, out.tipo === 'cota' ? 429 : out.tipo === 'tempo' ? 504 : 502, textoErro(out));
   res.setHeader('X-Andala-Chave', out.chave + '/' + out.total);
   const t = textoDe(out.json);
@@ -166,7 +166,7 @@ async function momentos(b, res) {
     contents: [{ role: 'user', parts: [{ text: user }] }],
     generationConfig: { temperature: 0.3, maxOutputTokens: 300 }
   };
-  const out = await chamar(modeloTexto(), payload, temTexto);
+  const out = await chamar(modeloTexto(), payload, temTexto, true);
   if (!out.ok) return erro(res, out.tipo === 'cota' ? 429 : out.tipo === 'tempo' ? 504 : 502, textoErro(out));
   const t = textoDe(out.json), i = t.indexOf('{'), j = t.lastIndexOf('}');
   let o = null;

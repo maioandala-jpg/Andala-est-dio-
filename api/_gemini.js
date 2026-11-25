@@ -30,10 +30,9 @@ const AISTUDIO = 'https://generativelanguage.googleapis.com/v1beta/models/';
 const basesDe = k => /^AQ\./.test(k) ? [VERTEX, AISTUDIO] : [AISTUDIO, VERTEX];
 
 /* aceita(json) -> true se a resposta serve (ex.: tem áudio); senão tenta a próxima chave. */
-async function chamar(modelo, payload, aceita) {
+async function tentar(modelo, payload, aceita, fim) {
   const ks = chaves();
   if (!ks.length) return { ok: false, tipo: 'semchave', total: 0 };
-  const fim = Date.now() + 55000;
   const ordem = ks.slice().sort((a, b) => (frio(a) ? 1 : 0) - (frio(b) ? 1 : 0) || ks.indexOf(a) - ks.indexOf(b));
   let ult = { tipo: 'tempo', status: 504, msg: '' };
   for (let n = 0; n < ordem.length; n++) {
@@ -74,6 +73,30 @@ async function chamar(modelo, payload, aceita) {
   return Object.assign({ ok: false, total: ks.length, todas: true }, ult);
 }
 
+const dorme = ms => new Promise(r => setTimeout(r, ms));
+/* Chama o modelo; se o Google estiver sobrecarregado (erro 5xx, ex.: 503 "high demand"), espera um pouco,
+   tenta de novo e, em modelos de texto (texto=true), tenta modelos reserva:
+   o mesmo modelo em versão "-lite" e os da variável GEMINI_TEXT_FALLBACK (separados por vírgula). */
+async function chamar(modelo, payload, aceita, texto) {
+  const fim = Date.now() + 55000;
+  let r = await tentar(modelo, payload, aceita, fim);
+  if (!r.ok && r.tipo === 'servidor' && fim - Date.now() > 12000) {
+    await dorme(2500);
+    r = await tentar(modelo, payload, aceita, fim);
+  }
+  if (!r.ok && r.tipo === 'servidor' && texto) {
+    const lista = [];
+    if (/-flash$/.test(modelo)) lista.push(modelo + '-lite');
+    String(process.env.GEMINI_TEXT_FALLBACK || '').split(/[\s,;]+/).forEach(m => { if (/^gemini-[0-9.]+-(flash|pro)(-lite)?$/.test(m)) lista.push(m); });
+    for (const m of lista) {
+      if (m === modelo || fim - Date.now() < 8000) continue;
+      const x = await tentar(m, payload, aceita, fim);
+      if (x.ok) { x.modelo = m; return x; }
+    }
+  }
+  return r;
+}
+
 /* Mensagem em português para quando a chamada falhou. */
 function textoErro(o) {
   const t = (o.todas && o.total > 1) ? 'Tentei as ' + o.total + ' chaves. ' : '';
@@ -81,6 +104,7 @@ function textoErro(o) {
   if (o.tipo === 'cota') return t + 'A cota da IA acabou por agora. Tente de novo daqui a pouco.';
   if (o.tipo === 'chave') return t + 'Nenhuma chave da IA está funcionando. Confira as chaves na Vercel.';
   if (o.tipo === 'tempo') return t + 'A IA demorou demais para responder. Tente de novo.';
+  if (o.tipo === 'servidor') return t + 'O Google está com muita procura neste momento (erro ' + o.status + '). Espere cerca de 1 minuto e tente de novo.';
   if (o.tipo === 'vazio') return t + 'A IA não devolveu o resultado. Tente de novo.';
   return t + 'A IA recusou o pedido (' + o.status + ').' + (o.msg ? ' ' + o.msg : '');
 }
