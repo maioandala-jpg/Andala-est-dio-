@@ -160,3 +160,14 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
      ou toque em Surpreenda-me), escolha formato e duração. A IA cria o roteiro com gancho, revelação, fonte e sons,
      gera a voz e, se marcar, desenha 3 a 5 ilustrações no meio do vídeo. Confira sempre a fonte antes de publicar.
    Publicar: substitua index.html e sw.js (v20), depois Redeploy.
+
+15) ERRO 503 "This model is currently experiencing high demand"
+   Não é falha do estúdio nem das chaves: o modelo do Google estava sobrecarregado. Agora o servidor espera 2,5 s,
+   tenta de novo e depois tenta o modelo "-lite". Opcional na Vercel: GEMINI_TEXT_FALLBACK=nome1,nome2 (modelos reserva).
+   Se mesmo assim falhar, espere 1 minuto e tente de novo. Ficheiros alterados: api/_gemini.js, api/direct.js, api/cenas.js.
+
+16) MODELO DE TEXTO
+   O modelo de texto padrão agora é gemini-2.5-flash-lite (confirmado a funcionar com as chaves). Se der sobrecarga,
+   o servidor tenta sozinho gemini-2.5-flash e gemini-3.8-flash. Não precisa de variável na Vercel.
+   Se já existir GEMINI_TEXT_MODEL na Vercel, ela manda mais do que o padrão: apague-a ou ponha gemini-2.5-flash-lite.
+   Ficheiros: api/_gemini.js, api/direct.js, api/cenas.js.

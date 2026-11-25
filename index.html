@@ -627,7 +627,7 @@ body{background:#101619}
 <details class="more"><summary>Como trocar no meio do roteiro</summary><small>Comece a linha com ~nome-do-cenário (ex.: ~quarto-dia). Use ~0 para voltar ao cenário normal do canal.</small></details></section>
   <div class="sec">Cenário</div><select id="sfix" aria-label="Cenário"></select>
   <label id="curGlobeWrap" class="fl" hidden><small>Orientação inicial do globo</small><input id="curGlobe" type="range" min="0" max="360" step="5" value="0"></label>
-  <button id="stbtn" class="alt">Alternar cenários: LIGADO</button>
+  <button id="stbtn" class="alt">Troca automática de cenários: DESLIGADA</button>
   <div class="sec">Avatar</div>
   <div class="chips" id="av"><button class="chip on" data-v="0">♂ Andala</button><button class="chip" data-v="1">♀ Jacinta</button><button class="chip" data-v="2">♂ Rafael</button><button class="chip" data-v="3">♀ Beatriz</button><button class="chip" data-v="4">♀ Marina</button><button class="chip romOnly" data-v="6" hidden>♂ Léo</button><button class="chip romOnly" data-v="7" hidden>♀ Lívia</button><button class="chip" data-v="5">♂ Tomás</button><button class="chip" data-v="8">♂ Mário</button><button class="chip" data-v="n">Sem avatar</button></div>
   <input type="hidden" id="ch" value="0">
@@ -1279,7 +1279,7 @@ function impact(){const h=hold,el=(performance.now()-h.t0)/1000,o=Math.min(1,el/
  const done=nf>=h.txt.length;g.globalAlpha=a*(done?.35+.65*Math.abs(Math.sin(el*3)):.9);g.fillStyle=GOLD;g.fillRect(cx+4,cy-36,5,44);g.restore()}
 // ===== controles =====
 $('apply').onclick=()=>setScript(ta.value);$('ev').onchange=()=>setScript(ta.value);$('sfix').onchange=()=>setScript(ta.value);
-$('stbtn').onclick=()=>{AUTO=!AUTO;$('stbtn').textContent='Transição de estilos: '+(AUTO?'LIGADA':'DESLIGADA');$('sfix').disabled=AUTO;setScript(ta.value)};
+$('stbtn').onclick=()=>{AUTO=!AUTO;$('stbtn').textContent='Troca automática de cenários: '+(AUTO?'LIGADA':'DESLIGADA');$('sfix').disabled=AUTO;setScript(ta.value)};
 $('vt').onclick=()=>{if(!window.speechSynthesis)return;LGO='';speechSynthesis.cancel();speechSynthesis.speak(utter(TEST[VL().slice(0,2)]||TEST.pt));const v=voice().v;$('st').textContent='Voz: '+(v?v.name:'padrão do navegador')};
 $('file').onchange=e=>{const f=e.target.files[0];if(!f)return;stopTTS();au.src=URL.createObjectURL(f);demo=false;au.currentTime=0;setScript(ta.value);last=-2;$('st').textContent='Áudio carregado. Toque em Tocar ou Gerar vídeo.'};
 $('mus').onchange=e=>{const f=e.target.files[0];if(!f)return;mu.src=URL.createObjectURL(f);$('st').textContent='Música de fundo carregada (volume baixo, abaixa quando há fala).'};
@@ -1450,7 +1450,7 @@ function frame(t){
  if(!pre&&k!==last){last=k;chT=t;if(k>=0){layout(k);if(pl){if(k>0&&useM(k)!==useM(k-1)&&(!themedChannel(CHID)||IM[k]===IM[k-1]))sfx('w');if(KW[k]&&(!themedChannel(CHID)||!IMP[k]))setTimeout(()=>sfx('p'),260);if(IMP[k]&&!tts&&!hold)startImp(k);try{window.sndScene&&sndScene(k)}catch(e){}}}}
  if(pre){narr(t,false,0,dur);drawIntro(el,t)}
  else if(k>=0){const fs=ST[k]*dur,fe=(k+1<S.length?ST[k+1]:1)*dur;drawScene(k,T,fs,t,pl&&!hold,dur);caption(T,fs,fe-fs,k);drawCard(k,T,fs);overlays(k,T,T-fs,fe,fs,t,pl,dur)}
- else{narr(t,false,0,60);if(mcEffective()==='legacy'){if(SALE())drawBook(0,60,t,false);g.fillStyle='rgba(0,0,0,.3)';g.fillRect(0,0,W,H);g.shadowColor='rgba(0,0,0,.9)';g.shadowBlur=16;g.fillStyle='#f4efe6';g.font='800 40px Montserrat,sans-serif';g.textAlign='center';g.fillText('ESTÚDIO ANDALA',W/2,200);g.font='600 26px Montserrat,sans-serif';g.fillText(CH.idle,W/2,246,W-80);g.shadowBlur=0}}
+ else{try{CXCUR=(CXK[0]>=0&&CENX[CXK[0]])?CXK[0]:-1}catch(e){}narr(t,false,0,60);if(mcEffective()==='legacy'){if(SALE())drawBook(0,60,t,false);g.fillStyle='rgba(0,0,0,.3)';g.fillRect(0,0,W,H);g.shadowColor='rgba(0,0,0,.9)';g.shadowBlur=16;g.fillStyle='#f4efe6';g.font='800 40px Montserrat,sans-serif';g.textAlign='center';g.fillText('ESTÚDIO ANDALA',W/2,200);g.font='600 26px Montserrat,sans-serif';g.fillText(CH.idle,W/2,246,W-80);g.shadowBlur=0}}
  if(hold)impact();
  fx(t);if(CHID==='noticias')newsOverlay(k,T);g.restore();
  if(rec)$('st').textContent='Gravando '+Math.round(T/dur*100)+'% — mantenha esta tela aberta';
@@ -2336,7 +2336,7 @@ let CH=null,CHID='',curPrevIntro=null;
 let LGO='';function VL(){return LGO||$('vl').value||'pt-BR'}
 const fillSel=(id,arr,fn)=>{$(id).innerHTML=arr.map((v,i)=>'<option value="'+i+'">'+(fn?fn(v):v)+'</option>').join('')};
 function loadPreset(i){const P=CH,p=P.presets[i];CURSC=p.sc;AUTO=false;$('sfix').disabled=false;$('sfix').value=p.sc;$('fg').value=p.fg;$('fm').value=p.fm;$('ch2').value=p.d!=null?String(p.d):'-1';if(p.d!=null)$('vg2').value=['m','f','m','f','f','m'][p.d];
- $('stbtn').textContent='Alternar cenários: DESLIGADO';
+ $('stbtn').textContent='Troca automática de cenários: DESLIGADA';
  if(CHID==='noticias')newsFresh();
  $('tm').value=p.t||'';Object.entries(p.fl||{}).forEach(([k,v])=>{const e=$('f_'+k);if(e)e.value=v});ta.value=p.script||(p.d!=null?DLG[CHID]:makeScript(p.fm,p.t));if(p.script||p.d!=null)autoQuiz(p.fm,p.t);if(CHID==='curiosidades')curSourceLink();if(CHID==='noticias')newsEditorial();setScript(ta.value);
  document.querySelectorAll('#presets .pill').forEach((b,j)=>b.classList.toggle('on',j===i));$('st').textContent='Predefinição carregada: '+p.label}
@@ -2363,7 +2363,7 @@ $('chsel').onkeydown=e=>{const k=Object.keys(CHANNELS).filter(id=>!LOCK||openCha
 $('presets').onclick=e=>{const b=e.target.closest('.pill');if(b)loadPreset(+b.dataset.i)};
 $('genscript').onclick=()=>{ta.value=CH.skel(CH.formats[+$('fm').value],$('tm').value||'Tema do dia',$('pb').value||CH.audience,CH.tones[+$('tn').value||0]);setScript(ta.value);$('st').textContent='Roteiro criado. Edite à vontade e toque em Aplicar.'};
 $('sfix').addEventListener('change',()=>{SECRET_SC=null;SEC_I=-1;CURSC=+$('sfix').value||0;$('fg').value=CH.scenarios[CURSC][7];if(themedChannel(CHID))setScript(ta.value)});
-$('curStudioPick').onchange=e=>{if(!themedChannel(CHID))return;AUTO=false;$('sfix').disabled=false;$('stbtn').textContent='Alternar cenários: DESLIGADO';$('sfix').value=e.target.value;$('sfix').dispatchEvent(new Event('change'));mcLastUi='';};
+$('curStudioPick').onchange=e=>{if(!themedChannel(CHID))return;AUTO=false;$('sfix').disabled=false;$('stbtn').textContent='Troca automática de cenários: DESLIGADA';$('sfix').value=e.target.value;$('sfix').dispatchEvent(new Event('change'));mcLastUi='';};
 // abas
 const TABS=[...document.querySelectorAll('#tabs [role=tab]')];
 function showTab(i,f){const nT=TABS.length;i=((Math.trunc(+i)||0)%nT+nT)%nT;TABS.forEach((b,j)=>{const on=i===j;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$(b.getAttribute('aria-controls')).hidden=!on;if(on&&f)b.focus()})}
@@ -2771,7 +2771,7 @@ function applyPromptV1(txt,ov){
   if(id==='curiosidades'&&isAuto(sv)){const topic=PN($('tm').value);const z=CUR_SETS.findIndex(z=>topic===PN(z.topic)||topic.includes(PN(z.topic).replace(/\?$/,'')));if(z>=0){$('sfix').value=z;CURSC=z;}}
   $('fg').value=CH.scenarios[+$('sfix').value||0][7];
   pick('Figurino',c.figurino,CH.costumes,()=>+$('fg').value||0,i=>$('fg').value=i,null);
-  if(c.troca_cenarios!=null){const b=BOOL(c.troca_cenarios);if(b===null)wr('troca_cenarios "'+c.troca_cenarios+'" não é sim nem nao. Deixei desligada.');else{AUTO=b;$('sfix').disabled=b;$('stbtn').textContent='Transição de estilos: '+(b?'LIGADA':'DESLIGADA');ok('Troca automática de cenários: '+(b?'sim':'não')+'.');if(b&&sv!=null&&!isAuto(sv))wr('Com a troca ligada, o cenário "'+sc[+$('sfix').value]+'" vale só como ponto de partida.')}}else df('Troca automática de cenários: não (padrão).');
+  if(c.troca_cenarios!=null){const b=BOOL(c.troca_cenarios);if(b===null)wr('troca_cenarios "'+c.troca_cenarios+'" não é sim nem nao. Deixei desligada.');else{AUTO=b;$('sfix').disabled=b;$('stbtn').textContent='Troca automática de cenários: '+(b?'LIGADA':'DESLIGADA');ok('Troca automática de cenários: '+(b?'sim':'não')+'.');if(b&&sv!=null&&!isAuto(sv))wr('Com a troca ligada, o cenário "'+sc[+$('sfix').value]+'" vale só como ponto de partida.')}}else df('Troca automática de cenários: não (padrão).');
   let ai=0;const av=c.avatar;
   if(!isAuto(av)){const v=PN(av);let i=/^[1-6]$/.test(v)?+v-1:AV.indexOf(v);if(i<0)i=AV.findIndex(x=>x.startsWith(v)||(v.length>=3&&v.includes(x)));if(/^(nenhum|nenhuma|sem avatar|sem|none|nao)$/.test(v))i='n';
    if(i===-1)wr('Avatar "'+av+'" não existe. Use Andala, Jacinta, Rafael, Beatriz, Mário ou nenhum. Mantive o atual.');else{document.querySelector('#av .chip[data-v="'+i+'"]').click();ai=i==='n'?-2:i;ok('Avatar: '+(i==='n'?'nenhum':NM[i])+'.')}}else df('Avatar: '+($('ch').value==='n'?'nenhum':NM[+$('ch').value||0])+' (padrão).');
@@ -3372,7 +3372,7 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
  var cs=$('cxSel'),cu=$('cxUse');
  if(cs&&cu&&typeof CENX!=='undefined'){var o0=document.createElement('option');o0.value='';o0.textContent='Cenário normal do canal';cs.appendChild(o0);
   CENX.forEach(function(c){var o=document.createElement('option');o.value=c[8];o.textContent=c[0];cs.appendChild(o)});
-  cu.onclick=function(){var ls=String(ta.value||'').split('\n'),i=ls.findIndex(function(q){return q.trim()});if(i<0)return;
+  cu.onclick=function(){var ls=String(ta.value||'').split('\n'),i=ls.findIndex(function(q){return q.trim()});if(i<0){try{toast('Escreva ou gere o roteiro primeiro. O cenário especial vale a partir da primeira linha.')}catch(e){}return}
    ls[i]=ls[i].replace(/^\s*~[\w-]+\s*/,'');if(cs.value)ls[i]='~'+cs.value+' '+ls[i];ta.value=ls.join('\n');setScript(ta.value);}}
 })();
 </script>
@@ -4634,6 +4634,18 @@ window.__miniAvatar=function(dst,X,Y,size,text,ue,env,accent){
   finally{go.disabled=$('ciRnd').disabled=false}
  }
  go.onclick=function(){criar(false)};$('ciRnd').onclick=function(){$('ciT').value='';criar(true)};
+})();
+</script>
+<script>
+/* Aviso ao mudar de cenário: no telemóvel a prévia fica acima dos controles e a mudança passava despercebida */
+(function(){
+ var $=function(i){return document.getElementById(i)};
+ function nome(){var s=$('sfix');var o=s&&s.options[s.selectedIndex];return o?o.textContent:''}
+ function aviso(txt){try{if(window.toast)toast(txt);}catch(e){}try{var c=$('c');if(c){var r=c.getBoundingClientRect();if(r.bottom<80||r.top>innerHeight-120)c.scrollIntoView({block:'center',behavior:'smooth'})}}catch(e){}}
+ var s=$('sfix');if(s)s.addEventListener('change',function(){setTimeout(function(){aviso('Cenário: '+nome())},60)});
+ var p=$('curStudioPick');if(p)p.addEventListener('change',function(){setTimeout(function(){aviso('Estúdio: '+nome())},60)});
+ var u=$('cxUse');if(u)u.addEventListener('click',function(){setTimeout(function(){var c=$('cxSel'),o=c&&c.options[c.selectedIndex];aviso('Cenário especial: '+(o?o.textContent:''))},60)});
+ var b=$('stbtn');if(b)b.addEventListener('click',function(){setTimeout(function(){if(window.toast)toast(b.textContent)},60)});
 })();
 </script>
 </body></html>
