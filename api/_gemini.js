@@ -6,7 +6,7 @@
 const FRIO = new Map(); // chave -> até quando evitar (só enquanto a instância estiver ativa)
 
 function chaves() {
-  const nomes = Object.keys(process.env).filter(n => /^GEMINI_(API_)?KEYS?(_.*|\d*)$/i.test(n))
+  const nomes = Object.keys(process.env).filter(n => /^(GEMINI|GOOGLE)_(API_)?KEYS?(_.*|\d*)$/i.test(n))
     .sort((a, b) => {
       const na = (a.match(/(\d+)\s*$/) || [0, 1])[1], nb = (b.match(/(\d+)\s*$/) || [0, 1])[1];
       return (+na - +nb) || a.localeCompare(b);
@@ -68,7 +68,6 @@ async function chamar(modelo, payload, aceita) {
     }
     if (ultChave) {
       if (ultChave.tipo === 'chave') esfria(k, 600000);
-      if (ultChave.status === 404) return { ok: false, tipo: 'pedido', status: 404, msg: ultChave.msg, chave: ks.indexOf(k) + 1, total: ks.length };
       ult = ultChave;
     }
   }

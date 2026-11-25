@@ -97,4 +97,3 @@ module.exports = async (req, res) => {
 
 /* duração máxima da função (a IA pode levar até 1 minuto) */
 module.exports.config = { maxDuration: 60 };
-  
