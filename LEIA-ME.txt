@@ -171,3 +171,17 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
    o servidor tenta sozinho gemini-2.5-flash e gemini-3.8-flash. Não precisa de variável na Vercel.
    Se já existir GEMINI_TEXT_MODEL na Vercel, ela manda mais do que o padrão: apague-a ou ponha gemini-2.5-flash-lite.
    Ficheiros: api/_gemini.js, api/direct.js, api/cenas.js.
+
+17) CÉREBRO DAS ILUSTRAÇÕES (aba Ilustrado e imagens inteligentes)
+   A IA já não desenha tudo do zero: recebe uma biblioteca de 18 peças feitas à mão (pessoa com 3 bocas e 3 sobrancelhas,
+   laptop, celular, moedas, lâmpada, relógio, gráfico, casa, árvore, porta com cadeado, livro, coração, estrela, nuvem,
+   sol/lua, cidade, mesa) e regras de como o estúdio funciona (camadas, zonas seguras, herói grande, metáforas).
+   Vale para os estilos Cartoon e Anime. O estilo Pixel continua como antes. Ficheiros: api/_pecas.js (novo), api/cenas.js.
+   O personagem do roteiro agora é descrito com parâmetros (pele, cabelo, camisa, calça) para sair igual em todas as cenas.
+
+18. BIBLIOTECA DE OBJETOS (v21)
+- Novo arquivo pecas.js (na raiz, ao lado do index.html): 1140 objetos vetoriais prontos (frutas, legumes, animais, veículos, edifícios, natureza, clima, espaço, tecnologia, escritório, ferramentas, casa, comida, bebida, roupa, desporto, símbolos, rostos, música, saúde, negócios).
+- A IA escreve <peca n="nome" x="360" y="980" s="1.6"/> e o site troca pelo desenho (Ilustrado e inserções inteligentes). Nome inexistente é ignorado em silêncio.
+- api/_catalogo.js tem a lista de nomes enviada à IA (gerada de pecas.js). Se acrescentar objetos, gere de novo.
+- O manual do redator (api/_manual.js e ANDALA_MANUAL no index.html) ganhou 13 regras objetivas de qualidade para todos os canais.
+- sw.js agora é andala-v21 e guarda pecas.js em cache. Suba TODOS os arquivos (incluindo pecas.js e api/_catalogo.js).

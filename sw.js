@@ -3,8 +3,8 @@
    - Páginas: rede primeiro (recebe atualizações), cache como reserva.
    - Fontes do Google: guardadas na primeira visita e reutilizadas offline.
    Para publicar uma versão nova, mude VERSION. */
-const VERSION = 'andala-v20';
-const SHELL = ['./', './index.html', './manifest.webmanifest',
+const VERSION = 'andala-v21';
+const SHELL = ['./', './index.html', './pecas.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-maskable-512.png',
   './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 const FONTS = 'andala-fonts-v1';
@@ -48,7 +48,7 @@ self.addEventListener('fetch', e => {
     const principal = url.pathname === '/' || url.pathname.endsWith('/index.html') || url.pathname.endsWith('/');
     e.respondWith(
       fetch(req, { cache: 'no-store' }).then(res => {
-        if (res.ok && principal) { const cp = res.clone(); caches.open(VERSION).then(c => c.put('./index.html', cp)); }
+        if (res.ok && principal) { const cp = res.clone(); caches.open(VERSION).then(c => c.put('./index.html', './pecas.js', cp)); }
         return res;
       }).catch(() => caches.match('./index.html').then(r => r || caches.match('./')))
     );

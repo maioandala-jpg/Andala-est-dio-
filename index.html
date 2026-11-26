@@ -458,7 +458,8 @@ body{background:#101619}
  #c{width:min(100%,calc(55vh * 9 / 16))}
 }
 @media(max-width:420px){.brand .edition{font-size:9px}.mc-controls select{font-size:12px;padding-left:8px}.cameras button{padding-inline:6px}#stats{box-sizing:border-box}#c{width:min(100%,calc(43vh * 9 / 16))}}
-</style></head><body class="lock">
+</style><script src="pecas.js"></script>
+</head><body class="lock">
 <!-- ===== 2 · INTERFACE ===== -->
 <header class="hd">
  <div class="brand"><span class="mk" aria-hidden="true">A</span><h1>Estúdio Andala</h1><span class="edition">V9 REMASTER / 9:16</span></div>
@@ -3401,6 +3402,7 @@ addEventListener('pointerup',e=>{if(!LOCK||busy||Math.hypot(e.clientX-sx,e.clien
    Se uma chave falha, entra a próxima. Cada chave tem 2 tentativas. Se todas falharem, aparece um aviso amigável. */
 if(typeof CUR_GUIDE!=='undefined')window.ANDALA_MANUAL+='\n\n'+CUR_GUIDE;
 if(typeof NEWS_GUIDE!=='undefined')window.ANDALA_MANUAL+='\n\n'+NEWS_GUIDE;
+window.ANDALA_MANUAL+='\n\n'+"REGRAS OBJETIVAS DE QUALIDADE (valem para todos os canais)\n1. Gancho: a primeira linha do roteiro tem de prender em 3 segundos: uma pergunta, um número concreto ou uma afirmação surpreendente. Nunca comece com \"Olá\", \"Bem-vindos\" ou apresentação.\n2. Uma ideia por linha. Cada linha do roteiro é uma cena; mantenha entre 6 e 16 palavras, frases curtas, voz ativa, sem jargão.\n3. Estrutura: gancho, contexto em 1 linha, 3 a 6 pontos de desenvolvimento (do mais simples ao mais forte), reviravolta ou dado final, fecho curto com chamada para ação (seguir, comentar ou guardar). Duração alvo: 30 a 60 segundos salvo pedido contrário.\n4. Ritmo: alterne linhas curtas e médias; coloque a informação mais forte no meio e no fim; evite 3 linhas seguidas do mesmo tamanho ou da mesma emoção.\n5. Concretude: prefira exemplos, números e imagens mentais a conceitos abstratos. Cada linha deve poder ser ilustrada com um objeto ou cena clara.\n6. Segurança de factos: nunca invente estatísticas, datas, nomes, fontes ou citações. Se não tiver certeza, diga \"segundo estudos\" apenas quando for verdade, ou reformule como opinião ou dica. Notícias: use apenas dados fornecidos pelo utilizador e marque status_editorial adequado. Saúde, dinheiro e lei: dê informação geral e sugira procurar um profissional; sem promessas de resultado.\n7. Tom por canal: idiomas = didático, repetição e exemplo traduzido; curiosidades = surpresa e \"sabia que\"; notícias = neutro, objetivo, sem adjetivos de opinião; mentalidade e finanças = prático, um passo acionável; romance = emotivo, em primeira ou segunda pessoa, sem clichês; bíblico = respeitoso, cite o texto fielmente e identifique livro, capítulo e versículo só se tiver certeza.\n8. Idioma: escreva no idioma pedido; palavras em outro idioma entre aspas só quando for o objeto da aula. Sem emojis no texto falado.\n9. Cenários: escolha o cenário que combina com o tema (tecnologia, natureza, escritório, noite, cidade, espaço, sala de estudo, estúdio de notícias). Troque de cenário apenas em mudança real de assunto, no máximo 3 vezes por vídeo.\n10. Sons e música: no máximo um efeito sonoro a cada 4 linhas e só quando reforça a ação (acerto, alerta, revelação). Música de fundo baixa e constante; nada de som na linha do gancho se atrapalhar a fala.\n11. Ilustrações: cada cena usa 1 objeto herói do catálogo que corresponda ao substantivo da linha, mais 2 a 4 objetos de apoio; nunca desenhe à mão um objeto que exista no catálogo.\n12. Acessibilidade: texto na tela curto (até 6 palavras), contraste alto, nunca repita na tela a frase inteira que está sendo falada.\n13. Antes de responder, confira: gancho forte, uma ideia por linha, nenhum facto inventado, fecho com chamada para ação, formato ANDALA-PROMPT v1 intacto.";
 var KEYS='andala.chaves.v1',MODEL_TTS='gemini-2.5-flash-preview-tts',MODEL_TXT='gemini-2.5-flash';
 /* Sem chaves no código: as chaves reais ficam nas variáveis da Vercel (GEMINI_API_KEY, _2, _3). */
 var EMB=[];
@@ -4270,7 +4272,7 @@ function layout(){var t=0;S.scenes.forEach(function(s){var c=s.codes,lead=.2+c.p
 function sceneAt(T){var n=S.scenes.length;for(var i=0;i<n;i++){var s=S.scenes[i];if(T>=s.t&&T<s.t+s.dur)return i}return Math.max(0,n-1)}
 
 /* ---------- SVG -> camadas ---------- */
-var OK={};'svg defs g rect circle ellipse line polyline polygon path lineargradient radialgradient stop clippath'.split(' ').forEach(function(k){OK[k]=1});
+var OK={};'svg defs g rect circle ellipse line polyline polygon path lineargradient radialgradient stop clippath text'.split(' ').forEach(function(k){OK[k]=1});
 function sanitize(el){[].slice.call(el.children).forEach(function(c){var tag=c.localName.toLowerCase();
  if(!OK[tag]){c.remove();return}
  [].slice.call(c.attributes).forEach(function(a){var k=a.name.toLowerCase(),v=a.value;
@@ -4278,7 +4280,7 @@ function sanitize(el){[].slice.call(el.children).forEach(function(c){var tag=c.l
  sanitize(c)})}
 function wrap(inner){return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="-80 -80 880 1440" width="880" height="1440">'+inner+'</svg>'}
 function buildLayers(svg){
- var d=new DOMParser().parseFromString(svg,'image/svg+xml');if(d.querySelector('parsererror'))return null;
+ svg=window.AndalaPecas?AndalaPecas.expand(svg):svg;var d=new DOMParser().parseFromString(svg,'image/svg+xml');if(d.querySelector('parsererror'))return null;
  var root=d.documentElement;if(root.localName.toLowerCase()!=='svg')return null;sanitize(root);
  var xs=new XMLSerializer(),defs='',grp={},kids=[].slice.call(root.children);
  kids.forEach(function(c){if(c.localName==='defs')defs+=xs.serializeToString(c);else if(c.localName==='g'&&GR.indexOf(c.id)>=0)grp[c.id]=c});
@@ -4518,7 +4520,7 @@ $('viLn').addEventListener('change',syncLines);
 ['viCap','viCs','viMus','viAuto','viMin','viVs','viVm','viMini','viMp','viMs'].forEach(function(i){$(i).addEventListener('change',function(){layout();S.dirty=true;if(S.playing)play(pos())})});
 try{var o=JSON.parse(localStorage.getItem(KEY)||'null');if(o){['viTema','viN','viEst','viVz','viPal','viCh','viLn'].forEach(function(id,k){var f=['tema','n','est','vz','pal','ch','ln'][k];if(o[f]!=null&&o[f]!=='')$(id).value=o[f]});
  syncLines();(o.svgs||[]).forEach(function(v,i){if(S.scenes[i]&&v&&(o.lines||[])[i]===S.scenes[i].line)S.scenes[i].svg=v});list();S.scenes.forEach(function(s,i){ensure(i);if(s.svg)idbGet(vkey(s)).then(function(c){if(c&&!s.buf)decode(c.slice(0)).then(function(b){s.buf=b;s.env=envOf(b);layout();list()}).catch(function(){})})})}}catch(e){}
-function cleanSvg(svg){try{var d=new DOMParser().parseFromString(svg,'image/svg+xml');if(d.querySelector('parsererror'))return null;var r=d.documentElement;if(r.localName.toLowerCase()!=='svg')return null;sanitize(r);r.setAttribute('viewBox','0 0 720 1280');r.setAttribute('width','720');r.setAttribute('height','1280');return new XMLSerializer().serializeToString(r)}catch(e){return null}}
+function cleanSvg(svg){try{svg=window.AndalaPecas?AndalaPecas.expand(svg):svg;var d=new DOMParser().parseFromString(svg,'image/svg+xml');if(d.querySelector('parsererror'))return null;var r=d.documentElement;if(r.localName.toLowerCase()!=='svg')return null;sanitize(r);r.setAttribute('viewBox','0 0 720 1280');r.setAttribute('width','720');r.setAttribute('height','1280');return new XMLSerializer().serializeToString(r)}catch(e){return null}}
 document.addEventListener('andala-snd',function(){try{if(S.ac&&window.AndalaSnd)AndalaSnd.warm(S.ac)}catch(e){}});
 window.__vi={clean:cleanSvg,S:S,frame:frame,play:play,pause:pause,parse:parseLine,sync:syncLines,layout:layout,exportar:exportar};
 })();
