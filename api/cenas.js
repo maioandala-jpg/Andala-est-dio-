@@ -8,6 +8,8 @@
 const crypto = require('crypto');
 const { chamar, chaves, textoErro, modeloTexto } = require('./_gemini.js');
 const { biblioteca } = require('./_pecas.js');
+const CAT = require('./_catalogo.js');
+const CATALOGO = '\n\nOBJECT CATALOG (' + CAT.total + ' ready-made objects). Instead of drawing an object, insert it with ONE self-closing tag: <peca n="name" x="360" y="980" s="1.6"/>.\n- n = exact name from the list below (lowercase, never invent names). x,y = where the BOTTOM-CENTER (the ground contact point) of the object goes, in the 720x1280 canvas. s = scale (1 = about 150-250 px tall; hero object 1.8-2.6, background object 0.7-1.2). Optional: r=rotation degrees, f="1" to flip horizontally, o=opacity 0-1, c1/c2 = override main/secondary color as #hex.\n- Place the tag inside the correct group (fundo/meio/personagem/frente). Objects overlap in document order (later = in front). Keep pieces from overlapping the person unless it is held/used.\n- ALWAYS prefer a catalog object over hand-drawing. Combine several (e.g. casa_azul + arvore_redonda + nuvem_branca + sol) to build a scene. Pick the object that matches the narration noun literally (cao, aviao_comercial, bolo, cofre...).\n- Many names have a color suffix (carro_vermelho, flor_*, camisola_azul...): choose the color that fits the story.\n\n' + CAT.texto;
 
 function erro(res, status, msg) {
   res.statusCode = status;
@@ -155,7 +157,7 @@ async function cena(b, res) {
     ref ? 'REFERENCE CHARACTER GROUP from scene 1. Reuse its exact shapes, proportions and colors for the character (only change pose, expression, position and scale to fit this shot):\n' + ref : ''
   ].filter(Boolean).join('\n\n');
   const payload = {
-    systemInstruction: { parts: [{ text: estilo === 'p' ? SISTEMA_CENA : SISTEMA_CENA + '\n\n' + CEREBRO + biblioteca() }] },
+    systemInstruction: { parts: [{ text: estilo === 'p' ? SISTEMA_CENA : SISTEMA_CENA + '\n\n' + CEREBRO + biblioteca() + CATALOGO }] },
     contents: [{ role: 'user', parts: [{ text: user }] }],
     generationConfig: { temperature: estilo === 'p' ? 0.7 : 0.45, maxOutputTokens: 12000 }
   };
