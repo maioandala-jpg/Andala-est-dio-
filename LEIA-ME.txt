@@ -185,3 +185,12 @@ ESTÚDIO ANDALA · PWA instalável e offline (com Andala estúdio.AI)
 - api/_catalogo.js tem a lista de nomes enviada à IA (gerada de pecas.js). Se acrescentar objetos, gere de novo.
 - O manual do redator (api/_manual.js e ANDALA_MANUAL no index.html) ganhou 13 regras objetivas de qualidade para todos os canais.
 - sw.js agora é andala-v21 e guarda pecas.js em cache. Suba TODOS os arquivos (incluindo pecas.js e api/_catalogo.js).
+
+19. FILA, LEGENDAS E ROUPAS (v22)
+- Fila: a lista "Seus vídeos" agora é guardada no aparelho (IndexedDB andala-fila). Se a página recarregar ou o celular fechar o app, os vídeos que estavam em andamento voltam como "Pausado" e recomeçam do início (sozinhos, ou pelo botão Retomar; há a opção "Retomar sozinho ao reabrir"). Vídeos prontos que não foram baixados também ficam guardados.
+- Não é possível continuar um vídeo do meio: o render recomeça do início. O app mantém a tela ligada durante a geração para o celular não fechar a página.
+- Botão "Pausar fila / Retomar fila": para de iniciar novos vídeos (os em andamento terminam).
+- Até 6 vídeos ao mesmo tempo (em celular use 1 ou 2) e até 60 prompts por lote.
+- Legendas: 9 estilos (Padrão, Ativo, Karaokê, Retrô 80s, Neon, Quadrinhos, Tarja, Gradiente, Minimalista) na aba Roteiro (Estilo das legendas) e no Ilustrado. No prompt: legenda_estilo: retro.
+- Roupas do canal Idiomas: Camisa com bandeira (EUA, Nova Iorque, Reino Unido, Inglaterra, França, Espanha, China, Japão, Coreia, Brasil, Portugal, Alemanha, Itália), com ou sem boné.
+- sw.js agora é andala-v22.
